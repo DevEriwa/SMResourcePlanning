@@ -1,0 +1,13 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/Core/bin/Debug/net6.0
+/Core/obj
+/Logic/bin/Debug/net6.0
+/Logic/obj
+/Resource_Planing/.vs
+/Resource_Planing/bin/Debug/net6.0
+/Resource_Planing/obj
+/Resource_Planing/wwwroot/blue

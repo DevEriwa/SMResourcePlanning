@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Resource_Planing", "Resource_Planing.csproj", "{629D3F0E-8E61-4534-8733-B1EB870C643E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "..\Core\Core.csproj", "{F4409D90-406E-485B-8126-91DA6C72ADDA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logic", "..\Logic\Logic.csproj", "{9B5C6575-6528-4CCE-9DA4-21EDB095FE71}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{629D3F0E-8E61-4534-8733-B1EB870C643E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{629D3F0E-8E61-4534-8733-B1EB870C643E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{629D3F0E-8E61-4534-8733-B1EB870C643E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{629D3F0E-8E61-4534-8733-B1EB870C643E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F4409D90-406E-485B-8126-91DA6C72ADDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F4409D90-406E-485B-8126-91DA6C72ADDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F4409D90-406E-485B-8126-91DA6C72ADDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F4409D90-406E-485B-8126-91DA6C72ADDA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B5C6575-6528-4CCE-9DA4-21EDB095FE71}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B5C6575-6528-4CCE-9DA4-21EDB095FE71}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B5C6575-6528-4CCE-9DA4-21EDB095FE71}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B5C6575-6528-4CCE-9DA4-21EDB095FE71}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5E649907-5A62-483C-9CB7-FAAEC7515D2B}
+	EndGlobalSection
+EndGlobal
