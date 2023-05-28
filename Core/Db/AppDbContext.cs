@@ -13,6 +13,7 @@ namespace Core.Db
         public DbSet<Company>? Companies { get; set; }
         public DbSet<UserVerification>? UserVerifications { get; set; }
         public DbSet<Department>? Departments { get; set; }
+        public DbSet<Location>? locations { get; set; }
     }
 }
 

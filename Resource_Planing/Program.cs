@@ -10,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IUserHelper, UserHelper>();
+builder.Services.AddScoped<IAccountHelper, AccountHelper>();
 
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(

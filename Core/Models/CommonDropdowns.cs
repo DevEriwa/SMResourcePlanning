@@ -9,8 +9,8 @@ namespace Core.Models
 {
     public class CommonDropdowns : BaseModel
     {
-        public int DropdownKey { get; set; }
-        [Display(Name = "Date Created")]
-        public DateTime DateCreated { get; set; }
-    }
+		[Display(Name = "Dropdown Key")]
+		public int DropdownKey { get; set; }
+
+	}
 }
