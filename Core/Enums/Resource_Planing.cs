@@ -153,5 +153,11 @@ namespace Core.Enums
 			[Description("Status Colour For Purple")]
 			Purple,
 		}
+
+		public enum DropdownEnums
+		{
+			[Description("For Returning Genders")]
+			Gender = 1,
+		}
 	}
 }
