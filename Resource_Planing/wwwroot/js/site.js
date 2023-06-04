@@ -55,72 +55,49 @@
 function Registeration() {
     debugger;
     var data = {};
-    //var CompanyLogo = document.getElementById("companyLogo").files;
-    data.Name = $('#companyName').val();
     data.Email = $('#email').val();
-    data.MaritalStatus = $('#companyAddress').val();
     data.Address = $('#address').val();
     data.Phone = $('#phoneNumber').val();
-    data.Mobile = $('#mobileNumber').val();
     data.FirstName = $('#firstName').val();
     data.LastName = $('#lastName').val();
     data.Password = $('#password').val();
     data.Religion = $('#religion').val();
-    data.Gender = $('#gender').val(); 
-   // data.Age = $('#age').val(); 
+    data.GenderId = $('#genderId').val(); 
+    data.DisplayOnRota = $('#displayOnRota').is(":checked");
     data.CheckBox = $('#termsCondition').is(":checked");
     data.ConfirmPassword = $('#confirmpassword').val();
-    if (data.Phone.length == 11 || data.Phone.length == 13) {
-        if (data.Mobile.length == 11 || data.Mobile.length == 13 || data.Mobile == "") {
+    if (data.Email != "" && data.Phone != "" && data.FirstName != "" && data.LastName != "" && data.Password != "" && data.Gender != "" && data.Password != "")
+    {
+        if (data.Password == data.ConfirmPassword) {
             var companyDetails = JSON.stringify(data);
-            if (data.CheckBox != "") {
-                $.ajax({
-                    type: 'Post',
-                    url: '/Account/Registeration', // we are calling json method
-                    dataType: 'json',
-                    data:
-                    {
-                        userRegistrationData: companyDetails,
-                        //base64: base64
-                    },
-                    success: function (result) {
-                        if (!result.isError) {
-                            var url = '/Account/Login';
-                            successAlertWithRedirect(result.msg, url);
-                            $('#submit_btn').html(defaultBtnValue);
-                        }
-                        else {
-                            $('#submit_btn').html(defaultBtnValue);
-                            $('#submit_btn').attr("disabled", false);
-                            errorAlert(result.msg);
-                        }
-                    },
-                    //error: function (ex) {
-                    //    $('#submit_btn').html(defaultBtnValue);
-                    //    $('#submit_btn').attr("disabled", false);
-                    //    errorAlert("Network failure, please try again");
-                    //}
-                });
-            //} else {
-            //    $('#submit_btn').html(defaultBtnValue);
-            //    $('#submit_btn').attr("disabled", false);
-            //    errorAlert("I have read and agree to the Terms and Conditions to Continue Thanks!.");
-            }
+            $.ajax({
+                type: 'Post',
+                url: '/Account/Registeration', // we are calling json method
+                dataType: 'json',
+                data:
+                {
+                    userRegistrationData: companyDetails,
+                },
+                success: function (result) {
+                    if (!result.isError) {
+                        var url = '/Account/Login';
+                        successAlertWithRedirect(result.msg, url);
+                    }
+                    else {
+                        errorAlert(result.msg);
+                    }
+                },
+                error: function (ex) {
+                    errorAlert("Network failure, please try again");
+                }
+            });
+        } else {
+            errorAlert("Password and comfirmpassword not match");
         }
-        //else {
-        //    $('#submit_btn').html(defaultBtnValue);
-        //    $('#submit_btn').attr("disabled", false);
-        //    errorAlert("Mobile Number must be equal to 11 or 13 digit");
-        //}
+    } 
+    else {
+        errorAlert("Fill the form correctly");
     }
-    //else {
-    //    $('#submit_btn').html(defaultBtnValue);
-    //    $('#submit_btn').attr("disabled", false);
-    //    errorAlert("Phone Number must be equal to 11 or 13 digit");
-    //}
-       
-   
-    
 }
 
 // APPLICATION REQUEST 

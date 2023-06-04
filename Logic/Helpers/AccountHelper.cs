@@ -33,15 +33,11 @@ namespace Logic.Helpers
 					newAccount.UserName = registrationData.Email;
 					newAccount.EmailConfirmed = true;
 					newAccount.StartDate = DateTime.Now;
-					newAccount.Status = registrationData.Status;
-					newAccount.MaritalStatus = registrationData.MaritalStatus;
+					newAccount.DisplayOnRota = registrationData.DisplayOnRota;
 					newAccount.PhoneNumber = registrationData.Phone;
-					newAccount.DateOfBirth = registrationData.DateOfBirth;
 					newAccount.Password = registrationData.Password;
 					newAccount.ConfirmPassword = registrationData.ConfirmPassword;
 					newAccount.Address = registrationData.Address;
-					newAccount.Age = registrationData.Age;
-					//newAccount.DepartmentId = registrationData.DepartmentId;
 					newAccount.GenderId = registrationData.GenderId;
 				}
 				var result = await _userManager.CreateAsync(newAccount, registrationData.Password);

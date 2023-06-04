@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@{
+
+    var randomStr = DateTime.Now.ToString().ToLower().Replace(":", "").Replace("pm", "").Replace("am", "");
+}
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8">
@@ -28,8 +34,10 @@
     	<script src="~/js/moment.min.js"></script>
     <script src="~/js/bootstrap-datetimepicker.min.js"></script>
     <script src="~/js/ngControl.js"></script>
+  @*  <script src="~/js/password.js?v=@randomStr"></script>*@
+    <script src="~/js/site.js?v=@randomStr"></script>
     <!-- Custom JS -->
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    @*<script src="~/js/site.js" asp-append-version="true"></script>*@
     <script src="~/js/app.js"></script>
 
 
@@ -130,16 +138,7 @@
         }
     </script>
 
-    <script>
-        $(window).on('load', function () {
-            $('#loader').delay(100).fadeOut('slow');
-            $('#loader-wrapper').delay(500).fadeOut('slow');
-        });
-
-        $(document).ready(function () {
-            $('.manage').tooltip();
-        });
-    </script>
+    
     @RenderSection("Scripts", required: false)
 </head>
 
@@ -290,7 +289,8 @@
     <script src="~/FlexStart/assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
     <script src="~/FlexStart/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
     <script src="~/FlexStart/assets/vendor/swiper/swiper-bundle.min.js"></script>
-
+    <script src="~/js/password.js?v=@randomStr"></script>
+    <script src="~/js/report.js?v=@randomStr"></script>
     <script src="~/FlexStart/assets/js/main.js"></script>
 </body>
 </html>

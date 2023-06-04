@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Buffers.Text;
+using static Core.Enums.Resource_Planing;
 
 namespace Resource_Planing.Controllers
 {
@@ -15,22 +16,25 @@ namespace Resource_Planing.Controllers
     {
 		private readonly IAccountHelper _accountHelper;
 		private readonly IUserHelper _userHelper;
+		private readonly IDropdownHelper _dropdownHelper;
 		private readonly AppDbContext _context;
 		private readonly SignInManager<ApplicationUser> _signInManager;
 		private readonly UserManager<ApplicationUser> _userManager;
 
-		public AccountController(IAccountHelper accountHelper, IUserHelper userHelper, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, AppDbContext context)
+		public AccountController(IAccountHelper accountHelper, IUserHelper userHelper, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, AppDbContext context, IDropdownHelper dropdownHelper)
 		{
 			_accountHelper = accountHelper;
 			_userHelper = userHelper;
 			_signInManager = signInManager;
 			_userManager = userManager;
 			_context = context;
+			_dropdownHelper = dropdownHelper;
 		}
 		[HttpGet]
 		public IActionResult Register()
         {
-            return View();
+			ViewBag.Gender = _dropdownHelper.GetDropdownsByKey(DropdownEnums.Gender).Result;
+			return View();
         }
         [HttpGet]
         public IActionResult AdminRegister()
@@ -49,7 +53,7 @@ namespace Resource_Planing.Controllers
 					var newAccountData = JsonConvert.DeserializeObject<UserViewModel>(userRegistrationData);
 					if (newAccountData != null)
 					{
-						var emailCheck = await _userHelper.FindByEmailAsync(newAccountData.Email).ConfigureAwait(false); ;
+						var emailCheck = await _userHelper.FindByEmailAsync(newAccountData.Email).ConfigureAwait(false);
 						if (emailCheck != null)
 						{
 							return Json(new { isError = true, msg = "Email already exist" });

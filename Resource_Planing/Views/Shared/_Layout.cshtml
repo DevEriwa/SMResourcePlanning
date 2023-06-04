@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@{
+   
+    var randomStr = DateTime.Now.ToString().ToLower().Replace(":", "").Replace("pm", "").Replace("am", "");
+}
+
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -6,7 +12,79 @@
     <title>@ViewData["Title"] - Resource_Planing</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="~/assets/css/line-awesome.min.css" rel="stylesheet" />
+    <link href="~/assets/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/assets/css/sweetalert2.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/Resource_Planing.styles.css" asp-append-version="true" />
+
+    <script>
+        function errorAlert(message) {
+            Swal.fire({
+                icon: 'error',
+                text: message,
+                timer: 60000,
+            })
+        }
+
+        function infoAlert(message) {
+            Swal.fire({
+                icon: 'info',
+                text: message,
+            })
+        }
+
+        function infoAlertWithStyles(message) {
+            Swal.fire({
+                title: 'Notification',
+                icon: 'info',
+                text: message,
+            })
+        }
+
+        function successAlert(message) {
+            Swal.fire({
+                icon: 'success',
+                text: message,
+                timer: 60000,
+            })
+        }
+
+        function newErrorAlert(message, url) {
+            Swal.fire({
+                icon: 'error',
+                text: message,
+            }).then((isConfirm) => {
+                if (isConfirm) {
+                    location.reload(url);
+                }
+            })
+        }
+
+        function newSuccessAlert(message, url) {
+            Swal.fire({
+                icon: 'success',
+                text: message,
+            }).then((isConfirm) => {
+                if (isConfirm) {
+                    location.reload(url);
+                }
+            })
+
+        }
+
+        function successAlertWithRedirect(message, url) {
+            Swal.fire({
+                title: "Success",
+                text: message,
+                icon: "info",
+                timer: 30000,
+                overlay: "background - color: rgba(43, 165, 137, 0.45)",
+            }).then(function () {
+
+                location.href = url;
+            })
+        }
+    </script>
 </head>
 <body>
     <header>
@@ -41,9 +119,11 @@
             &copy; 2023 - Resource_Planing - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/assets/js/jquery-3.5.1.min.js"></script>
+    <script src="~/assets/js/popper.min.js"></script>
+    <script src="~/assets/js/bootstrap.min.js"></script>
+    <script src="~/assets/js/sweetalert2.all.min.js"></script>
+    <script src="~/js/site.js?v=@randomStr"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

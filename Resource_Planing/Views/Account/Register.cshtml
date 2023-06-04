@@ -40,14 +40,14 @@
 						<div class="form-group">
 							<label>Phone Number <span class="text-danger">*</span></label>
 							<input class="form-control" id="phoneNumber" type="number">
-							<p class="text-danger" id="phoneWarningMsg" hidden></p>
+							@*<p class="text-danger" id="phoneWarningMsg" hidden></p>*@
 						</div>
 					</div>
 					<div class="col-sm-6">
 						<div class="form-group">
 							<label>Mobile Number <span class="text-danger">Optional</span></label>
 							<input class="form-control" id="mobileNumber" type="number">
-							<p class="text-danger" id="moblieWarningMsg" hidden></p>
+							@*<p class="text-danger" id="moblieWarningMsg" hidden></p>*@
 						</div>
 					</div>
 				</div>
@@ -70,7 +70,7 @@
 					<div class="col-sm-6">
 						<div class="form-group">
 							<label>Gender <span class="text-danger">*</span></label>
-							<input class="form-control" id="gender" type="text" placeholder="eg. Dr. Kings">
+							<select id="genderId" class="select form-control " asp-items="@(new SelectList(ViewBag?.Gender, "Id", "Name"))"> </select>
 						</div>
 					</div>
 					<div class="col-sm-6">
@@ -97,7 +97,7 @@
 				<div class="row mb-2">
 					<div class="col-sm-6">
 						<div class="tacbox">
-							<input id="termsCondition" type="checkbox">
+							<input id="displayOnRota" type="checkbox">
 							<label for="checkbox" generated="true"> I agree to be in Rota</label>
 						</div>
 					</div>
