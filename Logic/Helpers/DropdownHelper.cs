@@ -17,7 +17,7 @@ namespace Logic.Helpers
 		private readonly IUserHelper _userHelper;
 		private UserManager<ApplicationUser> _userManager;
 
-		public DropdownHelper(AppDbContext context, UserManager<ApplicationUser> userManager, IUserHelper userHelper)
+        public DropdownHelper(AppDbContext context, UserManager<ApplicationUser> userManager, IUserHelper userHelper)
 		{
 			_context = context;
 			_userHelper = userHelper;
@@ -114,5 +114,59 @@ namespace Logic.Helpers
                 throw ex;
             }
         }
-	}
+
+        public List<Department> GetDepartments(string userName)
+        {
+            var departments = new List<Department>();
+            var currentUser = _userHelper.FindByUserName(userName);
+            if (currentUser != null)
+            {
+
+                var common = new Department()
+                {
+                    Id = 0,
+                    Name = "-- Select --"
+                };
+                var department = _context.Departments.Where(a => a.Id > 0 && a.UserId == currentUser.Id && a.Active && !a.Deleted).Include(f => f.User).OrderBy(s=>s.Name)
+					.Select(c => new Department()
+                {
+                    Id = c.Id,
+                    Name = c.Name,
+                }).ToList();
+                department.Insert(0, common);
+                if (department.Any())
+                {
+                    departments = department;
+                }
+            }
+            return departments;
+        }
+
+        public List<Location> GetLocations(string userName)
+        {
+            var locations = new List<Location>();
+            var currentUser = _userHelper.FindByUserName(userName);
+            if (currentUser != null)
+            {
+
+                var common = new Location()
+                {
+                    Id = 0,
+                    Name = "-- Select --"
+                };
+                var location = _context.locations.Where(a => a.Id > 0 && a.UserId == currentUser.Id && a.Active && !a.Deleted).Include(f => f.User).OrderBy(d =>d.AbbreviatedName)
+                    .Select(c => new Location()
+                    {
+                        Id = c.Id,
+                        AbbreviatedName = c.AbbreviatedName,
+                    }).ToList();
+                location.Insert(0, common);
+                if (location.Any())
+                {
+                    locations = location;
+                }
+            }
+            return locations;
+        }
+    }
 }
