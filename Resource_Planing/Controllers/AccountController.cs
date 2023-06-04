@@ -66,13 +66,13 @@ namespace Resource_Planing.Controllers
 						var newAccountCreated = _accountHelper.AccountRegisterationService(newAccountData).Result;
 						if (newAccountCreated != null)
 						{
-							var addToRole =  _userManager.AddToRoleAsync(newAccountCreated, "Staff").Result; 
+							var addToRole =  _userManager.AddToRoleAsync(newAccountCreated, "CompanyStaff").Result; 
 							if (addToRole.Succeeded)
 							{
 								return Json(new { isError = false, msg = "Registration successful" });
 							}
 						}
-						return Json(new { isError = true, msg = "Unable to create Company" });
+						return Json(new { isError = true, msg = "Unable to create Account" });
 					}
 				}
 				return Json(new { isError = true, msg = " Network failure, please try again." });
