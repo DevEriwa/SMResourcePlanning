@@ -12,6 +12,8 @@ namespace Logic.IHelpers
     {
 		 Task<ApplicationUser> AdminegisterationService(UserViewModel registrationData);
 		 Task<ApplicationUser> AccountRegisterationService(UserViewModel registrationData);
+        Task<ApplicationUser> AuthenticateUser(UserViewModel loginDetail);
+        string GetUserDashboardPage(ApplicationUser userr);
 
-	}
+    }
 }

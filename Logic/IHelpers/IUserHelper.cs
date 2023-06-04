@@ -19,5 +19,7 @@ namespace Logic.IHelpers
 		Department GetDepartmentById(int id, string userName);
 		bool DepartmentEdited(DepartmentViewModel departmentViewModel, string userName);
 		bool DeleteDepartment(int id);
-	}
+		Task<ApplicationUser> FindByUserNameAsync(string userName);
+
+    }
 }
