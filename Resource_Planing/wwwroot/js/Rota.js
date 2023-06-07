@@ -283,3 +283,144 @@ function deleteDepartment() {
 function departmentToBeDeleted(id) {
     $('#deleteDepartmentId').val(id);
 }
+
+function addTime() {
+
+    var defaultBtnValue = $('#submit_btn').html();
+    $('#submit_btn').html("Please wait...");
+    $('#submit_btn').attr("disabled", true);
+    var data = {};
+    data.ShiftTime = $('#shiftTime').val();
+    if (data.ShiftTime != "") {
+        let timeDetails = JSON.stringify(data);
+        $.ajax({
+            type: 'Post',
+            url: '/Admin/AddTime',
+            dataType: 'json',
+            data:
+            {
+                timeDetails: timeDetails,
+            },
+            success: function (result) {
+                if (!result.isError) {
+                    var url = '/Admin/Time';
+                    successAlertWithRedirect(result.msg, url);
+                    $('#submit_btn').html(defaultBtnValue);
+                }
+                else {
+                    $('#submit_btn').html(defaultBtnValue);
+                    $('#submit_btn').attr("disabled", false);
+                    errorAlert(result.msg);
+                }
+            },
+            error: function (ex) {
+                $('#submit_btn').html(defaultBtnValue);
+                $('#submit_btn').attr("disabled", false);
+                errorAlert("Network failure, please try again");
+            }
+        });
+    } else {
+        $('#submit_btn').html(defaultBtnValue);
+        $('#submit_btn').attr("disabled", false);
+        errorAlert("Please fill the form Correctly");
+    }
+
+
+}
+
+function timeToBeEdited(id) {
+    debugger
+    $.ajax({
+        type: 'Get',
+        dataType: 'Json',
+        url: '/Admin/EditTime',
+        data: {
+            id: id
+        },
+        success: function (result) {
+            if (!result.isError) {
+                var date = result.dateCreated.split("T")[0];
+                $('#editTimeId').val(result.id);
+                $('#editTime_ShiftName').val(result.shiftTime);
+                $('#editDateCreate_date').val(date);
+            }
+            else {
+                errorAlert(result.msg)
+            }
+        },
+        error: function (ex) {
+            errorAlert("Network failure, please try again");
+        }
+    })
+}
+
+function TimeToSave() {
+    var defaultBtnValue = $('#submit_Btn').html();
+    $('#submit_Btn').html("Please wait...");
+    $('#submit_Btn').attr("disabled", true);
+    var data = {};
+    data.Id = $("#editTimeId").val();
+    data.ShiftTime = $("#editTime_ShiftName").val();
+    data.DateCreated = $("#editDateCreate_date").val();
+    if (data.ShiftTime != "" && data.DateCreated != "") {
+        let edittimedetails = JSON.stringify(data);
+        $.ajax({
+            type: 'POST',
+            url: '/Admin/EditedTime',
+            dataType: 'json',
+            data:
+            {
+                timedetails: edittimedetails,
+            },
+            success: function (result) {
+                if (!result.isError) {
+                    var url = '/Admin/Time'
+                    successAlertWithRedirect(result.msg, url)
+                    $('#submit_Btn').html(defaultBtnValue);
+                }
+                else {
+                    $('#submit_Btn').html(defaultBtnValue);
+                    $('#submit_Btn').attr("disabled", false);
+                    errorAlert(result.msg);
+                }
+            },
+            error: function (ex) {
+                $('#submit_Btn').html(defaultBtnValue);
+                $('#submit_Btn').attr("disabled", false);
+                errorAlert(result.msg);
+            }
+        });
+    } else {
+        $('#submit_Btn').html(defaultBtnValue);
+        $('#submit_Btn').attr("disabled", false);
+        errorAlert("Invalid, Please fill the form correctly.");
+    }
+}
+
+function deleteTime() {
+    var id = $('#deleteTimeId').val();
+    $.ajax({
+        type: 'Post',
+        dataType: 'Json',
+        url: '/Admin/DeleteTime',
+        data: {
+            id: id
+        },
+        success: function (result) {
+            if (!result.isError) {
+                var url = '/Admin/Time'
+                successAlertWithRedirect(result.msg, url)
+            }
+            else {
+                errorAlert(result.msg)
+            }
+        },
+        error: function (ex) {
+            errorAlert("Network failure, please try again");
+        }
+    })
+}
+
+function timeToBeDeleted(id) {
+    $('#deleteTimeId').val(id);
+}

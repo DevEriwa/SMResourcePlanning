@@ -145,10 +145,10 @@ function Registeration() {
 function CreateAdminAccount() {
     debugger
     var data = {};
-    data.Name = $('#name').val();
-    data.Email = $('#email').val();
-    data.Password = $('#password').val();
-    data.ConfirmPassword = $('#password_confirm').val();
+    data.Name = $('#names').val();
+    data.Email = $('#emails').val();
+    data.Password = $('#passwords').val();
+    data.ConfirmPassword = $('#confirmpasswords').val();
     debugger
     if (data.Name != "" && data.Email != "" && data.Password != "" && data.Password == data.ConfirmPassword) {
         let userViewModel = JSON.stringify(data);

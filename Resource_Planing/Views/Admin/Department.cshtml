@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<Core.Models.Department>
 @{
     ViewData["Title"] = "All Department";
-    Layout = "~/Views/Shared/_SuperAdminLayout.cshtml";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <div class="page-wrapper">
@@ -60,6 +60,14 @@
 
                             </tbody>
                         </table>
+                    }
+                    else
+                    {
+                        <div class="row p5 m-5">
+                            <div class="col-md-12 text-center p-5 m5">
+                                <h2>No Record Found</h2>
+                            </div>
+                        </div>
                     }
 
                 </div>

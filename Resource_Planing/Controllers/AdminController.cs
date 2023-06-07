@@ -33,13 +33,14 @@ namespace Resource_Planing.Controllers
 
 		public IActionResult Location()
 		{
+			var adsd = new List<Location>();
 			var currentUser = _userHelper.FindByUserName(User?.Identity?.Name);
 			if (currentUser != null)
 			{
 				var locations = _userHelper.GetLocations(currentUser.UserName);
 				return View(locations);
 			}
-			return View();
+			return View(adsd);
 		}
 
 		[HttpPost]
@@ -211,6 +212,95 @@ namespace Resource_Planing.Controllers
             return Json(new { isError = true, msg = "Network failure, please try again." });
         }
 
+		public IActionResult Time()
+		{
+			var adsd = new List<Time>();
+			var currentUser = _userHelper.FindByUserName(User?.Identity?.Name);
+			if (currentUser != null)
+			{
+				var time = _userHelper.GetTimes(currentUser.UserName);
+				return View(time);
+			}
+			return View(adsd);
+		}
 
-    }
+		[HttpPost]
+		public JsonResult AddTime(string timeDetails)
+		{
+			if (timeDetails != null)
+			{
+				var timeViewModel = JsonConvert.DeserializeObject<TimeViewModel>(timeDetails);
+				if (timeViewModel != null)
+				{
+					var currentUser = User?.Identity?.Name;
+					if (currentUser != null)
+					{
+						var addtime = _userHelper.AddTime(timeViewModel, currentUser);
+						if (addtime)
+						{
+							return Json(new { isError = false, msg = "Time Added successfully" });
+						}
+						return Json(new { isError = true, msg = "Unable To Add Time" });
+					}
+				}
+				return Json(new { isError = true, msg = "Error Occurred" });
+			}
+			return Json(new { isError = true, msg = "Error Occurred" });
+		}
+
+		[HttpGet]
+		public JsonResult EditTime(int id)
+		{
+			if (id > 0)
+			{
+				var currentUser = User?.Identity?.Name;
+				if (currentUser != null)
+				{
+					var timeToBeEdited = _userHelper.GetTimeById(id, currentUser);
+					if (timeToBeEdited != null)
+					{
+						return Json(timeToBeEdited);
+					}
+				}
+			}
+			return Json(new { isError = true, msg = "Network failure, please try again." });
+		}
+		[HttpPost]
+		public JsonResult EditedTime(string timedetails)
+		{
+			if (timedetails != null)
+			{
+				var timeViewModel = JsonConvert.DeserializeObject<TimeViewModel>(timedetails);
+				if (timeViewModel != null)
+				{
+					var currentUser = User?.Identity?.Name;
+					if (currentUser != null)
+					{
+						var editedtime = _userHelper.TimeEdited(timeViewModel, currentUser);
+						if (editedtime)
+						{
+							return Json(new { isError = false, msg = "Time Updated Successfully" });
+						}
+						return Json(new { isError = true, msg = "Unable To Updated Time" });
+					}
+				}
+			}
+			return Json(new { isError = true, msg = "Network failure, please try again." });
+		}
+
+		[HttpPost]
+		public JsonResult DeleteTime(int id)
+		{
+			if (id != 0)
+			{
+				var timeToBeDeleted = _userHelper.DeleteTime(id);
+				if (timeToBeDeleted)
+				{
+					return Json(new { isError = false, msg = "Time  deleted Successfully" });
+				}
+				return Json(new { isError = true, msg = "Unable To delete Time" });
+			}
+			return Json(new { isError = true, msg = "Network failure, please try again." });
+		}
+	}
 }
