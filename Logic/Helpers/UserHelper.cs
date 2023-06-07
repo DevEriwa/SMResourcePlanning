@@ -4,6 +4,7 @@ using Core.ViewModels;
 using Logic.IHelpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using System.Net;
 
 namespace Logic.Helpers
@@ -225,6 +226,24 @@ namespace Logic.Helpers
 			}
 			return false;
 		}
-		
+
+		public bool AddShift(DepartmentViewModel shiftDetails)
+		{
+			if (shiftDetails != null)
+			{
+				var shiftData = new Shift()
+				{
+					Active = true,
+					DeteCreated = DateTime.Now,
+					Deleted = false,
+					Name = shiftDetails.Name,
+					AbbreviatedName = shiftDetails.AbbreviatedName,
+				};
+				_context.shifts?.Add(shiftData);
+				_context.SaveChanges();
+				return true;
+			}
+			return false;
+		}
 	}
 }

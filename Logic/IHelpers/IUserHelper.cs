@@ -20,6 +20,8 @@ namespace Logic.IHelpers
 		bool DepartmentEdited(DepartmentViewModel departmentViewModel, string userName);
 		bool DeleteDepartment(int id);
 		Task<ApplicationUser> FindByUserNameAsync(string userName);
+		bool AddShift(DepartmentViewModel shiftDetails);
 
-    }
+
+	}
 }
