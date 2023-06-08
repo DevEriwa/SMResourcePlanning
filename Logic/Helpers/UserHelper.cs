@@ -225,6 +225,98 @@ namespace Logic.Helpers
 			}
 			return false;
 		}
-		
+		public List<Time> GetTimes(string userName)
+		{
+			var times = new List<Time>();
+			var currentUser = FindByUserName(userName);
+			if (currentUser != null)
+			{
+				var time = _context.Times.Where(a => a.Id > 0 && a.UserId == currentUser.Id && a.Active && !a.Deleted).Include(f => f.User).ToList();
+				if (time.Any())
+				{
+					times = time;
+				}
+			}
+			return times;
+		}
+
+		public bool AddTime(TimeViewModel timeDetails, string userName)
+		{
+			if (timeDetails != null && userName != null)
+			{
+				var loggedInuser = FindByUserName(userName);
+				if (loggedInuser != null)
+				{
+					var timeModel = new Time()
+					{
+						Name = timeDetails.Name,
+						ShiftTime = timeDetails.ShiftTime.ToString(),
+						UserId = loggedInuser.Id,
+						Active = true,
+						Deleted = false,
+						DeteCreated = DateTime.Now,
+					};
+					_context.Times.Add(timeModel);
+					_context.SaveChanges();
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public Time GetTimeById(int id, string userName)
+		{
+			var times = new Time();
+			if (id > 0)
+			{
+				var user = FindByUserName(userName);
+				var timesToBeEdited = _context.Times.Where(x => x.Id == id && x.UserId == user.Id && !x.Deleted).Include(x => x.User).FirstOrDefault();
+				if (timesToBeEdited != null)
+				{
+					times = timesToBeEdited;
+				}
+			}
+			return times;
+		}
+
+		public bool TimeEdited(TimeViewModel timeViewModel, string userName)
+		{
+			if (timeViewModel != null)
+			{
+				var user = FindByUserName(userName);
+				var time = _context.Times.Where(x => x.Id == timeViewModel.Id && x.UserId == user.Id && !x.Deleted).FirstOrDefault();
+				if (time != null)
+				{
+					time.Name = timeViewModel.Name;
+					time.ShiftTime = timeViewModel.ShiftTime.ToString();
+					time.UserId = user.Id;
+					time.Active = true;
+					time.Deleted = false;
+					time.DeteCreated = timeViewModel.DeteCreated;
+
+					_context.Times.Update(time);
+					_context.SaveChanges();
+					return true;
+				}
+			}
+			return false;
+		}
+
+		public bool DeleteTime(int id)
+		{
+			if (id != 0)
+			{
+				var time = _context.Times.Where(x => x.Id == id && x.Active && !x.Deleted).FirstOrDefault();
+				if (time != null)
+				{
+					time.Active = false;
+					time.Deleted = true;
+					_context.Times.Update(time);
+					_context.SaveChanges();
+					return true;
+				}
+			}
+			return false;
+		}
 	}
 }

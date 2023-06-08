@@ -19,5 +19,10 @@ namespace Logic.IHelpers
 		Department GetDepartmentById(int id, string userName);
 		bool DepartmentEdited(DepartmentViewModel departmentViewModel, string userName);
 		bool DeleteDepartment(int id);
+		List<Time> GetTimes(string userName);
+		bool AddTime(TimeViewModel timeDetails, string userName);
+		Time GetTimeById(int id, string userName);
+		bool TimeEdited(TimeViewModel timeViewModel, string userName);
+		bool DeleteTime(int id);
 	}
 }

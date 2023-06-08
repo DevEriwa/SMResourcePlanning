@@ -1,7 +1,7 @@
-﻿@model IEnumerable<Core.Models.Location>
+﻿@model IEnumerable<Core.Models.Time>
 @{
-    ViewData["Title"] = "All Location";
-   Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "All Time";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <div class="page-wrapper">
@@ -13,14 +13,14 @@
         <div class="page-header">
             <div class="row align-items-center">
                 <div class="col">
-                    <h3 class="page-title">Locations</h3>
+                    <h3 class="page-title">Time</h3>
                     <ul class="breadcrumb">
                         <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
-                        <li class="breadcrumb-item active">Location</li>
+                        <li class="breadcrumb-item active">Time</li>
                     </ul>
                 </div>
                 <div class="col-auto float-right ml-auto">
-                    <a href="#" class="btn add-btn" data-toggle="modal" data-target="#add_location"><i class="fa fa-plus"></i> Add Location</a>
+                    <a href="#" class="btn add-btn" data-toggle="modal" data-target="#add_Time"><i class="fa fa-plus"></i> Add Time</a>
                 </div>
             </div>
         </div>
@@ -34,25 +34,23 @@
                         <table class="table table-striped custom-table mb-0 datatable">
                             <thead>
                                 <tr>
-                                    <th>Location Name</th>
-                                    <th>Location AbbreviationName</th>
+                                    <th>Shift Time</th>
                                     <th>Date Created</th>
                                     <th class="text-right">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach (var location in Model)
+                                @foreach (var time in Model)
                                 {
-                                    <tr>                                       
-                                        <td>@location.Name</td>
-                                        <td>@location.AbbreviatedName</td>
-                                        <td>@location.DeteCreated</td>
+                                    <tr>
+                                        <td>@time.ShiftTime</td>
+                                        <td>@time.DeteCreated</td>
                                         <td class="text-right">
                                             <div class="dropdown dropdown-action">
                                                 <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
                                                 <div class="dropdown-menu dropdown-menu-right">
-                                                    <a class="dropdown-item" data-toggle="modal" data-target="#edit_location" onclick="locationToBeEdited('@location.Id')"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_location" onclick="locationToBeDeleted('@location.Id')"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
+                                                    <a class="dropdown-item" data-toggle="modal" data-target="#edit_Time" onclick="timeToBeEdited('@time.Id')"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+                                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_Time" onclick="timeToBeDeleted('@time.Id')"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
                                                 </div>
                                             </div>
                                         </td>
@@ -77,53 +75,47 @@
         </div>
     </div>
     <!-- /Page Content -->
-    <!-- Add location Modal -->
-    <div id="add_location" class="modal custom-modal fade" role="dialog">
+    <!-- Add Time Modal -->
+    <div id="add_Time" class="modal custom-modal fade" role="dialog">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add Location</h5>
+                    <h5 class="modal-title">Add Time</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label class="col-form-label">Location Name <span class="text-danger">*</span></label>
-                        <input class="form-control" type="text" id="locationName">
+                        <label class="col-form-label">Shift Time <span class="text-danger">*</span></label>
+                        <input class="form-control" type="time" id="shiftTime">
                     </div>
-                    <div class="form-group">
-                        <label class="col-form-label">Abbreviated Location Name <span class="text-danger">*</span></label>
-                        <input class="form-control" type="text" id="abbreviationlocationName">
-                    </div>
+                   
                     <div class="submit-section">
-                        <button class="btn btn-primary submit-btn" id="submit_btn" onclick="addLocation()">Submit</button>
+                        <button class="btn btn-primary submit-btn" id="submit_btn" onclick="addTime()">Submit</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- /Add location Modal -->
-    <!-- Edit location Modal -->
-    <div id="edit_location" class="modal custom-modal fade" role="dialog">
+    <!-- /Add Time Modal -->
+    <!-- Edit Time Modal -->
+    <div id="edit_Time" class="modal custom-modal fade" role="dialog">
         <div class="modal-dialog modal-dialog-centered modal-md" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit Location</h5>
+                    <h5 class="modal-title">Edit Time</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
                     <div class="col-sm-12">
-                        <label class="col-form-label">Location Name <span class="text-danger">*</span></label>
-                        <input class="form-control" type="text" id="editLocation_Name">
-                        <input class="form-control" type="text" hidden id="editLocationId">
+                        <label class="col-form-label">Shift Time <span class="text-danger">*</span></label>
+                        <input class="form-control" type="time" id="editTime_ShiftName">
+                        <input class="form-control" type="text" hidden id="editTimeId">
                     </div>
-                    <div class="col-sm-12">
-                        <label class="col-form-label">Abbreviated Location Name <span class="text-danger">*</span></label>
-                        <input class="form-control" type="text" id="editabbreviationlocation_Name">
-                    </div>
+                    
 
                     <div class="col-sm-12">
                         <label class="col-form-label">Date Created <span class="text-danger">*</span></label>
@@ -132,28 +124,28 @@
 
                     <div class="col-sm-12">
                         <div class="submit-section">
-                            <button class="btn btn-primary submit-btn" id="submit_Btn" onclick="LocationToSave()">Submit </button>
+                            <button class="btn btn-primary submit-btn" id="submit_Btn" onclick="TimeToSave()">Submit </button>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- /Edit location Modal -->
-    <!-- Delete location Modal -->
-    <div class="modal custom-modal fade" id="delete_location" role="dialog">
+    <!-- /Edit Time Modal -->
+    <!-- Delete Time Modal -->
+    <div class="modal custom-modal fade" id="delete_Time" role="dialog">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-body">
-                    <input class="form-control" type="text" id="deleteLocationId" hidden>
+                    <input class="form-control" type="text" id="deleteTimeId" hidden>
                     <div class="form-header">
-                        <h3>Delete Location</h3>
+                        <h3>Delete Time</h3>
                         <p>Are you sure want to delete?</p>
                     </div>
                     <div class="modal-btn delete-action">
                         <div class="row">
                             <div class="col-6">
-                                <a href="javascript:void(0);" class="btn btn-primary continue-btn" onclick="deleteLocation()">Delete</a>
+                                <a href="javascript:void(0);" class="btn btn-primary continue-btn" onclick="deleteTime()">Delete</a>
                             </div>
                             <div class="col-6">
                                 <a href="javascript:void(0);" data-dismiss="modal" class="btn btn-primary cancel-btn">Cancel</a>
@@ -164,7 +156,8 @@
             </div>
         </div>
     </div>
-    <!-- /Delete location Modal -->
+    <!-- /Delete Time Modal -->
 
 </div>
+
 
