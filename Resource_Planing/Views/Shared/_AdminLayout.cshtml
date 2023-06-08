@@ -3,6 +3,7 @@
 	//var fullName = _userHelper.FindByUserName(User.Identity.Name);
 
 	var staff = _userHelper.FindByUserName(User.Identity.Name);
+	var randomStr = DateTime.Now.ToString().ToLower().Replace(":", "").Replace("pm", "").Replace("am", "");
 }
 <!DOCTYPE html>
 <html lang="en">
@@ -17,25 +18,42 @@
 	<title>@ViewData["Title"] - Sm_Resource_Planning</title>
 
 	<link rel="stylesheet" href="~/plugins/morris/morris.css">
-	@*<script src="~/js/ngControl.js"></script>*@
-	<script src="~/js/angular.min.js"></script>
-	<script src="~/js/breakdown.js"></script>
-
-
+	<!-- jQuery -->
 	<script src="~/assets/js/jquery-3.5.1.min.js"></script>
+	<script src="~/assets/js/jquery.ui.touch-punch.min.js"></script>
 	<script src="~/assets/js/jquery-ui.min.js"></script>
-	<script src="~/plugins/raphael/raphael.min.js"></script>
-	<script src="~/plugins/morris/morris.min.js"></script>
-	<!-- Bootstrap Core JS -->
 	<script src="~/assets/js/popper.min.js"></script>
 	<script src="~/assets/js/bootstrap.min.js"></script>
-	<!-- Slimscroll JS -->
-	<script src="~/assets/js/jquery.slimscroll.min.js"></script>
-	<!-- Chart JS -->
-	<script src="~/assets/js/dataTables.bootstrap4.min.js"></script>
+	<script src="~/assets/js/sweetalert2.all.min.js"></script>
+
+
+	<script src="~/assets/js/select2.min.js"></script>
+	<!-- Bootstrap Core JS -->
+	<script src="~/assets/js/jquery.dataTables.min.js"></script>
+	<script src="~/assets/js/datatables.bootstrap4.min.js"></script>
+	<script src="~/assets/js/moment.min.js"></script>
+	<script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
+	<script src="~/js/site.js?v=@randomStr"></script>
+	<script src="~/js/Rota.js?v=@randomStr"></script>
 	<!-- Custom JS -->
 	<script src="~/assets/js/app.js"></script>
-	<script src="~/assets/js/sweetalert2.all.min.js"></script>
+
+
+	<!-- Vendor CSS Files -->
+	<link href="~/FlexStart/assets/vendor/aos/aos.css" rel="stylesheet" />
+	<link href="~/FlexStart/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
+	<link href="~/FlexStart/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet" />
+	<link href="~/FlexStart/assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet" />
+	<link href="~/FlexStart/assets/vendor/remixicon/remixicon.css" rel="stylesheet" />
+	<link href="~/FlexStart/assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet" />
+	<link href="~/FlexStart/assets/css/style.css" rel="stylesheet" />
+
+	<link href="~/assets/css/font-awesome.min.css" rel="stylesheet" />
+	<link href="~/assets/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+	<link href="~/assets/css/select2.min.css" rel="stylesheet" />
+	<link href="~/assets/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
+	<link href="~/assets/css/style.css" rel="stylesheet" />
+	<link href="~/assets/css/sweetalert2.css" rel="stylesheet" />
 
 	<!-- Global site tag (gtag.js) - Google Analytics -->
 	<script async src="https://www.googletagmanager.com/gtag/js?id=G-4L0T265PLR"></script>
@@ -94,26 +112,7 @@
 
 
 
-	<!-- Favicon -->
-	<link rel="shortcut icon" type="image/x-icon" href="~/img/BIVISOF.png">
-	<!-- Bootstrap CSS -->
-	<link rel="stylesheet" href="~/assets/css/bootstrap.min.css">
-	<link rel="stylesheet" href="~/assets/css/dataTables.bootstrap4.min.css">
-	<link rel="stylesheet" href="~/assets/css/jquery-ui.min.css">
-	<link rel="stylesheet" href="~/assets/css/select2.min.css">
-
-	<!-- Fontawesome CSS -->
-	<link rel="stylesheet" href="~/assets/css/font-awesome.min.css">
-	<!-- Lineawesome CSS -->
-	<link rel="stylesheet" href="~/assets/css/line-awesome.min.css">
-	<!-- Chart CSS -->
-	<!-- Main CSS -->
-	<link rel="stylesheet" href="~/assets/css/style.css">
-	<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
-	<!--[if lt IE 9]>
-		<script src="~/js/html5shiv.min.js"></script>
-		<script src="~/js/respond.min.js"></script>
-	<![endif]-->
+	
 </head>
 
 <body>
@@ -438,14 +437,33 @@
 		</div>
 		<!-- /Header -->
 		<!-- Sidebar -->
-
-
 		<div class="sidebar" id="sidebar">
 			<div class="sidebar-inner slimscroll">
-				<div class="sidebar-menu">
+				<div class="sidebar-menu" id="sidebar-menu">
 					@if (User.Identity.IsAuthenticated)
 					{
 						<ul>
+							<li class="menu-title">
+							<span>Main</span>
+							</li>
+							<li>
+								<a asp-controller="Admin" asp-action="Index"><i class="la la-dashboard"></i> <span>Dashboard</span></a>
+							</li>
+							<li class="submenu">
+								<a href="#"><i class="la la la-cog"></i> <span> Settings</span> <span class="menu-arrow"></span></a>
+								<ul style="display: none;">
+
+									<li><a asp-controller="Admin" asp-action="Location"> Add locations</a></li>
+									<li><a asp-controller="Admin" asp-action="Department">Add Department</a></li>
+									<li><a asp-controller="Admin" asp-action="Time">Add Time</a></li>
+									@*<li><a asp-controller="Notification" asp-action="Index">Notification Settings</a></li>*@
+
+								</ul>
+							</li>
+						</ul>
+						
+
+						@*<ul>
 							<li>
 								<a asp-controller="Home" asp-action="Index"><i class="la la-home"></i> <span>Back to Home</span></a>
 							</li>
@@ -468,25 +486,8 @@
 
 
 
-							<li>
-								<a asp-controller="Admin" asp-action="Leave"><i class="la la-thumbs-up"></i> <span>Approve Pending Leave</span></a>
-							</li>
 
-							<li>
-								<a asp-controller="Account" asp-action="changePassword"><i class="la la-lock"></i> <span>Change Password</span></a>
-							</li>
-							<li>
-								<a asp-controller="Admin" asp-action="LeaveType"><i class="la la-cogs"></i> <span> Add Leave Type</span></a>
-							</li>
-							@*<li>
-						<a asp-controller="Admin" asp-action="LeaveReport"><i class="la la-comment"></i> <span> Add Leave Report</span></a>
-						</li>*@
-
-							<li>
-								<a asp-controller="Admin" asp-action="Roles"><i class="la la-key"></i> <span>Roles & Permissions</span></a>
-							</li>
-
-						</ul>
+						</ul>*@
 
 					}
 				</div>
@@ -503,6 +504,13 @@
 			</main>
 		</div>
 	</div>
+	<script src="~/FlexStart/assets/vendor/aos/aos.js"></script>
+	<script src="~/FlexStart/assets/vendor/bootstrap/js/bootstrap.min.js"></script>
+	<script src="~/FlexStart/assets/vendor/glightbox/js/glightbox.min.js"></script>
+	<script src="~/FlexStart/assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
+	<script src="~/FlexStart/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
+	<script src="~/FlexStart/assets/vendor/swiper/swiper-bundle.min.js"></script>
+	<script src="~/FlexStart/assets/js/main.js"></script>
 </body>
 </html>
 

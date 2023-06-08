@@ -94,7 +94,7 @@ namespace Logic.Helpers
                 }
                 else if (userRole.Contains ("CompanyAdmin"))
                 {
-                    return "/Admin/Dashboard";
+                    return "/Admin/Index";
                 }
                 else
                 {

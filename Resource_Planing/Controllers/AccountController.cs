@@ -101,7 +101,7 @@ namespace Resource_Planing.Controllers
                         var newAccountCreated = _accountHelper.AdminegisterationService(newAccountData).Result;
                         if (newAccountCreated != null)
                         {
-                            var addToRole = _userManager.AddToRoleAsync(newAccountCreated, "Admin").Result;
+                            var addToRole = _userManager.AddToRoleAsync(newAccountCreated, "CompanyAdmin").Result;
                             if (addToRole.Succeeded)
                             {
                                 return Json(new { isError = false, msg = "Registeration successful" });

@@ -157,7 +157,7 @@ function CreateAdminAccount() {
             $.ajax({
                 type: 'Post',
                 dataType: 'json',
-                url: '/Accounts/AdminRegisteration',
+                url: '/Account/AdminRegisteration',
                 data:
                 {
                     adminRegistrationData: userViewModel,
@@ -165,7 +165,7 @@ function CreateAdminAccount() {
                 success: function (result) {
                     debugger;
                     if (!result.isError) {
-                        var url = '/Accounts/Login';
+                        var url = '/Account/Login';
                         successAlertWithRedirect(result.msg, url)
                     }
                     else {

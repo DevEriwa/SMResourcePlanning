@@ -13,7 +13,8 @@ namespace Core.ViewModels
 		public bool Active { get; set; }
 		public bool Deleted { get; set; }
 		public DateTime DeteCreated { get; set; }
-		public TimeOnly ShiftTime { get; set; }
+		public string? ShiftTime { get; set; }
+		public TimeOnly ShiftTimenOnly { get; set; }
 		public string? UserId { get; set; }
 	}
 }
