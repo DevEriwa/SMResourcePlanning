@@ -210,55 +210,43 @@ function CreateAdminAccount() {
 
 }
 // LOGIN POST ACTION
-function loginPost() {
-    debugger;
+function login() {
+    var defaultBtnValue = $('#submit_btn').html();
+    $('#submit_btn').html("Please wait...");
+    $('#submit_btn').attr("disabled", true);
     var data = {};
-    data.Email = $("#email").val();
-    data.Password = $("#password").val();
-    if (data.Email != "" && data.Password != "") {
-        let loginViewModel = JSON.stringify(data);
-        $.ajax({
-            type: 'POST',
-            dataType: 'Json',
-            url: '/Accounts/Login',
-            data:
-            {
-                loginData: loginViewModel
-            },
-            success: function (result) {
-                debugger;
-                if (result.isNotVerified) {
-                    errorAlert(result.msg)
-                }
-                else if (result.isDeactivated) {
-                    errorAlert(result.msg)
-                }
-                else if (!result.isError) {
-                    successAlertWithRedirect(result.msg, result.dashboard)
-                }
-                else {
-                    errorAlert(result.msg)
-                }
-            },
-            Error: function (ex) {
-                errorAlert(ex);
-            }
-        });
-    }
-    else {
-        if (data.Email == "") {
-            document.querySelector("#emailValidation").style.display = "block"
-        } else {
-            document.querySelector("#emailValidation").style.display = "none"
-        }
-        if (data.Password == "") {
-            document.querySelector("#passwordValidation").style.display = "block"
-        } else {
-            document.querySelector("#passwordValidation").style.display = "none"
-        }
-    }
-}
+    data.Email = $('#email').val();
+    data.Password = $('#password').val();
+    let details = JSON.stringify(data);
+    $.ajax({
+        type: 'Post',
+        url: '/Account/Login',
+        dataType: 'json',
+        data:
+        {
+            loginData: details 
+        },
+        success: function (result) {
+            if (!result.isError) {
+                var n = 1;
+                localStorage.clear();
+                localStorage.setItem("on_load_counter", n);
+                location.href = result.dashboard;
 
+            }
+            else {
+                $('#submit_btn').html(defaultBtnValue);
+                $('#submit_btn').attr("disabled", false);
+                errorAlert(result.msg);
+            }
+        },
+        error: function (ex) {
+            $('#submit_btn').html(defaultBtnValue);
+            $('#submit_btn').attr("disabled", false);
+            errorAlert("Network failure, please try again");
+        }
+    });
+}
 // CHANGE PASSWORD POST ACTION
 function ChangePasswordPost() {
     debugger;

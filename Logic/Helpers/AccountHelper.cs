@@ -12,16 +12,18 @@ namespace Logic.Helpers
 {
     public class AccountHelper : IAccountHelper
     {
-		private readonly IUserHelper _userHelper;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IUserHelper _userHelper;
 		private readonly UserManager<ApplicationUser> _userManager;
 
-		public AccountHelper(IUserHelper userHelper, UserManager<ApplicationUser> userManager)
-		{
-			_userHelper = userHelper;
-			_userManager = userManager;
-		}
+        public AccountHelper(IUserHelper userHelper, UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager)
+        {
+            _userHelper = userHelper;
+            _userManager = userManager;
+            _signInManager = signInManager;
+        }
 
-		public async Task<ApplicationUser> AccountRegisterationService(UserViewModel registrationData)
+        public async Task<ApplicationUser> AccountRegisterationService(UserViewModel registrationData)
 		{
 			if (registrationData != null)
 			{
@@ -80,5 +82,59 @@ namespace Logic.Helpers
 
 		}
 
-	}
+
+        public string GetUserDashboardPage(ApplicationUser userr)
+        {
+            var userRole = _userManager.GetRolesAsync(userr).Result;
+
+                if (userRole.Contains("SuperAdmin"))
+                {
+                    return "/SuperAdmin/Dashboard";
+
+                }
+                else if (userRole.Contains ("CompanyAdmin"))
+                {
+                    return "/Admin/Dashboard";
+                }
+                else
+                {
+                    return "/Account/Login";
+                }
+                 return null;
+        }
+
+        public string GetUserLayout(string username)
+        {
+            var accountType = _userHelper.FindByUserNameAsync(username).Result;
+            var userRole = _userManager.GetRolesAsync(accountType).Result.FirstOrDefault();
+            if (userRole != null)
+            {
+                if (userRole == "Admin")
+                {
+                    return "~/Views/Shared/_AdminLayout.cshtml";
+                }
+                else
+                {
+                    return "~/Views/Shared/_InvestorLayout.cshtml";
+                }
+            }
+            return null;
+        }
+
+        public async Task<ApplicationUser> AuthenticateUser(UserViewModel loginDetail)
+        {
+            var user = await _userManager.FindByEmailAsync(loginDetail.Email);
+            if (user != null)
+            {
+                var logger = _signInManager.PasswordSignInAsync(user.UserName, loginDetail.Password, true, false).Result;
+                if (logger.Succeeded)
+                {
+                    return user;
+                }
+            }
+            return null;
+        }
+
+
+    }
 }

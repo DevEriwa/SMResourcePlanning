@@ -116,5 +116,40 @@ namespace Resource_Planing.Controllers
                 return Json(new { isError = true, msg = "Reistration Failed" + ex.Message });
             }
         }
+
+
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<JsonResult> Login(string loginData)
+        {
+            var userDetails = JsonConvert.DeserializeObject<UserViewModel>(loginData);
+            var user = await _userHelper.FindByEmailAsync(userDetails.Email);
+            if (user != null)
+            {
+                if (!user.EmailConfirmed)
+                {
+                    return Json(new { isNotVerified = true, msg = "Email Unverifed!!! Please Verify email to continue" });
+                }
+                else if (user.EmailConfirmed)
+                {
+                    var currentUser = _accountHelper.AuthenticateUser(userDetails).Result;
+                    if (currentUser != null)
+                    {
+                        var dashboard = _accountHelper.GetUserDashboardPage(user);
+                        return Json(new { isError = false, msg = "Welcome! " + currentUser.Name, dashboard = dashboard });
+                    }
+                }
+            }
+            return Json(new { isError = true, msg = "Login Failed" });
+        }
+        public async Task<IActionResult> LogOut()
+        {
+            await _signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
     }
 }

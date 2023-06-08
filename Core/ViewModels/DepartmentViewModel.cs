@@ -14,5 +14,6 @@ namespace Core.ViewModels
 		public bool Deleted { get; set; }
 		public DateTime DeteCreated { get; set; }
 		public string? UserId { get; set; }
+		public string? AbbreviatedName { get; set; }
 	}
 }

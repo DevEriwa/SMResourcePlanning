@@ -1,0 +1,163 @@
+﻿@model Core.Models.ApplicationUser;
+@{
+    ViewData["Title"] = "Login";
+   // Layout = "~/Views/Shared/_HomePageLayout.cshtml";
+}
+
+@*<div class="account-content" style="padding-top:100px;">
+    <div class="container">
+        <!-- Account Logo -->
+        <div class="account-logo">
+            <a href="~/Home/index"><img src="~/img/BIVISOF.png" alt="BiviSoft Ltd"></a>
+        </div>
+        <!-- /Account Logo -->
+        <div class="account-box">
+            <div class="account-wrapper">
+                <h3 class="account-title">Login</h3>
+
+                <!-- Account Form -->
+               
+                    <div class="form-group">
+                        <label class="control-label">Email</label>
+                        <div class="input-group">
+                            <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                            <input id="email" type="email" class="form-control" required  placeholder="Enter your email address" />
+                        </div>
+                        
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Password</label>
+                        <div class="input-group">
+                            <input id="password" type="password" class="form-control" required placeholder="Enter Your Password" />
+                        </div>
+                       
+                    </div>
+                    <div class="form-group text-center">
+                    <button onclick="loginPost()" class="btn-lg btn-block btn btn-primary pull-right" type="submit">Login</button>
+                    </div>
+                    <div class="account-footer">
+                        <p>Welcome to BiviHr</p>
+                    </div>
+                <!-- /Account Form -->
+            </div>
+        </div>
+    </div>
+</div>*@
+
+@*<div class="login-wrapper">
+    <div class="container-center" style="margin-top: -18px;">
+        <div class="panel panel-bd">
+            <div class="panel-heading">
+                <div class="view-header">
+                    <div class="header-icon">
+                        <i class="pe-7s-unlock"></i>
+                    </div>
+                    <div class="header-title">
+                        <h3>Login</h3><br>
+                        <small><strong>Please enter your credentials to login.</strong></small>
+                    </div>
+                </div>
+            </div>
+            <div class="panel-body">
+                <div class="">
+                    <strong>Don't have an account yet?</strong>
+                    <a asp-action="Register" asp-controller="Accounts">Register</a><hr>
+                </div>
+
+                <div class="form-group">
+                    <label class="control-label">Email</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                        <input id="email" type="email" class="form-control" required autocomplete="email" autofocus="" placeholder="Enter your email address" />
+                    </div>
+                    <p class="text-danger" id="emailValidation" style="display: none;">Enter your email</p>
+                </div>
+                <div class="form-group">
+                    <label class="control-label">Password</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><i class="fa fa-key"></i></span>
+                        <input id="password" type="password" class="form-control" required placeholder="Enter Your Password" />
+                    </div>
+                    <p class="text-danger" id="passwordValidation" style="display: none;">Enter password</p>
+                </div>
+                <div>
+                    <div class="checkbox checkbox-success">
+                        <input id="checkbox3" type="checkbox" name="remember">
+                        <label for="checkbox3">Keep me signed in</label>
+
+                        <a asp-action="ForgotPassword" asp-controller="Accounts" class="pull-right">
+                            <span for="checkbox3">
+                                Forgot Password?
+                            </span>
+                        </a>
+                    </div><br>
+                    <button class="btn-lg btn-block btn btn-primary pull-right" type="submit" onclick="loginPost()">Login</button>
+                </div>
+            </div>
+        </div>
+        <div style="font-weight: bold;" align="center">
+            <a asp-action="Index" asp-controller="Home"><i class="fa fa-arrow-circle-left"></i> Back to Home</a><br><br>
+        </div>
+        <div class="text-center">
+            &copy; 2022 Tmeritfx Investment.<br>All Rights Reserved.
+        </div>
+    </div>
+</div>*@
+
+
+<div class="main-wrapper">
+    <div class="account-content">
+        <div class="container">
+            <!-- Account Logo -->
+            <div class="account-logo" style="margin-top: 80px;">
+                <a href="index.html"><img src="/light/assets/img/logo.png"></a>
+            </div>
+            <!-- /Account Logo -->
+
+            <div class="account-box">
+                <div class="account-wrapper">
+                    <h3 class="account-title">Login</h3>
+                    <div class="form-group">
+                        <label>Email Address<span class="text-danger">*</span></label>
+                        <input class="form-control" id="email" required type="text">
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col">
+                                <label>Password<span class="text-danger">*</span></label>
+                            </div>
+                            <div class="col-auto">
+                                <a class="text-muted" asp-controller="Account" asp-action="ForgotPassword" style="cursor: pointer">
+                                    Forgot password?
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="  input-group" style="position :relative;">
+                            <input class="form-control " required id="password" type="password">
+                            <div class="">
+                                <span class="" style=" position:absolute; z-index:99; right:10px; top:13px;">
+                                    <i class="fa fa-eye d-none fs - 5" id="passwordHide" onclick="PasswordHide()"></i>
+                                    <i class="fa fa-eye-slash  fs - 5" id="passwordShow" onclick="PasswordShow()"></i>
+                                </span>
+                            </div>
+
+                        </div>
+
+
+                    </div>
+                    <div class="form-group text-center">
+                        <button class="btn btn-primary account-btn" id="submit_btn" onclick="login()" type="submit">Login</button>
+                    </div>
+                    <div class="account-footer">
+                        <p>Don't have an account yet? <a asp-action="CompanyRegistration" asp-controller="Account">Register Company</a></p>
+                    </div>
+                    <!-- /Account Form -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+

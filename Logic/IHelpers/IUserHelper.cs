@@ -24,5 +24,7 @@ namespace Logic.IHelpers
 		Time GetTimeById(int id, string userName);
 		bool TimeEdited(TimeViewModel timeViewModel, string userName);
 		bool DeleteTime(int id);
-	}
+        Task<ApplicationUser> FindByUserNameAsync(string userName);
+        bool AddShift(DepartmentViewModel shiftDetails);
+    }
 }
