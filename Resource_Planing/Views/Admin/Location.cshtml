@@ -4,6 +4,18 @@
    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+<style>
+
+	body {
+		counter-reset: Serial; /* / Set the Serial counter to 0 /*/
+	}
+
+	tr td:first-child:before {
+		counter-increment: Serial; /* / Increment the Serial counter /*/
+		content: counter(Serial); /*  / Display the counter /*/
+	}
+</style>
+
 <div class="page-wrapper">
 
     <!-- Page Content -->
@@ -31,9 +43,10 @@
                 <div>
                     @if (Model.Count() > 0 && Model != null)
                     {
-                        <table class="table table-striped custom-table mb-0 datatable">
+                        <table class="table table-striped custom-table mb-0 dataTable">
                             <thead>
                                 <tr>
+                                    <th>S/N</th>
                                     <th>Location Name</th>
                                     <th>Location AbbreviationName</th>
                                     <th>Date Created</th>
@@ -43,7 +56,8 @@
                             <tbody>
                                 @foreach (var location in Model)
                                 {
-                                    <tr>                                       
+                                    <tr>  
+                                        <td></td>
                                         <td>@location.Name</td>
                                         <td>@location.AbbreviatedName</td>
                                         <td>@location.DeteCreated</td>

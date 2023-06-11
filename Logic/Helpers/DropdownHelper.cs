@@ -142,7 +142,34 @@ namespace Logic.Helpers
             return departments;
         }
 
-        public List<Location> GetLocations(string userName)
+		public List<Time> GetTimess(string userName)
+		{
+			var times = new List<Time>();
+			var currentUser = _userHelper.FindByUserName(userName);
+			if (currentUser != null)
+			{
+
+				var common = new Time()
+				{
+					Id = 0,
+					Name = "-- Select --"
+				};
+				var time = _context.Times.Where(a => a.Id > 0 && a.UserId == currentUser.Id && a.Active && !a.Deleted).Include(f => f.User).OrderBy(s => s.ShiftTime)
+					.Select(c => new Time()
+					{
+						Id = c.Id,
+						Name = c.ShiftTime,
+					}).ToList();
+				time.Insert(0, common);
+				if (time.Any())
+				{
+					times = time;
+				}
+			}
+			return times;
+		}
+
+		public List<Location> GetLocations(string userName)
         {
             var locations = new List<Location>();
             var currentUser = _userHelper.FindByUserName(userName);
