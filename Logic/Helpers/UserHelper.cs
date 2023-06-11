@@ -319,23 +319,60 @@ namespace Logic.Helpers
 			}
 			return false;
 		}
-        public bool AddShift(DepartmentViewModel shiftDetails)
+        public bool AddShift(DepartmentViewModel shiftDetails,string userName)
         {
-            if (shiftDetails != null)
+            if (shiftDetails != null && userName != null)
             {
-                var shiftData = new Shift()
-                {
-                    Active = true,
-                    DeteCreated = DateTime.Now,
-                    Deleted = false,
-                    Name = shiftDetails.Name,
-                    AbbreviatedName = shiftDetails.AbbreviatedName,
-                };
-                _context.shifts?.Add(shiftData);
-                _context.SaveChanges();
-                return true;
+				var loggedInuser = FindByUserName(userName);
+				if (loggedInuser != null)
+				{
+					var shiftData = new Shift()
+					{
+						Active = true,
+						DeteCreated = DateTime.Now,
+						Deleted = false,
+						Name = shiftDetails.Name,
+						AbbreviatedName = shiftDetails.AbbreviatedName,
+						UserId = loggedInuser.Id,
+					};
+					_context.shifts?.Add(shiftData);
+					_context.SaveChanges();
+					return true;
+				}
             }
             return false;
         }
-    }
+		public List<Shift> GetShifts(string userName)
+		{
+			var shifts = new List<Shift>();
+			var currentUser = FindByUserName(userName);
+			if (currentUser != null)
+			{
+				var shift = _context.shifts.Where(a => a.Id > 0 && a.UserId == currentUser.Id && a.Active && !a.Deleted).Include(f => f.User).ToList();
+				if (shift.Any())
+				{
+					shifts = shift;
+				}
+			}
+			return shifts;
+		}
+
+		public bool EditShift(DepartmentViewModel shiftDetails)
+		{
+			if (shiftDetails != null)
+			{
+				var productVaccineEdit = _context.shifts.Where(c => c.Id == shiftDetails.Id).FirstOrDefault();
+				if (productVaccineEdit != null)
+				{
+					productVaccineEdit.Name = shiftDetails.Name;
+					productVaccineEdit.AbbreviatedName = shiftDetails.AbbreviatedName;
+				}
+				_context.shifts.Update(productVaccineEdit);
+				_context.SaveChanges();
+				return true;
+			}
+			return false;
+		}
+
+	}
 }

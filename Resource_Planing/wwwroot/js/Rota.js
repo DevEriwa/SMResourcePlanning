@@ -43,32 +43,26 @@
 
 }
 
-function locationToBeEdited(id) {
-    debugger
+function GetShiftByID(Id) {
+    debugger;
+    let data = Id;
     $.ajax({
-        type: 'Get',
-        dataType: 'Json',
-        url: '/Admin/EditLocation',
-        data: {
-            id: id
-        },
-        success: function (result) {
-            if (!result.isError) {
-                var date = result.dateCreated.split("T")[0];
-                $('#editLocationId').val(result.id);
-                $('#editLocation_Name').val(result.name);
-                $('#editabbreviationlocation_Name').val(result.abbreviatedName);
-                $('#editDateCreate_date').val(date);
+        type: 'GET',
+        url: '/Admin/GetShiftByID',
+        data: { rotaShiftId: data },
+        dataType: 'json',
+        success: function (data) {
+            if (!data.isError) {
+
+                $("#edit_Id").val(data.id);
+                $("#edit_shiftName").val(data.name);
+                $("#edit_abbreivated").val(data.abbreviatedName);
             }
-            else {
-                errorAlert(result.msg)
-            }
-        },
-        error: function (ex) {
-            errorAlert("Network failure, please try again");
         }
-    })
+    });
 }
+
+
 
 function LocationToSave() {
     var defaultBtnValue = $('#submit_Btn').html();

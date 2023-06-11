@@ -100,48 +100,6 @@ function Registeration() {
     }
 }
 
-// APPLICATION REQUEST 
-//function MainRegistrationScript(RefID) {
-//    debugger;
-//    var data = {};
-//    data.Name = $('#name').val();
-//    data.Email = $('#email').val();
-//    data.Password = $('#password').val();
-//    data.ConfirmPassword = $('#password_confirm').val();
-//    data.RefID = RefID;
-
-//    let userViewModel = JSON.stringify(data);
-//    debugger;
-//    if (userViewModel != "") {
-//        $.ajax({
-//            type: 'Post',
-//            dataType: 'json',
-//            url: '/Accounts/Registeration',
-//            data:
-//            {
-//                userRegistrationData: userViewModel,
-//            },
-//            success: function (result) {
-//                debugger;
-//                if (!result.isError) {
-//                    var url = '/Accounts/Login';
-//                    successAlertWithRedirect(result.msg, url)
-//                }
-//                else {
-//                    errorAlert(result.msg)
-//                }
-//            },
-//            error: function (ex) {
-//                errorAlert("Error occured try again");
-//            }
-//        });
-//    }
-//    else {
-//        errorAlert("Incorrect Details");
-//    }
-
-//}
-
 function CreateAdminAccount() {
     debugger
     var data = {};
@@ -247,6 +205,149 @@ function login() {
         }
     });
 }
+
+
+function addShift() {
+    debugger;
+    var defaultBtnValue = $('#submit_btn').html();
+    $('#submit_btn').html("Please wait...");
+    $('#submit_btn').attr("disabled", true);
+    var data = {};
+    data.Name = $('#shiftName').val();
+    data.AbbreviatedName = $('#abbreviationlocationName').val();
+    if (data.Name != "" && data.AbbreviatedName != "") {
+        let shiftDetails = JSON.stringify(data);
+        $.ajax({
+            type: 'Post',
+            url: '/Admin/AddShift',
+            dataType: 'json',
+            data:
+            {
+                shiftDetails: shiftDetails,
+            },
+            success: function (result) {
+                if (!result.isError) {
+                    var url = '/Admin/Shift';
+                    successAlertWithRedirect(result.msg, url);
+                    $('#submit_btn').html(defaultBtnValue);
+                }
+                else {
+                    $('#submit_btn').html(defaultBtnValue);
+                    $('#submit_btn').attr("disabled", false);
+                    errorAlert(result.msg);
+                }
+            },
+            error: function (ex) {
+                $('#submit_btn').html(defaultBtnValue);
+                $('#submit_btn').attr("disabled", false);
+                errorAlert("Network failure, please try again");
+            }
+        });
+    } else {
+        $('#submit_btn').html(defaultBtnValue);
+        $('#submit_btn').attr("disabled", false);
+        errorAlert("Please fill the form Correctly");
+    }
+
+
+}
+
+function EditShift() {
+    debugger;
+    var defaultBtnValue = $('#submit_Btn').html();
+    $('#submit_Btn').html("Please wait...");
+    $('#submit_Btn').attr("disabled", true);
+    var data = {};
+    data.Id = $('#edit_Id').val();
+    data.Name = $('#edit_shiftName').val();
+    data.AbbreviatedName = $('#edit_abbreivated').val();
+    if (data.Id != 0 && data.Name != "" && data.AbbreviatedName != "") {
+
+        let shiftViewModel = JSON.stringify(data);
+        if (shiftViewModel != "") {
+            $.ajax({
+                type: 'Post',
+                dataType: 'json',
+                url: '/Admin/EditShift',
+                data:
+                {
+                    shiftDetails: shiftViewModel,
+                },
+                success: function (result) {
+                    if (!result.isError) {
+                        var url = '/Admin/Shift';
+                        successAlertWithRedirect(result.msg, url)
+                        $('#submit_Btn').html(defaultBtnValue);
+                    }
+                    else {
+                        $('#submit_Btn').html(defaultBtnValue);
+                        $('#submit_Btn').attr("disabled", false);
+                        errorAlert(result.msg)
+                    }
+                },
+                error: function (ex) {
+                    $('#submit_Btn').html(defaultBtnValue);
+                    $('#submit_Btn').attr("disabled", false);
+                    errorAlert("Network failure, please try again");
+                }
+            });
+        }
+
+    }
+    else {
+        $('#submit_Btn').html(defaultBtnValue);
+        $('#submit_Btn').attr("disabled", false);
+        errorAlert("Please fill in the correct Details");
+    }
+}
+
+function GetShiftByID(Id) {
+    debugger;
+    let data = Id;
+    $.ajax({
+        type: 'GET',
+        url: '/Admin/GetShiftByID',
+        data: { rotaShiftId: data },
+        dataType: 'json',
+        success: function (data) {
+            if (!data.isError) {
+
+                $("#edit_Id").val(data.id);
+                $("#edit_shiftName").val(data.name);
+                $("#edit_abbreivated").val(data.abbreviatedName);
+            }
+        }
+    });
+}
+
+function locationToBeEdited(id) {
+    debugger
+    $.ajax({
+        type: 'Get',
+        dataType: 'Json',
+        url: '/Admin/EditLocation',
+        data: {
+            id: id
+        },
+        success: function (result) {
+            debugger
+            if (!result.isError) {
+                //var date = result.dateCreated.split("T")[0];
+                $('#editLocationId').val(result.id);
+                $('#editLocation_Name').val(result.name);
+                $('#editabbreviationlocation_Name').val(result.abbreviatedName);
+               // $('#editDateCreate_date').val(date);
+            }
+            else {
+                errorAlert(result.msg)
+            }
+        },
+        error: function (ex) {
+            errorAlert("Network failure, please try again");
+        }
+    })
+}
+
 // CHANGE PASSWORD POST ACTION
 function ChangePasswordPost() {
     debugger;

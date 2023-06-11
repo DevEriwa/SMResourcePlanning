@@ -302,5 +302,84 @@ namespace Resource_Planing.Controllers
 			}
 			return Json(new { isError = true, msg = "Network failure, please try again." });
 		}
+
+
+		public IActionResult Shift()
+		{
+			var rotaShift = new List<Shift>();
+			var currentUser = _userHelper.FindByUserName(User?.Identity?.Name);
+			if (currentUser != null)
+			{
+				var shifts = _userHelper.GetShifts(currentUser.UserName);
+				return View(shifts);
+			}
+			return View(rotaShift);
+		}
+
+		[HttpPost]
+		public JsonResult AddShift(string shiftDetails)
+		{
+			try
+			{
+				if (shiftDetails != null)
+				{
+					var shiftModel = JsonConvert.DeserializeObject<DepartmentViewModel>(shiftDetails);
+					if (shiftModel != null)
+					{
+						var currentUser = User?.Identity?.Name;
+						if (currentUser != null)
+						{
+							var freque = _userHelper.AddShift(shiftModel, currentUser);
+							if (freque)
+							{
+								return Json(new { isError = false, msg = "Shift Added successfully" });
+							}
+							return Json(new { isError = true, msg = "Shift already exist" });
+						}
+						
+					}
+					return Json(new { isError = true, msg = "Unable to Add Shift" });
+				}
+				return Json(new { isError = true, msg = "Network failure, please try again." });
+			}
+			catch (Exception exp)
+			{
+				throw exp;
+			}
+		}
+
+
+		[HttpPost]
+		public JsonResult EditShift(string shiftDetails)
+		{
+			if (shiftDetails != null)
+			{
+				var shiftViewModel = JsonConvert.DeserializeObject<DepartmentViewModel>(shiftDetails);
+				if (shiftViewModel != null)
+				{
+					var createProductVaccine = _userHelper.EditShift(shiftViewModel);
+					if (createProductVaccine)
+					{
+						return Json(new { isError = false, msg = "ProductVaccine Updated successfully" });
+					}
+				}
+				return Json(new { isError = true, msg = "Unable to update ProductVaccine" });
+			}
+			return Json(new { isError = true, msg = "Network failure, please try again." });
+		}
+
+		public JsonResult GetShiftByID(int rotaShiftId)
+		{
+			if (rotaShiftId != 0)
+			{
+				var productVaccine = _context.shifts.Where(c => c.Id == rotaShiftId).FirstOrDefault();
+				if (productVaccine != null)
+				{
+					return Json(productVaccine);
+				}
+			}
+			return null;
+
+		}
 	}
 }
