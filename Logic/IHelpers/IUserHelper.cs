@@ -26,5 +26,7 @@ namespace Logic.IHelpers
 		bool DeleteTime(int id);
         Task<ApplicationUser> FindByUserNameAsync(string userName);
         bool AddShift(DepartmentViewModel shiftDetails);
-    }
+		bool AddTimes(TimeOnly timeDetails, string userName);
+
+	}
 }

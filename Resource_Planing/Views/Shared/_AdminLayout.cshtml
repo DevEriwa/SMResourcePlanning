@@ -17,29 +17,32 @@
 
 	<title>@ViewData["Title"] - Sm_Resource_Planning</title>
 
-	<link rel="stylesheet" href="~/plugins/morris/morris.css">
 	<!-- jQuery -->
 	<script src="~/assets/js/jquery-3.5.1.min.js"></script>
 	<script src="~/assets/js/jquery.ui.touch-punch.min.js"></script>
 	<script src="~/assets/js/jquery-ui.min.js"></script>
 	<script src="~/assets/js/popper.min.js"></script>
+	<script src="~/assets/js/jquery.slimscroll.min.js"></script>
 	<script src="~/assets/js/bootstrap.min.js"></script>
 	<script src="~/assets/js/sweetalert2.all.min.js"></script>
 
 
 	<script src="~/assets/js/select2.min.js"></script>
 	<!-- Bootstrap Core JS -->
-	<script src="~/assets/js/jquery.dataTables.min.js"></script>
+	<script src="~/assets/js/jquery.datatables.min.js"></script>
 	<script src="~/assets/js/datatables.bootstrap4.min.js"></script>
 	<script src="~/assets/js/moment.min.js"></script>
 	<script src="~/assets/js/bootstrap-datetimepicker.min.js"></script>
 	<script src="~/js/site.js?v=@randomStr"></script>
-	<script src="~/js/Rota.js?v=@randomStr"></script>
+	<script src="~/js/rota.js?v=@randomStr"></script>
 	<!-- Custom JS -->
 	<script src="~/assets/js/app.js"></script>
 
 
 	<!-- Vendor CSS Files -->
+	<link href="~/assets/css/jquery.datatables.min.css" rel="stylesheet" />
+	<link href="~/assets/css/jquery-ui.css" rel="stylesheet" />
+	<link rel="stylesheet" href="~/plugins/morris/morris.css">
 	<link href="~/FlexStart/assets/vendor/aos/aos.css" rel="stylesheet" />
 	<link href="~/FlexStart/assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
 	<link href="~/FlexStart/assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet" />
@@ -50,6 +53,9 @@
 
 	<link href="~/assets/css/font-awesome.min.css" rel="stylesheet" />
 	<link href="~/assets/css/dataTables.bootstrap4.min.css" rel="stylesheet" />
+	<link href="https://cdn.datatables.net/plug-ins/1.13.4/sorting/datetime-moment.js" />
+
+	<link rel="stylesheet" href="https://cdn.datatables.net/1.11.3/css/jquery.dataTables.min.css">
 	<link href="~/assets/css/select2.min.css" rel="stylesheet" />
 	<link href="~/assets/css/bootstrap-datetimepicker.min.css" rel="stylesheet" />
 	<link href="~/assets/css/style.css" rel="stylesheet" />
@@ -164,7 +170,7 @@
 				<!-- Flag -->
 				<li class="nav-item dropdown has-arrow flag-nav">
 					<a class="nav-link " data-toggle="dropdown" href="#" role="button">
-						<img src="~/assets/img/flags/Uk.png" alt="" height="20"> <span>English</span>
+						<img src="#" alt="" height="20"> <span>English</span>
 					</a>
 				</li>
 				<!-- /Flag -->
@@ -510,7 +516,6 @@
 	<script src="~/FlexStart/assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
 	<script src="~/FlexStart/assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
 	<script src="~/FlexStart/assets/vendor/swiper/swiper-bundle.min.js"></script>
-	<script src="~/FlexStart/assets/js/main.js"></script>
 </body>
 </html>
 

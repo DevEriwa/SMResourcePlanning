@@ -4,6 +4,18 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+
+<style>
+
+	body {
+		counter-reset: Serial; /* / Set the Serial counter to 0 /*/
+	}
+
+	tr td:first-child:before {
+		counter-increment: Serial; /* / Increment the Serial counter /*/
+		content: counter(Serial); /*  / Display the counter /*/
+	}
+</style>
 <div class="page-wrapper">
 
     <!-- Page Content -->
@@ -34,6 +46,7 @@
                         <table class="table table-striped custom-table mb-0 datatable">
                             <thead>
                                 <tr>
+                                     <th>S/N</th>
                                     <th>Shift Time</th>
                                     <th>Date Created</th>
                                     <th class="text-right">Action</th>
@@ -43,6 +56,7 @@
                                 @foreach (var time in Model)
                                 {
                                     <tr>
+                                         <td></td>
                                         <td>@time.ShiftTime</td>
                                         <td>@time.DeteCreated</td>
                                         <td class="text-right">
@@ -88,7 +102,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label class="col-form-label">Shift Time <span class="text-danger">*</span></label>
-                        <input class="form-control" type="time" id="shiftTime">
+                        <input class="form-control" type="text" id="shiftTime">
                     </div>
                    
                     <div class="submit-section">
@@ -112,7 +126,7 @@
                 <div class="modal-body">
                     <div class="col-sm-12">
                         <label class="col-form-label">Shift Time <span class="text-danger">*</span></label>
-                        <input class="form-control" type="time" id="editTime_ShiftName">
+                        <input class="form-control" type="text" id="editTime_ShiftName">
                         <input class="form-control" type="text" hidden id="editTimeId">
                     </div>
                     

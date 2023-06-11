@@ -54,7 +54,7 @@ function locationToBeEdited(id) {
         },
         success: function (result) {
             if (!result.isError) {
-                var date = result.dateCreated.split("T")[0];
+                var date = result.deteCreated.split("T")[0];
                 $('#editLocationId').val(result.id);
                 $('#editLocation_Name').val(result.name);
                 $('#editabbreviationlocation_Name').val(result.abbreviatedName);
@@ -198,7 +198,7 @@ function departmentToBeEdited(id) {
         },
         success: function (result) {
             if (!result.isError) {
-                var date = result.dateCreated.split("T")[0];
+                var date = result.deteCreated.split("T")[0];
                 $('#editDepartmentId').val(result.id);
                 $('#editDepartment_Name').val(result.name);
                 $('#editDate_Created').val(date);
@@ -338,8 +338,9 @@ function timeToBeEdited(id) {
             id: id
         },
         success: function (result) {
+            debugger
             if (!result.isError) {
-                var date = result.dateCreated.split("T")[0];
+                var date = result.deteCreated.split("T")[0];
                 $('#editTimeId').val(result.id);
                 $('#editTime_ShiftName').val(result.shiftTime);
                 $('#editDateCreate_date').val(date);

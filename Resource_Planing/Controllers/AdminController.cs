@@ -248,6 +248,30 @@ namespace Resource_Planing.Controllers
 			return Json(new { isError = true, msg = "Error Occurred" });
 		}
 
+
+		//[HttpPost]
+		//public JsonResult AddTime(TimeOnly timeDetails)
+		//{
+		//	if (timeDetails != TimeOnly.MinValue)
+		//	{
+		//		//var timeViewModel = JsonConvert.DeserializeObject<TimeViewModel>(timeDetails);
+		//		//if (timeViewModel != null)
+		//		//{
+		//			var currentUser = User?.Identity?.Name;
+		//			if (currentUser != null)
+		//			{
+		//				var addtime = _userHelper.AddTimes(timeDetails, currentUser);
+		//				if (addtime)
+		//				{
+		//					return Json(new { isError = false, msg = "Time Added successfully" });
+		//				}
+		//				return Json(new { isError = true, msg = "Unable To Add Time" });
+		//			}
+		//		//}
+		//		//return Json(new { isError = true, msg = "Error Occurred" });
+		//	}
+		//	return Json(new { isError = true, msg = "Error Occurred" });
+		//}
 		[HttpGet]
 		public JsonResult EditTime(int id)
 		{
