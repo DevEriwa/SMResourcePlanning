@@ -265,13 +265,41 @@ namespace Logic.Helpers
 			return false;
 		}
 
+		public bool AddTimes(TimeOnly timeDetails, string userName)
+		{
+			if (timeDetails != TimeOnly.MinValue && userName != null)
+			{
+				var loggedInuser = FindByUserName(userName);
+				if (loggedInuser != null)
+				{
+					var timeModel = new Time()
+					{
+						Name = null,
+						ShiftTime = timeDetails.ToString(),
+						UserId = loggedInuser.Id,
+						Active = true,
+						Deleted = false,
+						DeteCreated = DateTime.Now,
+					};
+					_context.Times.Add(timeModel);
+					_context.SaveChanges();
+					return true;
+				}
+			}
+			return false;
+		}
+
 		public Time GetTimeById(int id, string userName)
 		{
 			var times = new Time();
 			if (id > 0)
 			{
 				var user = FindByUserName(userName);
-				var timesToBeEdited = _context.Times.Where(x => x.Id == id && x.UserId == user.Id && !x.Deleted).Include(x => x.User).FirstOrDefault();
+				var timesToBeEdited = _context.Times.Where(x => x.Id == id && x.UserId == user.Id && !x.Deleted).Include(x => x.User).Select(s=> new Time() { 
+					Id = s.Id,
+					ShiftTime = s.ShiftTime,
+					DeteCreated = s.DeteCreated,
+				}).FirstOrDefault();
 				if (timesToBeEdited != null)
 				{
 					times = timesToBeEdited;

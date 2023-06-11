@@ -4,6 +4,18 @@
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+<style>
+
+	body {
+		counter-reset: Serial; /* / Set the Serial counter to 0 /*/
+	}
+
+	tr td:first-child:before {
+		counter-increment: Serial; /* / Increment the Serial counter /*/
+		content: counter(Serial); /*  / Display the counter /*/
+	}
+</style>
+
 <div class="page-wrapper">
 
     <!-- Page Content -->
@@ -34,6 +46,7 @@
                         <table class="table table-striped custom-table mb-0 datatable">
                             <thead>
                                 <tr>
+                                     <th>S/N</th>
                                     <th>Department Name</th>
                                     <th>Date Created</th>
                                     <th class="text-right">Action</th>
@@ -43,6 +56,7 @@
                                 @foreach (var department in Model)
                                 {
                                     <tr>
+                                         <td></td>
                                         <td>@department.Name</td>
                                         <td>@department.DeteCreated</td>
                                         <td class="text-right">

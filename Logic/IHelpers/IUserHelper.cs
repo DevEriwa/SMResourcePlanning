@@ -30,4 +30,8 @@ namespace Logic.IHelpers
 		bool EditShift(DepartmentViewModel shiftDetails);
 
 	}
+        bool AddShift(DepartmentViewModel shiftDetails);
+		bool AddTimes(TimeOnly timeDetails, string userName);
+
+	}
 }
