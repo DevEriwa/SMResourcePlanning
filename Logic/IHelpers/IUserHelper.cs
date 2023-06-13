@@ -28,9 +28,6 @@ namespace Logic.IHelpers
 		bool AddShift(DepartmentViewModel shiftDetails, string userName);
 		List<Shift> GetShifts(string userName);
 		bool EditShift(DepartmentViewModel shiftDetails);
-
-	}
-        bool AddShift(DepartmentViewModel shiftDetails);
 		bool AddTimes(TimeOnly timeDetails, string userName);
 
 	}

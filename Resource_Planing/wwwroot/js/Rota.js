@@ -43,20 +43,9 @@
 
 }
 
-function GetShiftByID(Id) {
-    debugger;
-    let data = Id;
+function locationToBeEdited(id) {
+    debugger
     $.ajax({
-        type: 'GET',
-        url: '/Admin/GetShiftByID',
-        data: { rotaShiftId: data },
-        dataType: 'json',
-        success: function (data) {
-            if (!data.isError) {
-
-                $("#edit_Id").val(data.id);
-                $("#edit_shiftName").val(data.name);
-                $("#edit_abbreivated").val(data.abbreviatedName);
         type: 'Get',
         dataType: 'Json',
         url: '/Admin/EditLocation',
@@ -64,6 +53,7 @@ function GetShiftByID(Id) {
             id: id
         },
         success: function (result) {
+            debugger
             if (!result.isError) {
                 var date = result.deteCreated.split("T")[0];
                 $('#editLocationId').val(result.id);
@@ -74,11 +64,12 @@ function GetShiftByID(Id) {
             else {
                 errorAlert(result.msg)
             }
+        },
+        error: function (ex) {
+            errorAlert("Network failure, please try again");
         }
-    });
+    })
 }
-
-
 
 function LocationToSave() {
     var defaultBtnValue = $('#submit_Btn').html();

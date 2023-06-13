@@ -320,33 +320,7 @@ function GetShiftByID(Id) {
     });
 }
 
-function locationToBeEdited(id) {
-    debugger
-    $.ajax({
-        type: 'Get',
-        dataType: 'Json',
-        url: '/Admin/EditLocation',
-        data: {
-            id: id
-        },
-        success: function (result) {
-            debugger
-            if (!result.isError) {
-                //var date = result.dateCreated.split("T")[0];
-                $('#editLocationId').val(result.id);
-                $('#editLocation_Name').val(result.name);
-                $('#editabbreviationlocation_Name').val(result.abbreviatedName);
-               // $('#editDateCreate_date').val(date);
-            }
-            else {
-                errorAlert(result.msg)
-            }
-        },
-        error: function (ex) {
-            errorAlert("Network failure, please try again");
-        }
-    })
-}
+
 
 // CHANGE PASSWORD POST ACTION
 function ChangePasswordPost() {
