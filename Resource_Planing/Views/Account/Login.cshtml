@@ -10,7 +10,8 @@
         <div class="container">
             <!-- Account Logo -->
             <div class="account-logo" style="margin-top: 80px;">
-                <a href="index.html"><img src="/light/assets/img/logo.png"></a>
+               
+                <a href="index.html"> <img src="~/flexstart/net.png" /></a>
             </div>
             <!-- /Account Logo -->
 
@@ -58,6 +59,149 @@
         </div>
     </div>
 </div>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login Form</title>
+    <style>
+        body {
+            background-color: #f2f2f2;
+        }
+
+        .login-container {
+            background-color: #fff;
+            width: 300px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+            .login-container h2 {
+                text-align: center;
+            }
+
+            .login-container input[type="text"],
+            .login-container input[type="password"] {
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 10px;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+            }
+
+            .login-container input[type="submit"] {
+                width: 100%;
+                padding: 10px;
+                background-color: #4caf50;
+                border: none;
+                color: #fff;
+                border-radius: 3px;
+                cursor: pointer;
+            }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form>
+            <input type="text" placeholder="Username" required>
+            <input type="password" placeholder="Password" required>
+            <input type="submit" value="Login">
+        </form>
+    </div>
+</body>
+</html>
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <title>Login Form</title>
+    <style>
+        body {
+            background-color: #3498db;
+        }
+
+        .login-container {
+            margin-top: 150px;
+        }
+
+            .login-container .eye-icon {
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                color: #999;
+                cursor: pointer;
+            }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card login-container">
+                    <div class="card-body">
+                        <h4 class="card-title">Login</h4>
+                        <form>
+                            <div class="form-group">
+                                <label for="username">Username</label>
+                                <input type="text" class="form-control" id="username" placeholder="Enter username">
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="password" placeholder="Enter password">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text eye-icon" onclick="togglePasswordVisibility()">
+                                            <i id="eye" class="fa fa-eye"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <button type="submit" class="btn btn-primary">Login</button>
+                            </div>
+                            <div class="form-group">
+                                <a href="#" class="forgot-password">Forgot Password?</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <script>
+        function togglePasswordVisibility() {
+            var passwordInput = document.getElementById('password');
+            var eyeIcon = document.getElementById('eye');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.classList.remove('fa-eye');
+                eyeIcon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.classList.remove('fa-eye-slash');
+                eyeIcon.classList.add('fa-eye');
+            }
+        }
+    </script>
+</body>
+
+</html>
+
+
 
 
 
