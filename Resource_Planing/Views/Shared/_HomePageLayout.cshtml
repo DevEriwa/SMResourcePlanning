@@ -140,11 +140,13 @@
 
     <!-- ======= Header ======= -->
     <header id="header" class="header fixed-top">
-        <div class="container-fluid d-flex align-items-center justify-content-between">
+        <div class="container-fluid d-flex align-items-center justify-content-between" style="background-color:#2b5269">
 
             <a asp-controller="Home" asp-action="Index" class="logo d-flex align-items-center">
-                <img src="~/FlexStart/assets/img/" alt="">
-                <span>Sm_Resource_Planning</span>
+              
+                <img src="~/flexstart/smti.png" />
+                <span style="color:#ffffff">Sm_Resource_Planning</span>
+                <img src="~/flexstart/smti.png" />
             </a>
 
             <nav id="navbar" class="navbar">
@@ -166,8 +168,8 @@
                         {
                             <li><a class="getstarted scrollto" href="~/Employee/index">Dashboard</a></li>
                         }*@
-                        <li class="dropdown">
-                            <a href="#"><span>Products</span> <i class="bi bi-chevron-down"></i></a>
+                       @* <li class="dropdown text-secondary">
+                            <a href="#"><span class="bg-secondary">Products</span> <i class="bi bi-chevron-down"></i></a>
                             <ul>
                                 <li><a href="#">Scheduling Management</a></li>
                                 <li><a href="Employee/Index">Employee Management</a></li>
@@ -179,28 +181,33 @@
                         </li>
                         <form class="getstarted" asp-action="Logout" asp-controller="Account" method="post">
                             <button style="background-color: transparent; color: white; border: none;">Logout</button>
-                        </form>
+                        </form>*@
                     }
                     else
-                    {
-                        <li><a class="nav-link scrollto active" href="@ViewBag.host/Home">Home</a></li>
-                        <li><a class="nav-link scrollto" href="#about">About</a></li>
+                    {@*
+                        <li><a class="nav-link scrollto active" href="@ViewBag.host/Home"></a></li>*@
 
-                        <li class="dropdown">
+                        <li><a class="getstarted scrollto" href="@ViewBag.host /Home">Home</a></li>
+                       
+                        
+                        
+                       @* <li><a class="nav-link scrollto" href="#about">About</a></li>
+
+                       @* <li class="dropdown">
                             <a href="#"><span>Products</span> <i class="bi bi-chevron-down"></i></a>
                             <ul>
                                 <li><a href="#">Scheduling Management</a></li>
                                 <li><a href="Employee/Index">Employee Management</a></li>
                                 <li><a href="#">Company Management</a></li>
                                 <li><a href="#">Payroll Management</a></li>
-                                <li><a href="Project/Index">Project Management</a></li>
+                    <li><a href="Project/Index">Project Management</a></li>background-color:#2b5269"
                                 <li><a href="#">Leave Management</a></li>
                             </ul>
-                        </li>
+                        </li>*@
+                      @*  <li><a class="nav-link scrollto" href="#contact">Contact</a></li>*@
+                        <li style="background-color:#2b5269"><a class="getstarted scrollto" asp-action="Register" asp-controller="Account"> <h3></h3>Register</a></li>
+                        <li style="background-color:#2b5269"><a class="getstarted scrollto" href="~/Account/Login">Login</a></li>
 
-                        <li><a class="getstarted scrollto" asp-action="Register" asp-controller="Account">Register</a></li>
-                        <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
-                        <li><a class="getstarted scrollto" href="~/Account/Login">Login</a></li>
                     }
                 </ul>
                 <i class="bi bi-list mobile-nav-toggle"></i>
@@ -243,7 +250,7 @@
                         </ul>
                     </div>
 
-                    <div class="col-lg-2 col-6 footer-links">
+                   @* <div class="col-lg-2 col-6 footer-links">
                         <h4>Our Services</h4>
                         <ul>
                             <li><i class="bi bi-chevron-right"></i> <a href="#">Leave</a></li>
@@ -251,7 +258,7 @@
                             <li><i class="bi bi-chevron-right"></i> <a href="#">Payroll Integration</a></li>
                             <li><i class="bi bi-chevron-right"></i> <a href="#">Employee Management</a></li>
                         </ul>
-                    </div>
+                    </div>*@
 
                     <div class="col-lg-3 col-md-12 footer-contact text-center text-md-start">
                         <h4>Contact Us</h4>
@@ -276,7 +283,7 @@
     </footer><!-- End Footer -->
 
     <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="~/FlexStart/assets/vendor/aos/aos.js"></script>
     <script src="~/FlexStart/assets/vendor/bootstrap/js/bootstrap.min.js"></script>
     <script src="~/FlexStart/assets/vendor/glightbox/js/glightbox.min.js"></script>
@@ -286,3 +293,4 @@
     <script src="~/FlexStart/assets/js/main.js"></script>
 </body>
 </html>
+
