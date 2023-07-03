@@ -259,23 +259,5 @@ namespace Resource_Planing.Controllers
 			}
 			return null;
 		}
-
-		public StaffRota GetWeekllyRota(string userId, DateTime date)
-		{
-			if(userId != null)
-			{
-				return _rotaHelper.GetWeeklyStaffRota(userId, date);
-			}
-			return null;
-		}
-
-		public StaffRota UpdateRotaData(string userId, DateTime date)
-		{
-			if (userId != null)
-			{
-				return _rotaHelper.GetWeeklyStaffRota(userId, date);
-			}
-			return null;
-		}
 	}
 }
