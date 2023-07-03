@@ -49,9 +49,6 @@
     }
 
 }
-
-
-
 function Registeration() {
     debugger;
     var data = {};
@@ -215,6 +212,12 @@ function addShift() {
     var data = {};
     data.Name = $('#shiftName').val();
     data.AbbreviatedName = $('#abbreviationlocationName').val();
+    data.LocationId = $('#locationId').val();
+    data.FixedAmount = $('#fixedAmountId').val();
+    data.UnpaidTime = $('#unpaid_TimeId').val();
+    data.EndTime = $('#end_TimeId').val();
+    data.StartTime = $('#start_TimeId').val();
+    data.IsFixed = $('#fixedId').is(":checked");
     if (data.Name != "" && data.AbbreviatedName != "") {
         let shiftDetails = JSON.stringify(data);
         $.ajax({
@@ -458,3 +461,25 @@ function ResetPassword(token) {
     }
 
 }
+
+
+
+
+    $(document).ready(function () {
+        var rowCount = 4; // Initial number of rows
+         // Function to generate a new row
+        function generateRow() {
+           var row = "<tr>";
+            for (var i = 1; i < 7; i++) {
+                row += "<td>Row " + rowCount + ", Column " + (i + 1) + "</td>";
+                    }
+            row += "</tr>";
+            rowCount++;
+            return row;
+        }
+        // Event handler for the button click
+         $("#add_items").click(function () {
+             var tableBody = $("#myShiftTableBody");
+                tableBody.append(generateRow());
+         });
+    });

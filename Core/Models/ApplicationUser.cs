@@ -27,11 +27,6 @@ namespace Core.Models
         [DataType(DataType.Password)]
         [Compare("Password", ErrorMessage = "Password and Confirm Password must be the same. ")]
         public string? ConfirmPassword { get; set; }
-        public Guid? CompanyId { get; set; }
-        [Display(Name = "Company")]
-        [ForeignKey("CompanyId")]
-        [NotMapped]
-        public bool RememberPassword { get; set; }
         public string? Address { get; set; }
         public int? Age { get; set; }
         public string? ProfilePicture { get; set; }
@@ -40,16 +35,14 @@ namespace Core.Models
         public string? JobTitle { get; set; }
         public string? mobile { get; set; }
         public string? Phone { get; set; }
-        public int? GenderId { get; set; }
-        [ForeignKey("GenderId")]
-        public virtual CommonDropdowns? Gender { get; set; }
-        
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
+		public Gender? GenderId { get; set; }
+        public int? LocationId { get; set; }
+        [ForeignKey("LocationId")]
+        public virtual Location Location { get; set; }
+        public int? DepartmentId { get; set; }
+        [ForeignKey("DepartmentId")]
+        public virtual Department Departments { get; set; }
         public DateTime? DateOfBirth { get; set; }
-        public Title Title { get; set; }
         public string? Religion { get; set; }
-        public Status Status { get; set; }
-        public MaritalStatus MaritalStatus { get; set; }
     }
 }

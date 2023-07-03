@@ -10,8 +10,5 @@ namespace Core.Models
 {
     public class Department : BaseModel
     {
-		public string? UserId { get; set; }
-		[ForeignKey("UserId")]
-		public virtual ApplicationUser? User { get; set; }
 	}
 }

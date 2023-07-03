@@ -31,8 +31,13 @@ namespace Core.Enums
 			Master,
 			[Description("For Miss")]
 			Miss,
-
-
+		}
+		public enum Gender
+		{
+			[Description("Male")]
+			Male = 1,
+			[Description("Female")]
+			Female,
 		}
 
 
@@ -154,10 +159,5 @@ namespace Core.Enums
 			Purple,
 		}
 
-		public enum DropdownEnums
-		{
-			[Description("For Returning Genders")]
-			Gender = 3,
-		}
 	}
 }

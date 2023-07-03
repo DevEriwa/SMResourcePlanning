@@ -33,7 +33,7 @@ namespace Resource_Planing.Controllers
 		[HttpGet]
 		public IActionResult Register()
         {
-			ViewBag.Gender = _dropdownHelper.GetDropdownsByKey(DropdownEnums.Gender).Result;
+			ViewBag.Gender = _dropdownHelper.GetGenderDropDown();
 			return View();
         }
         [HttpGet]
@@ -66,11 +66,11 @@ namespace Resource_Planing.Controllers
 						var newAccountCreated = _accountHelper.AccountRegisterationService(newAccountData).Result;
 						if (newAccountCreated != null)
 						{
-							var addToRole =  _userManager.AddToRoleAsync(newAccountCreated, "CompanyStaff").Result; 
-							if (addToRole.Succeeded)
-							{
+							//var addToRole =  _userManager.AddToRoleAsync(newAccountCreated, "CompanyStaff").Result; 
+							//if (addToRole.Succeeded)
+							//{
 								return Json(new { isError = false, msg = "Registration successful" });
-							}
+							//}
 						}
 						return Json(new { isError = true, msg = "Unable to create Account" });
 					}

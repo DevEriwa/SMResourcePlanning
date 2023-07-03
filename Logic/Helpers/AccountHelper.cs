@@ -34,7 +34,6 @@ namespace Logic.Helpers
 					newAccount.Email = registrationData.Email;
 					newAccount.UserName = registrationData.Email;
 					newAccount.EmailConfirmed = true;
-					newAccount.StartDate = DateTime.Now;
 					newAccount.DisplayOnRota = registrationData.DisplayOnRota;
 					newAccount.PhoneNumber = registrationData.Phone;
 					newAccount.Password = registrationData.Password;
@@ -63,9 +62,6 @@ namespace Logic.Helpers
 					newAccount.Email = registrationData.Email;
 					newAccount.UserName = registrationData.Email;
 					newAccount.EmailConfirmed = true;
-					newAccount.StartDate = DateTime.Now;
-					newAccount.Status = registrationData.Status;
-					newAccount.MaritalStatus = registrationData.MaritalStatus;
 					newAccount.PhoneNumber = registrationData.Phone;
 					newAccount.DateOfBirth = registrationData.DateOfBirth;
 					newAccount.Password = registrationData.Password;

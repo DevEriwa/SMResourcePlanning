@@ -29,12 +29,10 @@ namespace Core.ViewModels
         public string? JobTitle { get; set; }
         public string? mobile { get; set; }
         public string? Phone { get; set; }
-        public int GenderId { get; set; }
+        public Gender GenderId { get; set; }
         public string Gender { get; set; }
         public int DepartmentId { get; set; }
         public string Department { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
         public DateTime DateOfBirth { get; set; }
         public Title Title { get; set; }
         public string? Religion { get; set; }

@@ -7,11 +7,17 @@ using System.Threading.Tasks;
 
 namespace Core.Models
 {
-    public class Shift : BaseModel
+    public class Shifts : BaseModel
     {
         public string? AbbreviatedName { get; set; }
-		public string? UserId { get; set; }
-		[ForeignKey("UserId")]
-		public virtual ApplicationUser? User { get; set; }
+        public bool? IsFixed { get; set; }
+        public string? Activity { get; set; }
+        public string? StartTime { get; set; }
+        public string? EndTime { get; set; }
+        public string? UnpaidTime { get; set; }
+        public double? FixedAmount { get; set; }
+		public int? LocationId { get; set; }
+		[ForeignKey("LocationId")]
+		public virtual Location? Locations { get; set; }
 	}
 }

@@ -13,9 +13,7 @@ namespace Resource_Planing.Controllers
     {
 		private AppDbContext _context;
 		private IDropdownHelper _dropdownHelper;
-		
 		private IUserHelper _userHelper;
-
 		private UserManager<ApplicationUser> _userManager;
 		private readonly IWebHostEnvironment _webHostEnvironment;
 		public AdminController(AppDbContext context, IDropdownHelper dropdownHelper,UserManager<ApplicationUser> userManager, IUserHelper userHelper, IWebHostEnvironment webHostEnvironment)
@@ -33,14 +31,13 @@ namespace Resource_Planing.Controllers
 
 		public IActionResult Location()
 		{
-			var adsd = new List<Location>();
-			var currentUser = _userHelper.FindByUserName(User?.Identity?.Name);
-			if (currentUser != null)
+			var newLocationList = new List<Location>();
+			var locations = _userHelper.GetLocations();
+			if (locations.Any())
 			{
-				var locations = _userHelper.GetLocations(currentUser.UserName);
-				return View(locations);
+				newLocationList = locations;
 			}
-			return View(adsd);
+			return View(newLocationList);
 		}
 
 		[HttpPost]
@@ -51,16 +48,12 @@ namespace Resource_Planing.Controllers
 				var locationViewModel = JsonConvert.DeserializeObject<LocationViewModel>(locationDetails);
 				if (locationViewModel != null)
 				{
-					var currentUser = User?.Identity?.Name;
-					if (currentUser != null)
+					var addlocation = _userHelper.AddLoction(locationViewModel);
+					if (addlocation)
 					{
-						var addlocation = _userHelper.AddLoction(locationViewModel, currentUser);
-						if (addlocation)
-						{
-							return Json(new { isError = false, msg = "Location Added successfully" });
-						}
-						return Json(new { isError = true, msg = "Unable To Add Location" });
+						return Json(new { isError = false, msg = "Location Added successfully" });
 					}
+					return Json(new { isError = true, msg = "Unable To Add Location" });
 				}
 				return Json(new { isError = true, msg = "Error Occurred" });
 			}
@@ -72,14 +65,10 @@ namespace Resource_Planing.Controllers
 		{
 			if (id > 0)
 			{
-				var currentUser = User?.Identity?.Name;
-				if (currentUser != null)
+				var locationToBeEdited = _userHelper.GetLocationById(id);
+				if (locationToBeEdited != null)
 				{
-					var locationToBeEdited = _userHelper.GetLocationById(id, currentUser);
-					if (locationToBeEdited != null)
-					{
-						return Json(locationToBeEdited);
-					}
+					return Json(locationToBeEdited);
 				}
 			}
 			return Json(new { isError = true, msg = "Network failure, please try again." });
@@ -92,16 +81,12 @@ namespace Resource_Planing.Controllers
 				var locationViewModel = JsonConvert.DeserializeObject<LocationViewModel>(locationdetails);
 				if (locationViewModel != null)
 				{
-					var currentUser = User?.Identity?.Name;
-					if (currentUser != null)
+					var editedLocation = _userHelper.LocationEdited(locationViewModel);
+					if (editedLocation)
 					{
-						var editedLocation = _userHelper.LocationEdited(locationViewModel, currentUser);
-						if (editedLocation)
-						{
-							return Json(new { isError = false, msg = "Location Updated Successfully" });
-						}
-						return Json(new { isError = true, msg = "Unable To Updated Location" });
+						return Json(new { isError = false, msg = "Location Updated Successfully" });
 					}
+					return Json(new { isError = true, msg = "Unable To Updated Location" });
 				}
 			}
 			return Json(new { isError = true, msg = "Network failure, please try again." });
@@ -124,13 +109,13 @@ namespace Resource_Planing.Controllers
 
         public IActionResult Department()
         {
-            var currentUser = _userHelper.FindByUserName(User?.Identity?.Name);
-            if (currentUser != null)
-            {
-                var departments = _userHelper.GetDEepartments(currentUser.UserName);
-                return View(departments);
-            }
-            return View();
+			var dept = new List<Department>();
+			var departments = _userHelper.GetListOfAllDepartment();
+			if (departments.Any())
+			{
+				dept = departments;
+			}
+			return View(departments);
         }
 
         [HttpPost]
@@ -141,17 +126,13 @@ namespace Resource_Planing.Controllers
                 var departmentViewModel = JsonConvert.DeserializeObject<DepartmentViewModel>(departmentDetails);
                 if (departmentViewModel != null)
                 {
-                    var currentUser = User?.Identity?.Name;
-                    if (currentUser != null)
-                    {
-                        var adddepartment = _userHelper.AddDepartment(departmentViewModel, currentUser);
-                        if (adddepartment)
-                        {
-                            return Json(new { isError = false, msg = "Department Added successfully" });
-                        }
-                        return Json(new { isError = true, msg = "Unable To Add Department" });
-                    }
-                }
+					var adddepartment = _userHelper.AddDepartment(departmentViewModel);
+					if (adddepartment)
+					{
+						return Json(new { isError = false, msg = "Department Added successfully" });
+					}
+					return Json(new { isError = true, msg = "Unable To Add Department" });
+				}
                 return Json(new { isError = true, msg = "Error Occurred" });
             }
             return Json(new { isError = true, msg = "Error Occurred" });
@@ -162,18 +143,15 @@ namespace Resource_Planing.Controllers
         {
             if (id > 0)
             {
-                var currentUser = User?.Identity?.Name;
-                if (currentUser != null)
-                {
-                    var departmentToBeEdited = _userHelper.GetLocationById(id, currentUser);
-                    if (departmentToBeEdited != null)
-                    {
-                        return Json(departmentToBeEdited);
-                    }
-                }
-            }
+				var departmentToBeEdited = _userHelper.GetLocationById(id);
+				if (departmentToBeEdited != null)
+				{
+					return Json(departmentToBeEdited);
+				}
+			}
             return Json(new { isError = true, msg = "Network failure, please try again." });
         }
+
         [HttpPost]
         public JsonResult EditedDepartment(string departmentdetails)
         {
@@ -182,17 +160,13 @@ namespace Resource_Planing.Controllers
                 var departmentViewModel = JsonConvert.DeserializeObject<DepartmentViewModel>(departmentdetails);
                 if (departmentViewModel != null)
                 {
-                    var currentUser = User?.Identity?.Name;
-                    if (currentUser != null)
-                    {
-                        var editedDepartment = _userHelper.DepartmentEdited(departmentViewModel, currentUser);
-                        if (editedDepartment)
-                        {
-                            return Json(new { isError = false, msg = "Department Updated Successfully" });
-                        }
-                        return Json(new { isError = true, msg = "Unable To Updated Department" });
-                    }
-                }
+					var editedDepartment = _userHelper.DepartmentEdited(departmentViewModel);
+					if (editedDepartment)
+					{
+						return Json(new { isError = false, msg = "Department Updated Successfully" });
+					}
+					return Json(new { isError = true, msg = "Unable To Updated Department" });
+				}
             }
             return Json(new { isError = true, msg = "Network failure, please try again." });
         }
@@ -212,130 +186,14 @@ namespace Resource_Planing.Controllers
             return Json(new { isError = true, msg = "Network failure, please try again." });
         }
 
-		public IActionResult Time()
-		{
-			var adsd = new List<Time>();
-			var currentUser = _userHelper.FindByUserName(User?.Identity?.Name);
-			if (currentUser != null)
-			{
-				var time = _userHelper.GetTimes(currentUser.UserName);
-				return View(time);
-			}
-			return View(adsd);
-		}
-
-		[HttpPost]
-		public JsonResult AddTime(string timeDetails)
-		{
-			if (timeDetails != null)
-			{
-				var timeViewModel = JsonConvert.DeserializeObject<TimeViewModel>(timeDetails);
-				if (timeViewModel != null)
-				{
-					var currentUser = User?.Identity?.Name;
-					if (currentUser != null)
-					{
-						var addtime = _userHelper.AddTime(timeViewModel, currentUser);
-						if (addtime)
-						{
-							return Json(new { isError = false, msg = "Time Added successfully" });
-						}
-						return Json(new { isError = true, msg = "Unable To Add Time" });
-					}
-				}
-				return Json(new { isError = true, msg = "Error Occurred" });
-			}
-			return Json(new { isError = true, msg = "Error Occurred" });
-		}
-
-
-		//[HttpPost]
-		//public JsonResult AddTime(TimeOnly timeDetails)
-		//{
-		//	if (timeDetails != TimeOnly.MinValue)
-		//	{
-		//		//var timeViewModel = JsonConvert.DeserializeObject<TimeViewModel>(timeDetails);
-		//		//if (timeViewModel != null)
-		//		//{
-		//			var currentUser = User?.Identity?.Name;
-		//			if (currentUser != null)
-		//			{
-		//				var addtime = _userHelper.AddTimes(timeDetails, currentUser);
-		//				if (addtime)
-		//				{
-		//					return Json(new { isError = false, msg = "Time Added successfully" });
-		//				}
-		//				return Json(new { isError = true, msg = "Unable To Add Time" });
-		//			}
-		//		//}
-		//		//return Json(new { isError = true, msg = "Error Occurred" });
-		//	}
-		//	return Json(new { isError = true, msg = "Error Occurred" });
-		//}
-		[HttpGet]
-		public JsonResult EditTime(int id)
-		{
-			if (id > 0)
-			{
-				var currentUser = User?.Identity?.Name;
-				if (currentUser != null)
-				{
-					var timeToBeEdited = _userHelper.GetTimeById(id, currentUser);
-					if (timeToBeEdited != null)
-					{
-						return Json(timeToBeEdited);
-					}
-				}
-			}
-			return Json(new { isError = true, msg = "Network failure, please try again." });
-		}
-		[HttpPost]
-		public JsonResult EditedTime(string timedetails)
-		{
-			if (timedetails != null)
-			{
-				var timeViewModel = JsonConvert.DeserializeObject<TimeViewModel>(timedetails);
-				if (timeViewModel != null)
-				{
-					var currentUser = User?.Identity?.Name;
-					if (currentUser != null)
-					{
-						var editedtime = _userHelper.TimeEdited(timeViewModel, currentUser);
-						if (editedtime)
-						{
-							return Json(new { isError = false, msg = "Time Updated Successfully" });
-						}
-						return Json(new { isError = true, msg = "Unable To Updated Time" });
-					}
-				}
-			}
-			return Json(new { isError = true, msg = "Network failure, please try again." });
-		}
-
-		[HttpPost]
-		public JsonResult DeleteTime(int id)
-		{
-			if (id != 0)
-			{
-				var timeToBeDeleted = _userHelper.DeleteTime(id);
-				if (timeToBeDeleted)
-				{
-					return Json(new { isError = false, msg = "Time  deleted Successfully" });
-				}
-				return Json(new { isError = true, msg = "Unable To delete Time" });
-			}
-			return Json(new { isError = true, msg = "Network failure, please try again." });
-		}
-
-
 		public IActionResult Shift()
 		{
-			var rotaShift = new List<Shift>();
-			var currentUser = _userHelper.FindByUserName(User?.Identity?.Name);
-			if (currentUser != null)
+			var rotaShift = new List<Shifts>();
+			ViewBag.Location = _dropdownHelper.GetLocations();
+			var shifts = _userHelper.GetShifts();
+			if (shifts.Any())
 			{
-				var shifts = _userHelper.GetShifts(currentUser.UserName);
-				return View(shifts);
+				rotaShift = shifts;
 			}
 			return View(rotaShift);
 		}
@@ -347,20 +205,15 @@ namespace Resource_Planing.Controllers
 			{
 				if (shiftDetails != null)
 				{
-					var shiftModel = JsonConvert.DeserializeObject<DepartmentViewModel>(shiftDetails);
+					var shiftModel = JsonConvert.DeserializeObject<ShiftViwModel>(shiftDetails);
 					if (shiftModel != null)
 					{
-						var currentUser = User?.Identity?.Name;
-						if (currentUser != null)
+						var freque = _userHelper.AddShift(shiftModel);
+						if (freque)
 						{
-							var freque = _userHelper.AddShift(shiftModel, currentUser);
-							if (freque)
-							{
-								return Json(new { isError = false, msg = "Shift Added successfully" });
-							}
-							return Json(new { isError = true, msg = "Shift already exist" });
+							return Json(new { isError = false, msg = "Shift Added successfully" });
 						}
-						
+						return Json(new { isError = true, msg = "Shift already exist" });
 					}
 					return Json(new { isError = true, msg = "Unable to Add Shift" });
 				}
@@ -378,7 +231,7 @@ namespace Resource_Planing.Controllers
 		{
 			if (shiftDetails != null)
 			{
-				var shiftViewModel = JsonConvert.DeserializeObject<DepartmentViewModel>(shiftDetails);
+				var shiftViewModel = JsonConvert.DeserializeObject<ShiftViwModel>(shiftDetails);
 				if (shiftViewModel != null)
 				{
 					var createProductVaccine = _userHelper.EditShift(shiftViewModel);
@@ -396,14 +249,13 @@ namespace Resource_Planing.Controllers
 		{
 			if (rotaShiftId != 0)
 			{
-				var productVaccine = _context.shifts.Where(c => c.Id == rotaShiftId).FirstOrDefault();
+				var productVaccine = _context.shift.Where(c => c.Id == rotaShiftId).FirstOrDefault();
 				if (productVaccine != null)
 				{
 					return Json(productVaccine);
 				}
 			}
 			return null;
-
 		}
 	}
 }

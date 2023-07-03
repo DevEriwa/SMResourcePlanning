@@ -5,7 +5,10 @@ using Logic.IHelpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Diagnostics;
 using System.Net;
+using System.Runtime.CompilerServices;
+using System.Xml.Linq;
 
 namespace Logic.Helpers
 {
@@ -43,52 +46,42 @@ namespace Logic.Helpers
 			return _userManager.Users.Where(s => s.UserName == username)?.FirstOrDefault();
 		}
 
-		public List<Location> GetLocations(string userName)
+		public List<Location> GetLocations()
 		{
 			var locations = new List<Location>();
-			var currentUser = FindByUserName(userName);
-			if (currentUser != null)
+			var location = _context.locations.Where(a => a.Id > 0 && a.Active && !a.Deleted).ToList();
+			if (location.Any())
 			{
-				var location = _context.locations.Where(a => a.Id > 0 && a.UserId == currentUser.Id && a.Active && !a.Deleted).Include(f => f.User).ToList();
-				if (location.Any())
-				{
-					locations = location;
-				}
+				locations = location;
 			}
 			return locations;
 		}
 
-		public bool AddLoction(LocationViewModel locationDetails, string userName)
+		public bool AddLoction(LocationViewModel locationDetails)
 		{
-			if (locationDetails != null && userName != null)
+			if (locationDetails != null)
 			{
-				var loggedInuser = FindByUserName(userName);
-				if (loggedInuser != null)
+				var locationModel = new Location()
 				{
-					var locationModel = new Location()
-					{
-						Name = locationDetails.Name,
-						AbbreviatedName = locationDetails.AbbreviatedName,
-						UserId = loggedInuser.Id,
-						Active = true,
-						Deleted = false,
-						DeteCreated = DateTime.Now,
-					};
-					_context.locations.Add(locationModel);
-					_context.SaveChanges();
-					return true;
-				}
+					Name = locationDetails.Name,
+					AbbreviatedName = locationDetails.AbbreviatedName,
+					Active = true,
+					Deleted = false,
+					DeteCreated = DateTime.Now,
+				};
+				_context.locations.Add(locationModel);
+				_context.SaveChanges();
+				return true;
 			}
 			return false;
 		}
 
-		public Location GetLocationById(int id, string userName)
+		public Location GetLocationById(int id)
 		{
 			var locations = new Location();
 			if (id > 0)
 			{
-				var user = FindByUserName(userName);
-				var locationToBeEdited = _context.locations.Where(x => x.Id == id && x.UserId == user.Id && !x.Deleted).Include(x => x.User).FirstOrDefault();
+				var locationToBeEdited = _context.locations.Where(x => x.Id == id && !x.Deleted).FirstOrDefault();
 				if (locationToBeEdited != null)
 				{
 					locations = locationToBeEdited;
@@ -97,17 +90,15 @@ namespace Logic.Helpers
 			return locations;
 		}
 
-		public bool LocationEdited(LocationViewModel locationViewModel, string userName)
+		public bool LocationEdited(LocationViewModel locationViewModel)
 		{
 			if (locationViewModel != null)
 			{
-				var user = FindByUserName(userName);
-				var location = _context.locations.Where(x => x.Id == locationViewModel.Id && x.UserId == user.Id && !x.Deleted).FirstOrDefault();
+				var location = _context.locations.Where(x => x.Id == locationViewModel.Id && !x.Deleted).FirstOrDefault();
 				if (location != null)
 				{
 					location.Name = locationViewModel.Name;
 					location.AbbreviatedName = locationViewModel.AbbreviatedName;
-					location.UserId = user.Id;
 					location.Active = true;
 					location.Deleted = false;
 					location.DeteCreated = locationViewModel.DeteCreated;
@@ -136,50 +127,41 @@ namespace Logic.Helpers
 			}
 			return false;
 		}
-		public List<Department> GetDEepartments(string userName)
+		
+		public bool AddDepartment(DepartmentViewModel departmentDetails)
 		{
-			var departments = new List<Department>();
-			var currentUser = FindByUserName(userName);
-			if (currentUser != null)
+			if (departmentDetails != null)
 			{
-				var department = _context.Departments.Where(a => a.Id > 0 && a.UserId == currentUser.Id && a.Active && !a.Deleted).Include(f => f.User).ToList();
-				if (department.Any())
+				var departmentModel = new Department()
 				{
-					departments = department;
-				}
-			}
-			return departments;
-		}
-		public bool AddDepartment(DepartmentViewModel departmentDetails, string userName)
-		{
-			if (departmentDetails != null && userName != null)
-			{
-				var loggedInuser = FindByUserName(userName);
-				if (loggedInuser != null)
-				{
-					var departmentModel = new Department()
-					{
-						Name = departmentDetails.Name,
-						UserId = loggedInuser.Id,
-						Active = true,
-						Deleted = false,
-						DeteCreated = DateTime.Now,
-					};
-					_context.Departments.Add(departmentModel);
-					_context.SaveChanges();
-					return true;
-				}
+					Name = departmentDetails.Name,
+					Active = true,
+					Deleted = false,
+					DeteCreated = DateTime.Now,
+				};
+				_context.Departments.Add(departmentModel);
+				_context.SaveChanges();
+				return true;
 			}
 			return false;
 		}
 
-		public Department GetDepartmentById(int id, string userName)
+		public List<Department> GetListOfAllDepartment()
+		{
+			var departments = new List<Department>();
+			var departmentToBeEdited = _context.Departments.Where(x => x.Active && !x.Deleted).ToList();
+			if (departmentToBeEdited != null)
+			{
+				departments = departmentToBeEdited;
+			}
+			return departments;
+		}
+		public Department GetDepartmentById(int id)
 		{
 			var departments = new Department();
 			if (id > 0)
 			{
-				var user = FindByUserName(userName);
-				var departmentToBeEdited = _context.Departments.Where(x => x.Id == id && x.UserId == user.Id && !x.Deleted).Include(x => x.User).FirstOrDefault();
+				var departmentToBeEdited = _context.Departments.Where(x => x.Id == id && !x.Deleted).FirstOrDefault();
 				if (departmentToBeEdited != null)
 				{
 					departments = departmentToBeEdited;
@@ -188,19 +170,16 @@ namespace Logic.Helpers
 			return departments;
 		}
 
-		public bool DepartmentEdited(DepartmentViewModel departmentViewModel, string userName)
+		public bool DepartmentEdited(DepartmentViewModel departmentViewModel)
 		{
 			if (departmentViewModel != null)
 			{
-				var user = FindByUserName(userName);
-				var department = _context.Departments.Where(x => x.Id == departmentViewModel.Id && x.UserId == user.Id && !x.Deleted).FirstOrDefault();
+				var department = _context.Departments.Where(x => x.Id == departmentViewModel.Id && !x.Deleted).FirstOrDefault();
 				if (department != null)
 				{
 					department.Name = departmentViewModel.Name;
-					department.UserId = user.Id;
 					department.Active = true;
 					department.Deleted = false;
-					department.DeteCreated = departmentViewModel.DeteCreated;
 
 					_context.Departments.Update(department);
 					_context.SaveChanges();
@@ -226,176 +205,61 @@ namespace Logic.Helpers
 			}
 			return false;
 		}
-		public List<Time> GetTimes(string userName)
-		{
-			var times = new List<Time>();
-			var currentUser = FindByUserName(userName);
-			if (currentUser != null)
-			{
-				var time = _context.Times.Where(a => a.Id > 0 && a.UserId == currentUser.Id && a.Active && !a.Deleted).Include(f => f.User).ToList();
-				if (time.Any())
-				{
-					times = time;
-				}
-			}
-			return times;
-		}
 
-		public bool AddTime(TimeViewModel timeDetails, string userName)
-		{
-			if (timeDetails != null && userName != null)
-			{
-				var loggedInuser = FindByUserName(userName);
-				if (loggedInuser != null)
-				{
-					var timeModel = new Time()
-					{
-						Name = timeDetails.Name,
-						ShiftTime = timeDetails.ShiftTime.ToString(),
-						UserId = loggedInuser.Id,
-						Active = true,
-						Deleted = false,
-						DeteCreated = DateTime.Now,
-					};
-					_context.Times.Add(timeModel);
-					_context.SaveChanges();
-					return true;
-				}
-			}
-			return false;
-		}
-
-		public bool AddTimes(TimeOnly timeDetails, string userName)
-		{
-			if (timeDetails != TimeOnly.MinValue && userName != null)
-			{
-				var loggedInuser = FindByUserName(userName);
-				if (loggedInuser != null)
-				{
-					var timeModel = new Time()
-					{
-						Name = null,
-						ShiftTime = timeDetails.ToString(),
-						UserId = loggedInuser.Id,
-						Active = true,
-						Deleted = false,
-						DeteCreated = DateTime.Now,
-					};
-					_context.Times.Add(timeModel);
-					_context.SaveChanges();
-					return true;
-				}
-			}
-			return false;
-		}
-
-		public Time GetTimeById(int id, string userName)
-		{
-			var times = new Time();
-			if (id > 0)
-			{
-				var user = FindByUserName(userName);
-				var timesToBeEdited = _context.Times.Where(x => x.Id == id && x.UserId == user.Id && !x.Deleted).Include(x => x.User).Select(s=> new Time() { 
-					Id = s.Id,
-					ShiftTime = s.ShiftTime,
-					DeteCreated = s.DeteCreated,
-				}).FirstOrDefault();
-				if (timesToBeEdited != null)
-				{
-					times = timesToBeEdited;
-				}
-			}
-			return times;
-		}
-
-		public bool TimeEdited(TimeViewModel timeViewModel, string userName)
-		{
-			if (timeViewModel != null)
-			{
-				var user = FindByUserName(userName);
-				var time = _context.Times.Where(x => x.Id == timeViewModel.Id && x.UserId == user.Id && !x.Deleted).FirstOrDefault();
-				if (time != null)
-				{
-					time.Name = timeViewModel.Name;
-					time.ShiftTime = timeViewModel.ShiftTime.ToString();
-					time.UserId = user.Id;
-					time.Active = true;
-					time.Deleted = false;
-					time.DeteCreated = timeViewModel.DeteCreated;
-
-					_context.Times.Update(time);
-					_context.SaveChanges();
-					return true;
-				}
-			}
-			return false;
-		}
-
-		public bool DeleteTime(int id)
-		{
-			if (id != 0)
-			{
-				var time = _context.Times.Where(x => x.Id == id && x.Active && !x.Deleted).FirstOrDefault();
-				if (time != null)
-				{
-					time.Active = false;
-					time.Deleted = true;
-					_context.Times.Update(time);
-					_context.SaveChanges();
-					return true;
-				}
-			}
-			return false;
-		}
-        public bool AddShift(DepartmentViewModel shiftDetails,string userName)
+        public bool AddShift(ShiftViwModel shiftDetails)
         {
-            if (shiftDetails != null && userName != null)
+            if (shiftDetails != null)
             {
-				var loggedInuser = FindByUserName(userName);
-				if (loggedInuser != null)
+				var shiftData = new Shifts()
 				{
-					var shiftData = new Shift()
-					{
-						Active = true,
-						DeteCreated = DateTime.Now,
-						Deleted = false,
-						Name = shiftDetails.Name,
-						AbbreviatedName = shiftDetails.AbbreviatedName,
-						UserId = loggedInuser.Id,
-					};
-					_context.shifts?.Add(shiftData);
-					_context.SaveChanges();
-					return true;
-				}
-            }
+					Active = true,
+					DeteCreated = DateTime.Now,
+					Deleted = false,
+					Name = shiftDetails.Name,
+					AbbreviatedName = shiftDetails.AbbreviatedName,
+					IsFixed = shiftDetails.IsFixed,
+					Activity = shiftDetails.Activity,
+					StartTime = shiftDetails.StartTime,
+					EndTime = shiftDetails.EndTime,
+					UnpaidTime = shiftDetails.UnpaidTime,
+					FixedAmount = shiftDetails.FixedAmount,
+					LocationId = shiftDetails.LocationId,
+				};
+				_context.shift?.Add(shiftData);
+				_context.SaveChanges();
+				return true;
+			}
             return false;
         }
-		public List<Shift> GetShifts(string userName)
+		public List<Shifts> GetShifts()
 		{
-			var shifts = new List<Shift>();
-			var currentUser = FindByUserName(userName);
-			if (currentUser != null)
+			var shifts = new List<Shifts>();
+			var shift = _context.shift.Where(a => a.Active && !a.Deleted).ToList();
+			if (shift.Any())
 			{
-				var shift = _context.shifts.Where(a => a.Id > 0 && a.UserId == currentUser.Id && a.Active && !a.Deleted).Include(f => f.User).ToList();
-				if (shift.Any())
-				{
-					shifts = shift;
-				}
+				shifts = shift;
 			}
 			return shifts;
 		}
 
-		public bool EditShift(DepartmentViewModel shiftDetails)
+		public bool EditShift(ShiftViwModel shiftDetails)
 		{
 			if (shiftDetails != null)
 			{
-				var productVaccineEdit = _context.shifts.Where(c => c.Id == shiftDetails.Id).FirstOrDefault();
+				var productVaccineEdit = _context.shift.Where(c => c.Id == shiftDetails.Id).FirstOrDefault();
 				if (productVaccineEdit != null)
 				{
 					productVaccineEdit.Name = shiftDetails.Name;
 					productVaccineEdit.AbbreviatedName = shiftDetails.AbbreviatedName;
+					productVaccineEdit.IsFixed = shiftDetails.IsFixed;
+					productVaccineEdit.Activity = shiftDetails.Activity;
+					productVaccineEdit.StartTime = shiftDetails.StartTime;
+					productVaccineEdit.EndTime = shiftDetails.EndTime;
+					productVaccineEdit.UnpaidTime = shiftDetails.UnpaidTime;
+					productVaccineEdit.FixedAmount = shiftDetails.FixedAmount;
+					productVaccineEdit.LocationId = shiftDetails.LocationId;
 				}
-				_context.shifts.Update(productVaccineEdit);
+				_context.shift.Update(productVaccineEdit);
 				_context.SaveChanges();
 				return true;
 			}
