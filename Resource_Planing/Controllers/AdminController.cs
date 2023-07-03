@@ -14,15 +14,17 @@ namespace Resource_Planing.Controllers
 		private AppDbContext _context;
 		private IDropdownHelper _dropdownHelper;
 		private IUserHelper _userHelper;
+		private IRotaHelper _rotaHelper;
 		private UserManager<ApplicationUser> _userManager;
 		private readonly IWebHostEnvironment _webHostEnvironment;
-		public AdminController(AppDbContext context, IDropdownHelper dropdownHelper,UserManager<ApplicationUser> userManager, IUserHelper userHelper, IWebHostEnvironment webHostEnvironment)
+		public AdminController(AppDbContext context, IDropdownHelper dropdownHelper, UserManager<ApplicationUser> userManager, IUserHelper userHelper, IWebHostEnvironment webHostEnvironment, IRotaHelper rotaHelper)
 		{
 			_context = context;
 			_dropdownHelper = dropdownHelper;
 			_userManager = userManager;
 			_userHelper = userHelper;
 			_webHostEnvironment = webHostEnvironment;
+			_rotaHelper = rotaHelper;
 		}
 		public IActionResult Index()
         {
@@ -254,6 +256,24 @@ namespace Resource_Planing.Controllers
 				{
 					return Json(productVaccine);
 				}
+			}
+			return null;
+		}
+
+		public StaffRota GetWeekllyRota(string userId, DateTime date)
+		{
+			if(userId != null)
+			{
+				return _rotaHelper.GetWeeklyStaffRota(userId, date);
+			}
+			return null;
+		}
+
+		public StaffRota UpdateRotaData(string userId, DateTime date)
+		{
+			if (userId != null)
+			{
+				return _rotaHelper.GetWeeklyStaffRota(userId, date);
 			}
 			return null;
 		}

@@ -12,6 +12,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IUserHelper, UserHelper>();
 builder.Services.AddScoped<IDropdownHelper, DropdownHelper>();
 builder.Services.AddScoped<IAccountHelper, AccountHelper>();
+builder.Services.AddScoped<IRotaHelper, RotaHelper>();
 
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(

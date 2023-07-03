@@ -14,14 +14,15 @@ namespace Resource_Planing.Controllers
 {
 	public class AccountController : Controller
     {
-		private readonly IAccountHelper _accountHelper;
+		private readonly IRotaHelper _rotaHelper;
+        private readonly IAccountHelper _accountHelper;
 		private readonly IUserHelper _userHelper;
 		private readonly IDropdownHelper _dropdownHelper;
 		private readonly AppDbContext _context;
 		private readonly SignInManager<ApplicationUser> _signInManager;
 		private readonly UserManager<ApplicationUser> _userManager;
 
-		public AccountController(IAccountHelper accountHelper, IUserHelper userHelper, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, AppDbContext context, IDropdownHelper dropdownHelper)
+		public AccountController(IAccountHelper accountHelper, IUserHelper userHelper, SignInManager<ApplicationUser> signInManager, UserManager<ApplicationUser> userManager, AppDbContext context, IDropdownHelper dropdownHelper, IRotaHelper rotaHelper)
 		{
 			_accountHelper = accountHelper;
 			_userHelper = userHelper;
@@ -29,6 +30,7 @@ namespace Resource_Planing.Controllers
 			_userManager = userManager;
 			_context = context;
 			_dropdownHelper = dropdownHelper;
+			_rotaHelper = rotaHelper;
 		}
 		[HttpGet]
 		public IActionResult Register()
@@ -47,7 +49,6 @@ namespace Resource_Planing.Controllers
 		{
 			try
 			{
-				//var newAccountData = JsonConvert.DeserializeObject<UserViewModel>(userRegistrationData);
 				if (userRegistrationData != null)
 				{
 					var newAccountData = JsonConvert.DeserializeObject<UserViewModel>(userRegistrationData);
@@ -66,12 +67,13 @@ namespace Resource_Planing.Controllers
 						var newAccountCreated = _accountHelper.AccountRegisterationService(newAccountData).Result;
 						if (newAccountCreated != null)
 						{
-							//var addToRole =  _userManager.AddToRoleAsync(newAccountCreated, "CompanyStaff").Result; 
-							//if (addToRole.Succeeded)
-							//{
-								return Json(new { isError = false, msg = "Registration successful" });
-							//}
-						}
+                            _rotaHelper.CreateNewRotaObjectForUser(newAccountCreated, DateTime.Now.Year);
+							var addToRole = _userManager.AddToRoleAsync(newAccountCreated, "CompanyStaff").Result;
+                            if (addToRole.Succeeded)
+                            {
+                                return Json(new { isError = false, msg = "Registration successful" });
+                            }
+                        }
 						return Json(new { isError = true, msg = "Unable to create Account" });
 					}
 				}
