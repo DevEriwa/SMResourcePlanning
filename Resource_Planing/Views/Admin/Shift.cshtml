@@ -13,6 +13,23 @@
 		content: counter(Serial); /*  / Display the counter /*/
 	}
 </style>
+<style>
+	.table-striped.custom-table {
+		border-collapse: separate;
+		border-spacing: 0;
+	}
+
+	.table-striped.custom-table th,
+	.table-striped.custom-table td {
+		border-right: 1px solid #ddd;
+	}
+
+		.table-striped.custom-table th:last-child,
+		.table-striped.custom-table td:last-child {
+			border-right: none;
+		}
+</style>
+
 <!-- Main Wrapper -->
 <div class="main-wrapper">
 	<div class="page-wrapper">
@@ -145,4 +162,10 @@
 	</div>
 	<!-- /Page Wrapper -->
 </div>
+
+
+
+
+
+
 <!-- /Main Wrapper -->

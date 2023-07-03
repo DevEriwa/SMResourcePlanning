@@ -462,24 +462,25 @@ function ResetPassword(token) {
 
 }
 
-
-
-
-    $(document).ready(function () {
-        var rowCount = 4; // Initial number of rows
-         // Function to generate a new row
-        function generateRow() {
-           var row = "<tr>";
-            for (var i = 1; i < 7; i++) {
-                row += "<td>Row " + rowCount + ", Column " + (i + 1) + "</td>";
-                    }
-            row += "</tr>";
-            rowCount++;
-            return row;
+$(document).ready(function () {
+    var rowCount = 4; // Initial number of rows
+    // Function to generate a new row
+    function generateRow() {
+        var row = "<tr>";
+        for (var i = 1; i < 7; i++) {
+            row += "<td>Row " + rowCount + ", Column " + (i + 1) + "</td>";
         }
-        // Event handler for the button click
-         $("#add_items").click(function () {
-             var tableBody = $("#myShiftTableBody");
-                tableBody.append(generateRow());
-         });
+        row += "</tr>";
+        rowCount++;
+        return row;
+    }
+    // Event handler for the button click
+    $("#add_items").click(function () {
+        var tableBody = $("#myShiftTableBody");
+        tableBody.append(generateRow());
     });
+});
+
+
+
+    

@@ -22,11 +22,11 @@ namespace Resource_Planing.Controllers
             return View();
         }
 
-		public IActionResult shifts()
-		{
-			ViewBag.Location = _dropdownHelper.GetLocations();
-			return View();
-		}
+		//public IActionResult shifts()
+		//{
+		//	ViewBag.Location = _dropdownHelper.GetLocations();
+		//	return View();
+		//}
 
 	}
 
