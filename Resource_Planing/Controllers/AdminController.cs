@@ -257,5 +257,11 @@ namespace Resource_Planing.Controllers
 			}
 			return null;
 		}
+
+		public IActionResult AllocateShifts()
+		{
+			return View();
+		}
+
 	}
 }
