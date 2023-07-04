@@ -381,13 +381,13 @@ namespace Resource_Planing.Controllers
 				var shiftViewModel = JsonConvert.DeserializeObject<DepartmentViewModel>(shiftDetails);
 				if (shiftViewModel != null)
 				{
-					var createProductVaccine = _userHelper.EditShift(shiftViewModel);
-					if (createProductVaccine)
+					var createdShift = _userHelper.EditShift(shiftViewModel);
+					if (createdShift)
 					{
-						return Json(new { isError = false, msg = "ProductVaccine Updated successfully" });
+						return Json(new { isError = false, msg = "Shift Updated successfully" });
 					}
 				}
-				return Json(new { isError = true, msg = "Unable to update ProductVaccine" });
+				return Json(new { isError = true, msg = "Unable to update Shift" });
 			}
 			return Json(new { isError = true, msg = "Network failure, please try again." });
 		}
@@ -396,10 +396,10 @@ namespace Resource_Planing.Controllers
 		{
 			if (rotaShiftId != 0)
 			{
-				var productVaccine = _context.shifts.Where(c => c.Id == rotaShiftId).FirstOrDefault();
-				if (productVaccine != null)
+				var rotaShift = _context.shifts.Where(c => c.Id == rotaShiftId).FirstOrDefault();
+				if (rotaShift != null)
 				{
-					return Json(productVaccine);
+					return Json(rotaShift);
 				}
 			}
 			return null;
