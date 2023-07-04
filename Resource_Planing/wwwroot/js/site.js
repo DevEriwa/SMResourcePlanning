@@ -463,13 +463,28 @@ function ResetPassword(token) {
 }
 
 $(document).ready(function () {
-    var rowCount = 4; // Initial number of rows
+    var rowCount = 1; // Initial number of rows
     // Function to generate a new row
-    function generateRow() {
-        var row = "<tr>";
-        for (var i = 1; i < 7; i++) {
-            row += "<td>Row " + rowCount + ", Column " + (i + 1) + "</td>";
-        }
+    function generateRow(schedule) {
+        var row = '<tr> <td></td>';
+
+        var rowI = '<td class="text-center" >' +
+            '<h2><a href="#"><span>{LOC}</span>{TRANGE}</a>' +
+            '</h2></td >';
+
+        var rowII = '<td class="text-center" id="{DATE}"><span><i class="fa fa-plus-circle"></i></span></td>';
+        var hhh = schedule.rotaObject;
+        $.each(hhh, function (index, x) {
+            var txt = "";
+            if (x.shiftId != null) {
+                txt = rowI.replace("{LOC}", x.shift.Locations.AbbreviatedName)
+                txt = txt.replace("{TRANGE}", x.shiftId)
+            } else {
+                txt = rowII.replace("{DATE}", x.date)
+            }
+            row += txt;
+        });
+
         row += "</tr>";
         rowCount++;
         return row;
@@ -477,7 +492,26 @@ $(document).ready(function () {
     // Event handler for the button click
     $("#add_items").click(function () {
         var tableBody = $("#myShiftTableBody");
-        tableBody.append(generateRow());
+        var data = {};
+        data.UserId = $("#userId").val();
+        data.WeekCount = rowCount;
+        data.Datee = $("#dateId").val();
+        if (data.UserId != "" && data.WeekCount > 0) {
+            let passdata = JSON.stringify(data);
+            $.ajax({
+                type: 'GET',
+                url: '/Admin/GetWeeklyUserRota',
+                data: { rotaData: passdata },
+                dataType: 'json',
+                success: function (data) {
+                    
+                    if (data != "") {
+                        tableBody.append(generateRow(data));
+                    }
+                }
+
+            });
+        }
     });
 });
 

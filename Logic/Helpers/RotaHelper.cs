@@ -143,7 +143,7 @@ namespace Logic.Helpers
 			return firstDay;
 		}
 
-		public StaffRota GetWeeklyStaffRota(string userId,DateTime date)
+		public StaffRota GetWeeklyStaffRota(string userId,DateTime date, int weekCount)
 		{
 			var result = new StaffRota();
 			if(userId != null)
@@ -151,6 +151,10 @@ namespace Logic.Helpers
 				if(date == DateTime.MinValue)
 				{
 					date = DateTime.Now;
+				}
+				if(weekCount > 0)
+				{
+					date = date.AddDays((weekCount * 7));
 				}
 				
 				var dateIds = GetRotaDateForGivenWeek(date);

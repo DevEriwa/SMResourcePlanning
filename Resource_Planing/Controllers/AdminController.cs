@@ -259,5 +259,43 @@ namespace Resource_Planing.Controllers
 			}
 			return null;
 		}
+
+		[HttpGet]
+		public IActionResult AllocateShifts(RotaObjectViewModel rotaData)
+		{
+			var mod = new StaffRota();
+			if (rotaData.UserId != null)
+			{
+				var model = _rotaHelper.GetWeeklyStaffRota(rotaData.UserId, rotaData.Datee, rotaData.WeekCount);
+				if(rotaData.Datee == DateTime.MinValue)
+				{model.DateCreated = DateTime.Now;}
+				else
+				{model.DateCreated = rotaData.Datee;}
+				if (model != null)
+				{
+					return View(model);
+				}
+			}
+			mod.ShowAddBTN = "d-none";
+			return View(mod);
+		}
+
+		[HttpGet]
+		public JsonResult GetWeeklyUserRota(string rotaData)
+		{
+			if(rotaData != null)
+			{
+				var data = JsonConvert.DeserializeObject<RotaObjectViewModel>(rotaData);
+				if (data.UserId != null)
+				{
+					var model = _rotaHelper.GetWeeklyStaffRota(data.UserId, data.Datee, data.WeekCount);
+					if (model != null)
+					{
+						return Json(model);
+					}
+				}
+			}
+			return null;
+		}
 	}
 }

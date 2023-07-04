@@ -21,6 +21,8 @@ namespace Core.Models
 		public bool? IsActive { get; set; }
 		public DateTime? DateCreated { get; set; }
 		[NotMapped]
+		public string? ShowAddBTN { get; set; }
+		[NotMapped]
 		public RotaObject[]? RotaObject { get; set; }
 		[NotMapped]
 		public RotaObject[]? RotaObjectGet
