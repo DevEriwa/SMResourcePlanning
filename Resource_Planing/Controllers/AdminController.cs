@@ -264,6 +264,8 @@ namespace Resource_Planing.Controllers
 		public IActionResult AllocateShifts(RotaObjectViewModel rotaData)
 		{
 			var mod = new StaffRota();
+			ViewBag.UserInRota = _dropdownHelper.GetAllUsersInRota();
+			ViewBag.ListOFShifts = _userHelper.GetShifts();
 			if (rotaData.UserId != null)
 			{
 				var model = _rotaHelper.GetWeeklyStaffRota(rotaData.UserId, rotaData.Datee, rotaData.WeekCount);

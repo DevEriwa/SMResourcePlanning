@@ -234,7 +234,7 @@ namespace Logic.Helpers
 		public List<Shifts> GetShifts()
 		{
 			var shifts = new List<Shifts>();
-			var shift = _context.shift.Where(a => a.Active && !a.Deleted).ToList();
+			var shift = _context.shift.Where(a => a.Active && !a.Deleted).Include(v=> v.Locations).ToList();
 			if (shift.Any())
 			{
 				shifts = shift;

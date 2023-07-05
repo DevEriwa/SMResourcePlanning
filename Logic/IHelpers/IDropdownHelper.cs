@@ -9,6 +9,7 @@ namespace Logic.IHelpers
 		List<EnumDropDownViewModel> GetGenderDropDown();
 		List<Location> GetLocations();
 		List<Department> GetDepartments();
+		List<ApplicationUser> GetAllUsersInRota();
 
 	}
 }
