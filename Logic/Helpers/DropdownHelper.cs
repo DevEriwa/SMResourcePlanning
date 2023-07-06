@@ -162,5 +162,27 @@ namespace Logic.Helpers
 			}
 			return locations;
         }
-    }
+
+
+		public List<ApplicationUser> GetAllUsersInRota()
+		{
+			var users = new List<ApplicationUser>();
+			var common = new ApplicationUser()
+			{
+				Id = "",
+				FirstName = "-- Select --"
+			};
+			var usersInRota = _context.ApplicationUser.Where(a => a.DisplayOnRota).Select(c => new ApplicationUser()
+			{
+				Id = c.Id,
+				FirstName = c.Name,
+			}).ToList();
+			usersInRota.Insert(0, common);
+			if (usersInRota.Any())
+			{
+				users = usersInRota;
+			}
+			return users;
+		}
+	}
 }
