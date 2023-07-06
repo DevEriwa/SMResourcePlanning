@@ -299,5 +299,17 @@ namespace Resource_Planing.Controllers
 			}
 			return null;
 		}
+
+		public void UpdateRotaData(string rotaData)
+		{
+			if (rotaData != null)
+			{
+				var data = JsonConvert.DeserializeObject<RotaObjectViewModel>(rotaData);
+				if (data.UserId != null)
+				{
+					_rotaHelper.UpdateRota(data);
+				}
+			}
+		}
 	}
 }

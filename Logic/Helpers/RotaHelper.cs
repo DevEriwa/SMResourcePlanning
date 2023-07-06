@@ -95,16 +95,23 @@ namespace Logic.Helpers
 		public void UpdateRota(RotaObjectViewModel model)
 		{
 			var rotaToUpdate = _context.StaffRotas.Where(x => x.Year == model.Year && x.UserId == model.UserId).FirstOrDefault();
-			//rotaToUpdate.RotaObject = JsonConvert.DeserializeObject<RotaObject[]>(rotaToUpdate.RotaObjectString);
-
-			var rotaObjToUpdate = rotaToUpdate.RotaObjectGet.Where(v => v.Date == model.Date).FirstOrDefault();
-			var index = Array.IndexOf(rotaToUpdate.RotaObjectGet, rotaObjToUpdate);
-			rotaObjToUpdate.ShiftId = model.ShiftId;
-			rotaObjToUpdate.TRange = GetTRange(model.ShiftId.Value);
-
-			rotaToUpdate.RotaObjectGet[index] = rotaObjToUpdate;
-			rotaToUpdate.RotaObjectString = JsonConvert.SerializeObject(rotaToUpdate.RotaObjectGet);
-
+			var newData = new List<RotaObject>();
+			var oldData = rotaToUpdate.RotaObjectGet;
+			foreach (var x in oldData)
+			{
+				if (x.Date == model.Date)
+				{
+					x.ShiftId = model.ShiftId;
+					x.TRange = GetTRange(model.ShiftId.Value);
+					newData.Add(x);
+				}
+				else
+				{
+					newData.Add(x);
+				}
+			}
+			newData.ToArray();
+			rotaToUpdate.RotaObjectString = JsonConvert.SerializeObject(newData);
 			_context.Update(rotaToUpdate);
 			_context.SaveChanges();
 		}
@@ -189,5 +196,6 @@ namespace Logic.Helpers
 			}
 			return null;
 		}
+
 	}
 }

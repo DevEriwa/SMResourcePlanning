@@ -143,7 +143,6 @@ function locationToBeDeleted(id) {
     $('#deleteLocationId').val(id);
 }
 
-
 function addDepartment() {
 
     var defaultBtnValue = $('#submit_btn').html();
@@ -285,3 +284,69 @@ function departmentToBeDeleted(id) {
     $('#deleteDepartmentId').val(id);
 }
 
+
+var tzt = '<td class="text-center" >' +
+    '<h2><a href="#"><span>{LOC}</span>{TRANGE}</a>' +
+    '</h2></td >';
+function NavigateToRata() {
+    debugger
+    var data = {};
+    data.UserId = $('#inRotaId').val();
+    data.Datee = $('#start_DateId').val();
+
+    var url = '/Admin/AllocateShifts?UserId=' + encodeURIComponent(data.UserId) + '&datee=' + encodeURIComponent(data.Datee);
+    window.location.href = url;
+}
+
+
+function popModal(id) {
+    debugger
+    $('#datId').val(id);
+    $('#allocate_Shift').modal('show');
+}
+
+$(document).ready(function () {
+    $('.clickable-cell').click(function (event) {
+        event.preventDefault(); // Prevent the default behavior of the anchor tag
+        // Get the values from the clicked table row
+        var loc = $(this).closest('tr').find('.showValue:nth-child(2)').text();
+        var name = $(this).closest('tr').find('.showValue:nth-child(3)').text();
+        var startTime = $(this).closest('tr').find('.showValue:nth-child(4)').text();
+        var endTime = $(this).closest('tr').find('.showValue:nth-child(5)').text();
+        var unpaidTime = $(this).closest('tr').find('.showValue:nth-child(6)').text();
+        // Set the values in the input fields
+        $('#start_TimeId').val(startTime);
+        $('#end_TimeId').val(endTime);
+        $('#unpaid_TimeId').val(unpaidTime);
+
+        var rangez = startTime + "-" + endTime;
+        tzt = tzt.replace("{LOC}", loc)
+        tzt = tzt.replace("{TRANGE}", rangez)
+    });
+});
+
+function mapShiftDetails(id) {
+    $('#shfId').val(id);
+}
+
+function updateRota() {
+    debugger;
+    var data = {};
+    data.Date = $("#datId").val();
+    data.UserId = $("#uId").val();
+    data.Year = $("#yearId").val();
+    data.ShiftId = $("#shfId").val();
+    if (data.Date != "" && data.UserId != "" && data.Year != "" && data.ShiftId != "") {
+        document.getElementById(data.Date).innerHTML = tzt;
+        $.ajax({
+            type: 'POST',
+            url: '/Admin/UpdateRotaData',
+            data: {
+                rotaData: JSON.stringify(data),
+            },
+        });
+    } else {
+        errorAlert("Network Fail");
+    }
+    $('#allocate_Shift').modal('hide');   
+}

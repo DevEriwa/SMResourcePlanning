@@ -469,13 +469,13 @@ $(document).ready(function () {
     var rowCount = 1; // Initial number of rows
     // Function to generate a new row
     function generateRow(schedule) {
-        var row = '<tr> <td></td>';
+        var row = '<tr>';
 
         var rowI = '<td class="text-center" >' +
             '<h2><a href="#"><span>{LOC}</span>{TRANGE}</a>' +
             '</h2></td >';
 
-        var rowII = '<td class="text-center" onclick="popModal({DATEID})"><span><i class="fa fa-plus-circle"></i></span></td>';
+        var rowII = '<td class="text-center" id="{ID}" onclick="popModal({DATEID})"><span><i class="fa fa-plus-circle"></i></span></td>';
         var hhh = schedule.rotaObject;
         $.each(hhh, function (index, x) {
             var txt = "";
@@ -486,6 +486,7 @@ $(document).ready(function () {
                 var vvv = "'" + x.date + "'";
                 debugger
                 txt = rowII.replace("{DATEID}", vvv)
+                txt = txt.replace("{ID}", x.date)
             }
             row += txt;
         });
@@ -517,43 +518,7 @@ $(document).ready(function () {
 
             });
         }
-    });
-
-    
+    });   
 
 });
-
-
-function NavigateToRata() {
-    debugger
-    var data = {};
-    data.UserId = $('#inRotaId').val();
-    data.Datee = $('#start_DateId').val();
-
-    var url = '/Admin/AllocateShifts?UserId=' + encodeURIComponent(data.UserId) + '&datee=' + encodeURIComponent(data.Datee);
-    window.location.href = url;
-}
-
-
-function popModal(id) {
-    debugger
-    $('#allocate_Shift').modal('show');
-}
-
-$(document).ready(function () {
-    $('.clickable-cell').click(function (event) {
-        event.preventDefault(); // Prevent the default behavior of the anchor tag
-        // Get the values from the clicked table row
-        var loc = $(this).closest('tr').find('.showValue:nth-child(2)').text();
-        var name = $(this).closest('tr').find('.showValue:nth-child(3)').text();
-        var startTime = $(this).closest('tr').find('.showValue:nth-child(4)').text();
-        var endTime = $(this).closest('tr').find('.showValue:nth-child(5)').text();
-        var unpaidTime = $(this).closest('tr').find('.showValue:nth-child(6)').text();
-        // Set the values in the input fields
-        $('#start_TimeId').val(startTime);
-        $('#end_TimeId').val(endTime);
-        $('#unpaid_TimeId').val(unpaidTime);
-    });
-});
-
 

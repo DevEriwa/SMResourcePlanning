@@ -7,23 +7,8 @@
 }
 <style>
 	body {
-		counter-reset: Serial; /* / Set the Serial counter to 0 /*/
-	}
-
-	tr td:first-child:before {
-		counter-increment: Serial; /* / Increment the Serial counter /*/
-		content: counter(Serial); /*  / Display the counter /*/
-	}
-
-	body {
 		font-family: Arial, sans-serif;
 	}
-
-	/*header {
-		text-align: justify;
-		background-color: #f2f2f2;
-		padding: 0px;
-	}*/
 
 	label {
 		font-weight: bold;
@@ -74,7 +59,6 @@
 								<table class="table table-striped custom-table mb-0 datatable">
 									<thead>
 										<tr>
-											<th>S/N</th>
 											<th>Sunday</th>
 											<th>Monday</th>
 											<th>Tuesday</th>
@@ -91,7 +75,6 @@
 										@if(Model.RotaObject != null)
 										{
 											<tr>
-												<td></td>
 												@foreach(var x in Model.RotaObject)
 												{
 													@if(x.ShiftId != null)
@@ -104,7 +87,7 @@
 													}
 													else
 													{
-														<td class="text-center" onclick="popModal('@x.Date')">
+														<td class="text-center" id="@x.Date" onclick="popModal('@x.Date')">
 															<span><i class="fa fa-plus-circle"></i></span>
 														</td>
 													}
@@ -137,59 +120,72 @@
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
-				
-				<div class="row">
-					<div class="col-sm-12" id="dataBoard">
-						<div class="table-responsive">
-							<table class="table table-striped custom-table mb-0" id="dataTableSearch">
-								<thead>
-									<tr>
-										<th>S/N</th>
-										<th>Loc</th>
-										<th>Name</th>
-										<th>Start Time</th>
-										<th>End Time</th>
-										<th>Unpaid Time</th>
-									</tr>
-								</thead>
-								@if (Model != null)
-								{
-									<tbody id="">
-										@foreach (var shift in shiftList)
-										{
-											<tr>
-												<td></td>
-												<td class="showValue"><a href="#" class="clickable-cell">@shift.Locations.AbbreviatedName</a></td>
-												<td class="showValue"><a href="#" class="clickable-cell">@shift.Name</a></td>
-												<td class="showValue"><a href="#" class="clickable-cell">@shift.StartTime</a></td>
-												<td class="showValue"><a href="#" class="clickable-cell">@shift.EndTime</a></td>
-												<td class="showValue"><a href="#" class="clickable-cell">@shift.UnpaidTime</a></td>
-											</tr>
-										}
-									</tbody>
-								}
-							</table>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-sm-12" id="dataBoard">
+							<div class="table-responsive">
+								<table class="table table-striped custom-table mb-0" id="dataTableSearch">
+									<thead>
+										<tr>
+											<th>S/N</th>
+											<th>Loc</th>
+											<th>Name</th>
+											<th>Start Time</th>
+											<th>End Time</th>
+											<th>Unpaid Time</th>
+										</tr>
+									</thead>
+									@if (Model != null)
+									{
+										<tbody id="">
+											@foreach (var shift in shiftList)
+											{
+												<tr onclick="mapShiftDetails('@shift.Id')">
+													<td></td>
+													<td class="showValue"><a href="#" class="clickable-cell">@shift.Locations.AbbreviatedName</a></td>
+													<td class="showValue"><a href="#" class="clickable-cell">@shift.Name</a></td>
+													<td class="showValue"><a href="#" class="clickable-cell">@shift.StartTime</a></td>
+													<td class="showValue"><a href="#" class="clickable-cell">@shift.EndTime</a></td>
+													<td class="showValue"><a href="#" class="clickable-cell">@shift.UnpaidTime</a></td>
+												</tr>
+											}
+										</tbody>
+									}
+								</table>
+							</div>
+						</div>
+						<hr />
+						<header>
+							<h3 class ="text-center">Planned</h3>
+						</header>
+					</div>
+					<div class="row">
+						<input class="form-group" id="datId" hidden>
+						<input class="form-group" id="yearId" value="@Model?.Year" hidden>
+						<input class="form-group" id="uId" value="@Model?.UserId" hidden>
+						<input class="form-group" id="shfId" hidden>
+					<div class="col-sm-4">
+						<div class="form-group">
+							<label class="col-form-label">Start Time</label>
+							<input class="form-control" type="text" id="start_TimeId" readonly>
 						</div>
 					</div>
-					<hr />
-					<header>
-						<h3 class ="text-center">Planned</h3>
-					</header>
-					<div>
-						<label class="col-form-label">Start Time <span class="text-danger">*</span></label>
-						<input type="time" id="start_TimeId" readonly>
+					<div class="col-sm-4">
+						<div class="form-group">
+							<label class="col-form-label">End Time</label>
+							<input class="form-control" type="text" id="end_TimeId" readonly>
+						</div>
 					</div>
-					<div>
-						<label class="col-form-label">End Time <span class="text-danger">*</span></label>
-						<input type="time" id="end_TimeId" readonly>
-					</div>
-					<div>
-						<label class="col-form-label">Unpaid Time<span class="text-danger">*</span></label>
-						<input type="time" id="unpaid_TimeId" readonly>
+					<div class="col-sm-4">
+						<div class="form-group">
+							<label class="col-form-label">Unpaid Time</label>
+							<input class="form-control" type="text" id="unpaid_TimeId" readonly>
+						</div>
 					</div>
 					<div class="submit-section">
-						<button class="btn btn-primary submit-btn" id="submit_btn" onclick="addToShift()">Submit</button>
+							<button class="btn btn-primary submit-btn" id="submit_btn" onclick="updateRota()">Submit</button>
 					</div>
+				</div>
 				</div>
 			</div>
 		</div>
@@ -198,3 +194,7 @@
 
 </div>
 <!-- /Main Wrapper -->
+
+					<script>
+
+					</script>
