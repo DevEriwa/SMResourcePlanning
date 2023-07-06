@@ -154,16 +154,16 @@
 								</thead>
 								@if (Model != null)
 								{
-									<tbody id="bookingDetails">
+									<tbody id="">
 										@foreach (var shift in shiftList)
 										{
 											<tr>
 												<td></td>
-												<td class ="showValue">@shift.Locations.AbbreviatedName</td>
-												<td class ="showValue">@shift.Name</td>
-												<td class="showValue">@shift.StartTime</td>
-												<td class ="showValue">@shift.EndTime</td>
-												<td class="showValue">@shift.UnpaidTime</td>
+												<td class="showValue"><a href="#" class="clickable-cell">@shift.Locations.AbbreviatedName</a></td>
+												<td class="showValue"><a href="#" class="clickable-cell">@shift.Name</a></td>
+												<td class="showValue"><a href="#" class="clickable-cell">@shift.StartTime</a></td>
+												<td class="showValue"><a href="#" class="clickable-cell">@shift.EndTime</a></td>
+												<td class="showValue"><a href="#" class="clickable-cell">@shift.UnpaidTime</a></td>
 											</tr>
 										}
 									</tbody>
@@ -187,9 +187,9 @@
 						<label class="col-form-label">Unpaid Time<span class="text-danger">*</span></label>
 						<input type="time" id="unpaid_TimeId" readonly>
 					</div>
-					@*<div class="submit-section">
-						<button class="btn btn-primary submit-btn" id="submit_btn" onclick="addShift()">Submit</button>
-					</div>*@
+					<div class="submit-section">
+						<button class="btn btn-primary submit-btn" id="submit_btn" onclick="addToShift()">Submit</button>
+					</div>
 				</div>
 			</div>
 		</div>

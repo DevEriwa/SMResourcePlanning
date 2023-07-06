@@ -540,7 +540,20 @@ function popModal(id) {
     $('#allocate_Shift').modal('show');
 }
 
-
-
+$(document).ready(function () {
+    $('.clickable-cell').click(function (event) {
+        event.preventDefault(); // Prevent the default behavior of the anchor tag
+        // Get the values from the clicked table row
+        var loc = $(this).closest('tr').find('.showValue:nth-child(2)').text();
+        var name = $(this).closest('tr').find('.showValue:nth-child(3)').text();
+        var startTime = $(this).closest('tr').find('.showValue:nth-child(4)').text();
+        var endTime = $(this).closest('tr').find('.showValue:nth-child(5)').text();
+        var unpaidTime = $(this).closest('tr').find('.showValue:nth-child(6)').text();
+        // Set the values in the input fields
+        $('#start_TimeId').val(startTime);
+        $('#end_TimeId').val(endTime);
+        $('#unpaid_TimeId').val(unpaidTime);
+    });
+});
 
 
