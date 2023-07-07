@@ -166,7 +166,12 @@ namespace Logic.Helpers
 				
 				var dateIds = GetRotaDateForGivenWeek(date);
 				var rota = _context.StaffRotas.Where(x => x.UserId == userId && x.Year == date.Year.ToString()).FirstOrDefault();
-				if(rota != null)
+				if(rota == null)
+				{
+                    CreateNewRotaObjectForUser(_userHelper.FindByIdAsync(userId).Result, date.Year);
+                    rota = _context.StaffRotas.Where(x => x.UserId == userId && x.Year == date.Year.ToString()).FirstOrDefault();
+                }
+                if (rota != null)
 				{
 					var rotamodel = new List<RotaObject>();
 
