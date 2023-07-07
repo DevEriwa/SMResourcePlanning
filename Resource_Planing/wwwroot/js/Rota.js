@@ -289,8 +289,8 @@ $(document).ready(function () {
     var rowCount = 1; // Initial number of rows
     // Function to generate a new row
     function generateRow(schedule) {
-        var row = '<tr>';
-
+        var row = '<tr><td>{DATERANGE}</td>';
+        row = row.replace("{DATERANGE}", schedule.dateRange)
         var rowI = '<td class="text-center">{TRANGE} <span class="badge bg-success">{LOC}</span></td>';
 
         var rowII = '<td class="text-center" id="{ID}" onclick="popModal({DATEID})"><span><i class="fa fa-plus-circle"></i></span></td>';
@@ -354,11 +354,18 @@ function NavigateToRata() {
 }
 
 
-function popModal(id) {
+function popModal(id, plannedId) {
     debugger
+    currentPlannedId = "plannedHr_" + plannedId;
+    crrPlandHr = document.getElementById(currentPlannedId).innerHTML,
     $('#datId').val(id);
     $('#allocate_Shift').modal('show');
 }
+
+var currentPlannedId = "";
+var crrPlandHr = "";
+var strtTime = "";
+var endTime = "";
 
 $(document).ready(function () {
     $('.clickable-cell').click(function (event) {
@@ -366,15 +373,15 @@ $(document).ready(function () {
         // Get the values from the clicked table row
         var loc = $(this).closest('tr').find('.showValue:nth-child(1)').text();
         var name = $(this).closest('tr').find('.showValue:nth-child(2)').text();
-        var startTime = $(this).closest('tr').find('.showValue:nth-child(3)').text();
-        var endTime = $(this).closest('tr').find('.showValue:nth-child(4)').text();
+        strtTime = $(this).closest('tr').find('.showValue:nth-child(3)').text();
+        endTime = $(this).closest('tr').find('.showValue:nth-child(4)').text();
         var unpaidTime = $(this).closest('tr').find('.showValue:nth-child(5)').text();
         // Set the values in the input fields
-        $('#start_TimeId').val(startTime);
+        $('#start_TimeId').val(strtTime);
         $('#end_TimeId').val(endTime);
         $('#unpaid_TimeId').val(unpaidTime);
 
-        var rangez = startTime + "-" + endTime;
+        var rangez = strtTime + "-" + endTime;
         tzt = tzt.replace("{LOC}", loc)
         tzt = tzt.replace("{TRANGE}", rangez)
     });
@@ -392,7 +399,10 @@ function updateRota() {
     data.Year = $("#yearId").val();
     data.ShiftId = $("#shfId").val();
     if (data.Date != "" && data.UserId != "" && data.Year != "" && data.ShiftId != "") {
+        let time11 = subtractTime(strtTime, endTime);
+        let newPlannedhr = addHour(crrPlandHr, time11);
         document.getElementById(data.Date).innerHTML = tzt;
+        document.getElementById(currentPlannedId).innerHTML = newPlannedhr;
         $.ajax({
             type: 'POST',
             url: '/Admin/UpdateRotaData',
@@ -404,4 +414,41 @@ function updateRota() {
         errorAlert("Network Fail");
     }
     $('#allocate_Shift').modal('hide');   
+}
+
+function addHour(timeString1, timeString2) {
+    let [hours1, minutes1] = timeString1.split(":").map(Number);
+    let [hours2, minutes2] = timeString2.split(":").map(Number);
+
+    let totalHours = hours1 + hours2;
+    let totalMinutes = minutes1 + minutes2;
+    if (totalMinutes >= 60) {
+        totalHours += Math.floor(totalMinutes / 60);
+        totalMinutes %= 60;
+    }
+    let sumTimeString = `${totalHours}:${totalMinutes.toString().padStart(2, "0")}`;
+
+    return sumTimeString;  
+}
+
+function subtractTime(timeString1, timeString2) {
+
+    let date1 = new Date();
+    let date2 = new Date();
+
+    let [hours1, minutes1] = timeString1.split(":").map(Number);
+    let [hours2, minutes2] = timeString2.split(":").map(Number);
+
+    date1.setHours(hours1);
+    date1.setMinutes(minutes1);
+
+    date2.setHours(hours2);
+    date2.setMinutes(minutes2);
+    let timeDifference = date2 - date1;
+
+    let totalMinutes = Math.floor(timeDifference / 60000); 
+    let hours = Math.floor(totalMinutes / 60);
+    let minutes = totalMinutes % 60;
+    let differenceString = `${hours}:${minutes.toString().padStart(2, "0")}`;
+    return differenceString;  
 }

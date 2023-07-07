@@ -50,6 +50,7 @@
 						<table id="example2" class="table table-bordered table-hover text-nowrap">
 								<thead>
 									<tr>
+										<th>Period</th>
 										<th>Sunday</th>
 										<th>Monday</th>
 										<th>Tuesday</th>
@@ -66,6 +67,7 @@
 									@if (Model.RotaObject != null)
 									{
 										<tr>
+											<td>@Model.DateRange</td>
 											@foreach (var x in Model.RotaObject)
 											{
 												@if (x.ShiftId != null)
@@ -76,12 +78,12 @@
 												}
 												else
 												{
-													<td class="text-center" id="@x.Date" onclick="popModal('@x.Date')">
+													<td class="text-center" id="@x.Date" onclick="popModal('@x.Date','@Model.Id')">
 														<span><i class="fa fa-plus-circle"></i></span>
 													</td>
 												}
 											}
-											<td>60</td>
+											<td id="plannedHr_@Model.Id">@Model.TotalPlannedHour</td>
 											<td>56</td>
 											<td>#68000</td>
 											<input type="text" id="userId" hidden value="@Model.UserId" />

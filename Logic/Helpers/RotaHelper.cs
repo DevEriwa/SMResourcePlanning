@@ -176,15 +176,20 @@ namespace Logic.Helpers
 					var rotamodel = new List<RotaObject>();
 
 					var ggg = rota.RotaObjectGet.Where(x => dateIds.Contains(x.Date));
+					TimeSpan sumTimeSpan = new TimeSpan();
+
 					foreach (var item in ggg)
 					{
 						if(item.ShiftId >  0 && item.ShiftId != null)
 						{
 							item.shift = GetShiftById(item.ShiftId.Value);
+							sumTimeSpan = sumTimeSpan +  AddTime(TimeSpan.Parse(item.shift.StartTime), TimeSpan.Parse(item.shift.EndTime));
 						}
 						rotamodel.Add(item);
 					}
-					result = rota;
+					rota.DateRange = dateIds[0] + " - " + dateIds[6];
+					rota.TotalPlannedHour = CoverTimeSpantoStringTime(sumTimeSpan);
+                    result = rota;
 					result.RotaObject = rotamodel.ToArray();
 				}
 
@@ -202,5 +207,17 @@ namespace Logic.Helpers
 			return null;
 		}
 
+		public TimeSpan AddTime(TimeSpan time1, TimeSpan time2)
+		{
+			return time2 - time1;
+		}
+
+		public string CoverTimeSpantoStringTime(TimeSpan time)
+		{
+			int totalHours = (int)time.TotalHours;
+			int totalMinutes = time.Minutes;
+			string totalHoursMinutesString = $"{totalHours}:{totalMinutes}";
+			return totalHoursMinutesString; 
+		}
 	}
 }

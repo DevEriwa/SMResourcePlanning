@@ -23,6 +23,10 @@ namespace Core.Models
 		[NotMapped]
 		public string? ShowAddBTN { get; set; }
 		[NotMapped]
+		public string? TotalPlannedHour { get; set; }
+		[NotMapped]
+		public string? DateRange { get; set; }
+		[NotMapped]
 		public RotaObject[]? RotaObject { get; set; }
 		[NotMapped]
 		public RotaObject[]? RotaObjectGet
