@@ -290,7 +290,7 @@ namespace Resource_Planing.Controllers
 				var data = JsonConvert.DeserializeObject<RotaObjectViewModel>(rotaData);
 				if (data.UserId != null)
 				{
-					var model = _rotaHelper.GetWeeklyStaffRota(data.UserId, data.Datee, data.WeekCount);
+					var model = _rotaHelper.GetWeeklyStaffRota(data.UserId, DateTime.Parse(data.Date), data.WeekCount);
 					if (model != null)
 					{
 						return Json(model);

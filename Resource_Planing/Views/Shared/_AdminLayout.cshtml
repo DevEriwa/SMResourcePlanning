@@ -192,88 +192,41 @@
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                         <!-- Add icons to the links using the .nav-icon class
                              with font-awesome or any other icon font library -->
-                        <li class="nav-item menu-open">
-                            <a href="#" class="nav-link active">
+                        <li class="nav-item">
+                            <a href="/admin/index" class="nav-link">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
-                                <p>
-                                    Dashboard
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
+                                <p>Dashboard</p>
                             </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="./index.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon text-success"></i>
-                                        <p>Dashboard v1</p>
-                                    </a>
-                                </li>
-                            </ul>
                         </li>
+                        <li class="nav-header">ROTA SCHEDULE</li>
                         <li class="nav-item">
-                            <a href="pages/widgets.html" class="nav-link">
-                                <i class="nav-icon fas fa-th"></i>
-                                <p>
-                                    Widgets
-                                    <span class="right badge badge-danger">New</span>
-                                </p>
+                            <a href="/admin/allocateshifts" class="nav-link">
+                                <i class="far fa-circle nav-icon text-success"></i>
+                                <p>Single Schedule</p>
                             </a>
                         </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-chart-pie"></i>
-                                <p>
-                                    Charts
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="pages/charts/chartjs.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>ChartJS</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="pages/charts/flot.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Flot</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="pages/charts/inline.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Inline</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="pages/charts/uplot.html" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>uPlot</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-
                         <li class="nav-header">MULTI LEVEL EXAMPLE</li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="fas fa-circle nav-icon text-danger"></i>
-                                <p>Level 1</p>
-                            </a>
-                        </li>
                         <li class="nav-item">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-circle"></i>
                                 <p>
-                                    Level 1
+                                    Settings
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Level 2</p>
+                                    <a href="/admin/department" class="nav-link">
+                                        <i class="far fa-circle nav-icon text-success"></i>
+                                        <p>Department</p>
+                                    </a>
+                                </li>
+                            </ul>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="/admin/Shift" class="nav-link">
+                                        <i class="far fa-circle nav-icon text-success"></i>
+                                        <p>Shift</p>
                                     </a>
                                 </li>
                             </ul>
@@ -316,6 +269,7 @@
     <script src="~/admin-3.2.0/plugins/raphael/raphael.min.js"></script>
     <script src="~/admin-3.2.0/plugins/jquery-mapael/jquery.mapael.min.js"></script>
     <script src="~/admin-3.2.0/plugins/jquery-mapael/maps/usa_states.min.js"></script>
+    <script src="~/js/rota.js"></script>
     <!-- ChartJS -->
     <script src="~/admin-3.2.0/plugins/chart.js/Chart.min.js"></script>
 

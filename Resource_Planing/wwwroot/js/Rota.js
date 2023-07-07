@@ -284,10 +284,65 @@ function departmentToBeDeleted(id) {
     $('#deleteDepartmentId').val(id);
 }
 
+$(document).ready(function () {
+    debugger
+    var rowCount = 1; // Initial number of rows
+    // Function to generate a new row
+    function generateRow(schedule) {
+        var row = '<tr>';
 
-var tzt = '<td class="text-center" >' +
-    '<h2><a href="#"><span>{LOC}</span>{TRANGE}</a>' +
-    '</h2></td >';
+        var rowI = '<td class="text-center">{TRANGE} <span class="badge bg-success">{LOC}</span></td>';
+
+        var rowII = '<td class="text-center" id="{ID}" onclick="popModal({DATEID})"><span><i class="fa fa-plus-circle"></i></span></td>';
+        var hhh = schedule.rotaObject;
+        $.each(hhh, function (index, x) {
+            var txt = "";
+            if (x.shiftId != null) {
+                txt = rowI.replace("{LOC}", x.shift.locations.abbreviatedName)
+                txt = txt.replace("{TRANGE}", x.tRange)
+            } else {
+                var vvv = "'" + x.date + "'";
+                debugger
+                txt = rowII.replace("{DATEID}", vvv)
+                txt = txt.replace("{ID}", x.date)
+            }
+            row += txt;
+        });
+
+        row += "<td>20</td><td>19</td><td>#8000</td></tr>";
+        rowCount++;
+        return row;
+    }
+    // Event handler for the button click
+    $("#add_items").click(function () {
+        debugger
+        var tableBody = $("#myShiftTableBody");
+        var data = {};
+        data.UserId = $("#userId").val();
+        data.WeekCount = rowCount;
+        data.Date = $("#dateId").val();
+        if (data.UserId != "" && data.WeekCount > 0) {
+            let passdata = JSON.stringify(data);
+            $.ajax({
+                type: 'GET',
+                url: '/Admin/GetWeeklyUserRota',
+                data: { rotaData: passdata,},
+                dataType: 'json',
+                success: function (data) {
+
+                    if (data != "") {
+                        tableBody.append(generateRow(data));
+                    }
+                }
+
+            });
+        }
+    });
+
+});
+
+
+var tzt = '<td class="text-center">{TRANGE} <span class="badge bg-success">{LOC}</span></td>';
 function NavigateToRata() {
     debugger
     var data = {};
@@ -309,11 +364,11 @@ $(document).ready(function () {
     $('.clickable-cell').click(function (event) {
         event.preventDefault(); // Prevent the default behavior of the anchor tag
         // Get the values from the clicked table row
-        var loc = $(this).closest('tr').find('.showValue:nth-child(2)').text();
-        var name = $(this).closest('tr').find('.showValue:nth-child(3)').text();
-        var startTime = $(this).closest('tr').find('.showValue:nth-child(4)').text();
-        var endTime = $(this).closest('tr').find('.showValue:nth-child(5)').text();
-        var unpaidTime = $(this).closest('tr').find('.showValue:nth-child(6)').text();
+        var loc = $(this).closest('tr').find('.showValue:nth-child(1)').text();
+        var name = $(this).closest('tr').find('.showValue:nth-child(2)').text();
+        var startTime = $(this).closest('tr').find('.showValue:nth-child(3)').text();
+        var endTime = $(this).closest('tr').find('.showValue:nth-child(4)').text();
+        var unpaidTime = $(this).closest('tr').find('.showValue:nth-child(5)').text();
         // Set the values in the input fields
         $('#start_TimeId').val(startTime);
         $('#end_TimeId').val(endTime);
