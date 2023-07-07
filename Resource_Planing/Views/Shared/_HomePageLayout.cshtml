@@ -155,55 +155,20 @@
                     @if (User.Identity.IsAuthenticated)
                     {
                         <li><a class="nav-link scrollto active" href="@ViewBag.host/Home">Home</a></li>
-                        @*if (User.IsInRole("SuperAdmin"))
+                        if (User.IsInRole("CompanyStaff"))
                         {
-                            <li><a class="getstarted scrollto" href="~/SuperAdmin/index">Dashboard</a></li>
-
-                        }
-                        else if (User.IsInRole("Admin"))
-                        {
-                            <li><a class="getstarted scrollto" href="~/Admin/index">Dashboard</a></li>
+                            <li><a class="getstarted scrollto" href="#">Dashboard</a></li>
                         }
                         else
                         {
-                            <li><a class="getstarted scrollto" href="~/Employee/index">Dashboard</a></li>
-                        }*@
-                       @* <li class="dropdown text-secondary">
-                            <a href="#"><span class="bg-secondary">Products</span> <i class="bi bi-chevron-down"></i></a>
-                            <ul>
-                                <li><a href="#">Scheduling Management</a></li>
-                                <li><a href="Employee/Index">Employee Management</a></li>
-                                <li><a href="#">Company Management</a></li>
-                                <li><a href="#">Payroll Management</a></li>
-                                <li><a href="Project/Index">Project Management</a></li>
-                                <li><a href="#">Leave Management</a></li>
-                            </ul>
-                        </li>
-                        <form class="getstarted" asp-action="Logout" asp-controller="Account" method="post">
-                            <button style="background-color: transparent; color: white; border: none;">Logout</button>
-                        </form>*@
+                            <li><a class="getstarted scrollto" href="~/Admin/index">Dashboard</a></li>
+                        }
                     }
                     else
                     {@*
                         <li><a class="nav-link scrollto active" href="@ViewBag.host/Home"></a></li>*@
 
                         <li><a class="getstarted scrollto" href="@ViewBag.host /Home">Home</a></li>
-                       
-                        
-                        
-                       @* <li><a class="nav-link scrollto" href="#about">About</a></li>
-
-                       @* <li class="dropdown">
-                            <a href="#"><span>Products</span> <i class="bi bi-chevron-down"></i></a>
-                            <ul>
-                                <li><a href="#">Scheduling Management</a></li>
-                                <li><a href="Employee/Index">Employee Management</a></li>
-                                <li><a href="#">Company Management</a></li>
-                                <li><a href="#">Payroll Management</a></li>
-                    <li><a href="Project/Index">Project Management</a></li>background-color:#2b5269"
-                                <li><a href="#">Leave Management</a></li>
-                            </ul>
-                        </li>*@
                       @*  <li><a class="nav-link scrollto" href="#contact">Contact</a></li>*@
                         <li style="background-color:#2b5269"><a class="getstarted scrollto" asp-action="Register" asp-controller="Account"> <h3></h3>Register</a></li>
                         <li style="background-color:#2b5269"><a class="getstarted scrollto" href="~/Account/Login">Login</a></li>
