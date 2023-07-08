@@ -219,9 +219,16 @@ function addShift() {
     data.StartTime = $('#start_TimeId').val();
     data.IsFixed = $('#fixedId').is(":checked");
     timeDiff = errorCheck(data.StartTime, data.EndTime);
-    if (data.Name != "" && data.AbbreviatedName != "" && data.LocationId != "0" && data.StartTime != "" && data.EndTime != "" &&
-        timeDiff && (data.IsFixed && data.FixedAmount != ""))
-    {
+    if (data.Name != "" && data.AbbreviatedName != "" && data.LocationId != "0" && data.StartTime != "" && data.EndTime != "" && timeDiff) {
+        if (data.IsFixed) {
+            if (data.FixedAmount == "") {
+                shiftValidtion('');
+                return;
+            }
+        } else {
+            $('#fixedAmountId').val("");
+            data.FixedAmount = "";
+        }
         shiftValidtion('');
         let shiftDetails = JSON.stringify(data);
         $.ajax({
@@ -367,8 +374,6 @@ function GetShiftByID(Id) {
         }
     });
 }
-
-
 
 // CHANGE PASSWORD POST ACTION
 function ChangePasswordPost() {
