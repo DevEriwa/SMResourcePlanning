@@ -203,7 +203,7 @@ function login() {
     });
 }
 
-
+var timeDiff = "";
 function addShift() {
     debugger;
     var defaultBtnValue = $('#submit_btn').html();
@@ -218,7 +218,11 @@ function addShift() {
     data.EndTime = $('#end_TimeId').val();
     data.StartTime = $('#start_TimeId').val();
     data.IsFixed = $('#fixedId').is(":checked");
-    if (data.Name != "" && data.AbbreviatedName != "") {
+    timeDiff = errorCheck(data.StartTime, data.EndTime);
+    if (data.Name != "" && data.AbbreviatedName != "" && data.LocationId != "0" && data.StartTime != "" && data.EndTime != "" &&
+        timeDiff && (data.IsFixed && data.FixedAmount != ""))
+    {
+        shiftValidtion('');
         let shiftDetails = JSON.stringify(data);
         $.ajax({
             type: 'Post',
@@ -247,12 +251,51 @@ function addShift() {
             }
         });
     } else {
+        shiftValidtion('');
         $('#submit_btn').html(defaultBtnValue);
         $('#submit_btn').attr("disabled", false);
-        errorAlert("Please fill the form Correctly");
     }
+}
 
-
+function shiftValidtion(i) {
+    if ($('#shiftName' + i).val() == "") {
+        $('#shiftName' + i).css('border', 'solid 2px red');
+    } else {
+        $('#shiftName' + i).css('border', 'solid 1px #ccc');
+    }
+    if ($('#abbreviationlocationName' + i).val() == "") {
+        $('#abbreviationlocationName' + i).css('border', 'solid 2px red');
+    } else {
+        $('#abbreviationlocationName' + i).css('border', 'solid 1px #ccc');
+    }
+    if ($('#locationId' + i).val() == "0") {
+        $('#locationId' + i).css('border', 'solid 2px red');
+    } else {
+        $('#locationId' + i).css('border', 'solid 1px #ccc');
+    }
+    if ($('#end_TimeId' + i).val() == "") {
+        $('#end_TimeId' + i).css('border', 'solid 2px red');
+    } else {
+        $('#end_TimeId' + i).css('border', 'solid 1px #ccc');
+    }
+    if ($('#start_TimeId' + i).val() == "") {
+        $('#start_TimeId' + i).css('border', 'solid 2px red');
+    } else {
+        $('#start_TimeId' + i).css('border', 'solid 1px #ccc');
+    }
+    if (($('#fixedId' + i).is(":checked") && $('#fixedAmountId' + i).val() == "")) {
+        $('#fixedAmountId' + i).css('border', 'solid 2px red');
+    } else {
+        $('#fixedAmountId' + i).css('border', 'solid 1px #ccc');
+    }
+    if ($('#start_TimeId' + i).val() == "") {
+        $('#start_TimeId' + i).css('border', 'solid 2px red');
+    } else {
+        $('#start_TimeId' + i).css('border', 'solid 1px #ccc');
+    }
+    if (!timeDiff) {
+        errorAlert("Starttime cannot be greater than end time");
+    }
 }
 
 function EditShift() {

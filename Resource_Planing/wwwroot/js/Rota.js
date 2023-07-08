@@ -453,3 +453,13 @@ function subtractTime(timeString1, timeString2) {
     let differenceString = `${hours}:${minutes.toString().padStart(2, "0")}`;
     return differenceString;  
 }
+
+
+function errorCheck(x, y) {
+    debugger
+    var differenceString = subtractTime(x, y)
+    if (differenceString.includes("-")){
+        return false;
+    }
+    return true;
+}
