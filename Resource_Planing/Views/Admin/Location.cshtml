@@ -64,11 +64,15 @@
                                             <td>@location.AbbreviatedName</td>
                                             <td>@location.DeteCreated</td>
                                             <td class="text-right">
-                                                <div class="dropdown dropdown-action">
-                                                    <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-angle-double-left"></i></a>
-                                                    <div class="dropdown-menu dropdown-menu-right">
-                                                        <a class="dropdown-item" data-toggle="modal" data-target="#edit_department" onclick="locationToBeEdited('@location.Id')"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_department" onclick="locationToBeDeleted('@location.Id')"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-default btn-flat">Action</button>
+                                                    <button type="button" class="btn btn-default btn-flat dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                                                        <span class="sr-only">Toggle Dropdown</span>
+                                                    </button>
+                                                    <div class="dropdown-menu" role="menu">
+                                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#edit_location" onclick="locationToBeEdited('@location.Id')"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+                                                        <div class="dropdown-divider"></div>
+                                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_location" onclick="locationToBeDeleted('@location.Id')"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
                                                     </div>
                                                 </div>
                                             </td>
@@ -161,31 +165,50 @@
         </div>
     </div>
     <!-- /Edit location Modal -->
-    <!-- Delete location Modal -->
-    <div class="modal custom-modal fade" id="delete_location" role="dialog">
+    <!-- DELETE Purchase Plan Modal -->
+    <div class="modal fade" id="delete_location">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+            <div class="modal-content" style="border-radius: 25px;">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h5 class="modal-title text-center">Delete Location</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <!-- Modal body -->
                 <div class="modal-body">
-                    <input class="form-control" type="text" id="deleteLocationId" hidden>
-                    <div class="form-header">
-                        <h3>Delete Location</h3>
-                        <p>Are you sure want to delete?</p>
-                    </div>
-                    <div class="modal-btn delete-action">
-                        <div class="row">
-                            <div class="col-6">
-                                <a href="javascript:void(0);" class="btn btn-primary continue-btn" onclick="deleteLocation()">Delete</a>
-                            </div>
-                            <div class="col-6">
-                                <a href="javascript:void(0);" data-dismiss="modal" class="btn btn-primary cancel-btn">Cancel</a>
+                    <div class="card">
+                        <div class="card-body">
+                            <!--  profile wrapper start -->
+                            <div class="row">
+                                <input type="text" id="deleteLocationId" hidden>
+                                <div class="col-lg-12 col-md-12 col-sm-12">
+                                    <div class="text-center">
+                                        <h5 class="pb-2"><b>Are you sure want to delete?</b></h5>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12">
+                                    <div class="row justify-content-center">
+                                        <div class="btn-group btn-group-toggle" data-toggle="buttons">
+                                            <label class="btn bg-danger active">
+                                                <input type="radio" name="options" autocomplete="off" checked="" onclick="deleteLocation()"> Delete
+                                            </label>
+
+                                            <label class="btn bg-info">
+                                                <input type="radio" name="options" autocomplete="off" data-dismiss="modal"> Cancel
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                        <!--  profile wrapper end -->
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <!-- /Delete location Modal -->
-
+    <!-- /DELETE Purchase Plan Modal -->
 </div>
 

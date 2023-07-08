@@ -43,7 +43,7 @@
 			<div class="col-12">
 				<div class="card">
 					<div class="card-header">
-						<h3 class="card-title">DataTable with minimal features & hover style</h3>
+						<h3 class="card-title">Single user rota schedule view</h3>
 					</div>
 					<!-- /.card-header -->
 					<div class="card-body table-responsive">
@@ -78,12 +78,12 @@
 												}
 												else
 												{
-													<td class="text-center" id="@x.Date" onclick="popModal('@x.Date','@Model.Id')">
+												<td class="text-center" id="@x.Date" onclick="popModal('@x.Date','0')">
 														<span><i class="fa fa-plus-circle"></i></span>
 													</td>
 												}
 											}
-											<td id="plannedHr_@Model.Id">@Model.TotalPlannedHour</td>
+											<td id="plannedHr_0">@Model.TotalPlannedHour</td>
 											<td>56</td>
 											<td>#68000</td>
 											<input type="text" id="userId" hidden value="@Model.UserId" />
@@ -201,7 +201,7 @@
 							<input class="form-control" id="start_DateId" type="date">
 						</div>
 						<div class="col-3">
-							<input type="text" class="form-control btn btn-success submit-btn" onclick="NavigateToRata()" value="Search" readonly>
+							<input type="text" class="form-control btn btn-success submit-btn" onclick="NavigateToRata()" value="Add" readonly>
 						</div>
 					</div>
 				</div>

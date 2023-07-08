@@ -21,10 +21,5 @@ namespace Resource_Planing.Controllers
         {
             return View();
         }
-
-		
 	}
-
-
-    
 }

@@ -14,49 +14,50 @@
 		content: counter(Serial); /*  / Display the counter /*/
 	}
 </style>
-
-<!-- Main Wrapper -->
-<div class="main-wrapper">
-	<div class="page-wrapper">
-		<!-- Page Content -->
-		<div class="content container-fluid">
-
-			<!-- Page Header -->
-			<div class="page-header">
-				<div class="row align-items-center">
-					<div class="col">
-						<h3 class="page-title">Shift</h3>
-						<ul class="breadcrumb">
-							<li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
-							<li class="breadcrumb-item active">Shifts</li>
-						</ul>
-					</div>
-					<div class="col-auto float-right ml-auto">
-						<a href="#" class="btn add-btn" data-toggle="modal" data-target="#add_Shift"><i class="fa fa-plus"></i> Add Shift</a>
-					</div>
-				</div>
+<!-- Content Header (Page header) -->
+<section class="content-header">
+	<div class="container-fluid">
+		<div class="row mb-2">
+			<div class="col-sm-6">
+				<h1>Shifts</h1>
 			</div>
-			<!-- /Page Header -->
-			<div class="row">
-				<div class="col-sm-12" id="dataBoard">
-					<div class="table-responsive">
-						<table class="table table-striped custom-table mb-0" id="dataTableSearch">
-							<thead>
-								<tr>
-									<th>S/N</th>
-									<th>Name</th>
-									<th>Start Time</th>
-									<th>End Time</th>
-									<th>Is Fixed</th>
-									<th>Fixed Amount</th>
-									<th>Location Name</th>
-									<th>Unpaid Time</th>
-									<th class="text-right">Action</th>
-								</tr>
-							</thead>
-							@if (Model != null)
-							{
-								<tbody id="bookingDetails">
+			<div class="col-sm-6">
+				<ol class="breadcrumb float-sm-right">
+					<li class="breadcrumb-item active btn btn-success" data-toggle="modal" data-target="#add_Shift"><i class="fa fa-plus"></i>Add Shift</li>
+				</ol>
+			</div>
+		</div>
+	</div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Shift List</h3>
+					</div>
+					<!-- /.card-header -->
+					<div class="card-body table-responsive">
+						@if (Model.Count() > 0 && Model != null)
+						{
+							<table id="example2" class="table table-bordered table-hover text-nowrap">
+								<thead>
+									<tr>
+										<th>S/N</th>
+										<th>Name</th>
+										<th>Start Time</th>
+										<th>End Time</th>
+										<th>Is Fixed</th>
+										<th>Fixed Amount</th>
+										<th>Location Name</th>
+										<th>Unpaid Time</th>
+										<th class="text-right">Action</th>
+									</tr>
+								</thead>
+								<tbody>
 									@foreach (var shift in Model)
 									{
 										<tr>
@@ -66,29 +67,49 @@
 											<td>@shift.EndTime</td>
 											<td>@shift.IsFixed</td>
 											<td>@shift.FixedAmount</td>
-											<td>@shift.Locations</td>
+											<td>@shift.Locations.Name</td>
 											<td>@shift.UnpaidTime</td>
-											<td class="text-right">
 
-												<div class="dropdown dropdown-action">
-													<a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
-													<div class="dropdown-menu dropdown-menu-right">
-														<a class="dropdown-item" data-toggle="modal" data-target="#edit_termination" onclick="()"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-														<a class="dropdown-item" data-toggle="modal" data-target="#delete_termination" onclick="()"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
+											<td class="text-right">
+												<div class="btn-group">
+													<button type="button" class="btn btn-default btn-flat">Action</button>
+													<button type="button" class="btn btn-default btn-flat dropdown-toggle dropdown-icon" data-toggle="dropdown">
+														<span class="sr-only">Toggle Dropdown</span>
+													</button>
+													<div class="dropdown-menu" role="menu">
+														<a class="dropdown-item" href="#" ><i class="fa fa-pencil m-r-5"></i> Edit</a>
+														<div class="dropdown-divider"></div>
+														<a class="dropdown-item" href="#"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
 													</div>
 												</div>
 											</td>
 										</tr>
 									}
-								</tbody>
-							}
-						</table>
+							</table>
+						}
+						else
+						{
+							<div class="row p5 m-5">
+								<div class="col-md-12 text-center p-5 m5">
+									<h2>No Record Found</h2>
+								</div>
+							</div>
+						}
 					</div>
+					<!-- /.card-body -->
 				</div>
+				<!-- /.card -->
 			</div>
+			<!-- /.col -->
 		</div>
-		<!-- /Page Content -->
-
+		<!-- /.row -->
+	</div>
+	<!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+<!-- Main Wrapper -->
+<div class="main-wrapper">
+	<div class="page-wrapper">
 		<!-- Add copy Modal -->
 		<div id="add_Shift" class="modal custom-modal fade" role="dialog">
 			<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -100,71 +121,73 @@
 						</button>
 					</div>
 					<div class="modal-body">
-						<div class="row">
-							<div class="col-sm-6">
-								<div class="form-group">
-									<label class="col-form-label">Shift Name <span class="text-danger">*</span></label>
-									<input class="form-control" type="text" id="shiftName">
-								</div>
-							</div>
-							<div class="col-sm-6">
-								<div class="form-group">
-									<label class="col-form-label">Abbreviated Shift Name <span class="text-danger">*</span></label>
-									<input class="form-control" type="text" id="abbreviationlocationName">
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-6">
-								<div class="form-group">
-									<label class="col-form-label">Start Time <span class="text-danger">*</span></label>
-									<input class="form-control" type="time" id="start_TimeId">
-								</div>
-							</div>
-
-							<div class="col-sm-6">
-								<div class="form-group">
-									<label class="col-form-label">End Time <span class="text-danger">*</span></label>
-									<input class="form-control" type="time" id="end_TimeId">
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-6">
-								<div class="form-group">
-									<div class="status-toggle">
-										<h4>Is Fixed Shift</h4>
-										<input type="checkbox" id="fixedId" class="check visit_listner">
-										<label for="fixedId" class="checktoggle">checkbox</label>
+						<div class="card">
+							<div class="card-body">
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-form-label">Shift Name <span class="text-danger">*</span></label>
+											<input class="form-control" type="text" id="shiftName">
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-form-label">Abbreviated Shift Name <span class="text-danger">*</span></label>
+											<input class="form-control" type="text" id="abbreviationlocationName">
+										</div>
 									</div>
 								</div>
-							</div>
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-form-label">Start Time <span class="text-danger">*</span></label>
+											<input class="form-control" type="time" id="start_TimeId">
+										</div>
+									</div>
 
-							<div class="col-sm-6">
-								<div class="form-group">
-									<label class="col-form-label">Fixed Amount <span class="text-danger">*</span></label>
-									<input class="form-control" type="number" id="fixedAmountId">
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-sm-6">
-								<div class="form-group">
-									<label>Location <span class="text-danger">*</span></label>
-									<div>
-										<select id="locationId" style="width:100%" asp-items="@(new SelectList(ViewBag.Location  ,"Id", "Name" ))" class="makeFilter form-control"> </select>
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-form-label">End Time <span class="text-danger">*</span></label>
+											<input class="form-control" type="time" id="end_TimeId">
+										</div>
 									</div>
 								</div>
-							</div>
-							<div class="col-sm-6">
-								<div class="form-group">
-									<label class="col-form-label">Unpaid Time<span class="text-danger">*</span></label>
-									<input class="form-control" type="time" id="unpaid_TimeId">
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<div class="status-toggle">
+												<h5 class="pt-2">Is Fixed Shift</h5>
+												<input type="checkbox" id="fixedId" class="check visit_listner">
+												<label for="fixedId" class="checktoggle">checkbox</label>
+											</div>
+										</div>
+									</div>
+
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-form-label">Fixed Amount <span class="text-danger">*</span></label>
+											<input class="form-control" type="number" id="fixedAmountId">
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label>Location <span class="text-danger">*</span></label>
+											<select id="locationId" style="width:100%" asp-items="@(new SelectList(ViewBag.Location  ,"Id", "Name" ))" class="makeFilter form-control"> </select>
+										</div>
+									</div>
+									<div class="col-sm-6">
+										<div class="form-group">
+											<label class="col-form-label">Unpaid Time<span class="text-danger">*</span></label>
+											<input class="form-control" type="time" id="unpaid_TimeId">
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<button type="button" class="btn btn-block bg-gradient-success" onclick="addShift()">Create</button>
 								</div>
 							</div>
-						</div>
-						<div class="submit-section">
-							<button class="btn btn-primary submit-btn" id="submit_btn" onclick="addShift()">Submit</button>
 						</div>
 					</div>
 				</div>

@@ -1,21 +1,21 @@
 ﻿@inject Logic.IHelpers.IUserHelper _userHelper;
 @{
-	//var fullName = _userHelper.FindByUserName(User.Identity.Name);
+    //var fullName = _userHelper.FindByUserName(User.Identity.Name);
 
-	var staff = _userHelper.FindByUserName(User.Identity.Name);
-	var randomStr = DateTime.Now.ToString().ToLower().Replace(":", "").Replace("pm", "").Replace("am", "");
+    var staff = _userHelper.FindByUserName(User.Identity.Name);
+    var randomStr = DateTime.Now.ToString().ToLower().Replace(":", "").Replace("pm", "").Replace("am", "");
 }
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
-	<meta name="description" content="BiviHr">
-	<meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern, accounts, invoice, html5, responsive, CRM, Projects">
-	<meta name="author" content="BiviHr">
-	<meta name="robots" content="noindex, nofollow">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+    <meta name="description" content="BiviHr">
+    <meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern, accounts, invoice, html5, responsive, CRM, Projects">
+    <meta name="author" content="BiviHr">
+    <meta name="robots" content="noindex, nofollow">
 
-	<title>@ViewData["Title"] - Sm_Resource_Planning</title>
+    <title>@ViewData["Title"] - Sm_Resource_Planning</title>
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome Icons -->
@@ -124,7 +124,9 @@
                     @if (staff != null)
                     {
                         <a href="#" class="nav-link">@staff.FirstName</a>
-                    }else{
+                    }
+                    else
+                    {
                         <a href="#" class="nav-link">Welcome Admin</a>
                     }
                 </li>
@@ -193,16 +195,16 @@
                         <!-- Add icons to the links using the .nav-icon class
                              with font-awesome or any other icon font library -->
                         <li class="nav-item">
-                            <a href="/admin/index" class="nav-link">
+                            <a href="/user/index" class="nav-link">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
                                 <p>Dashboard</p>
                             </a>
                         </li>
                         <li class="nav-header">ROTA SCHEDULE</li>
                         <li class="nav-item">
-                            <a href="/admin/allocateshifts" class="nav-link">
+                            <a href="#" class="nav-link">
                                 <i class="far fa-circle nav-icon text-success"></i>
-                                <p>Single Schedule</p>
+                                <p>View Schedule</p>
                             </a>
                         </li>
                         @*<li class="nav-header">MULTI LEVEL EXAMPLE</li>*@
@@ -214,30 +216,30 @@
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="/admin/department" class="nav-link">
-                                        <i class="far fa-circle nav-icon text-success"></i>
-                                        <p>Department</p>
-                                    </a>
-                                </li>
+                            @*<ul class="nav nav-treeview">
+                            <li class="nav-item">
+                            <a href="/admin/department" class="nav-link">
+                            <i class="far fa-circle nav-icon text-success"></i>
+                            <p>Department</p>
+                            </a>
+                            </li>
                             </ul>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="/admin/Shift" class="nav-link">
-                                        <i class="far fa-circle nav-icon text-success"></i>
-                                        <p>Shift</p>
-                                    </a>
-                                </li>
-                            </ul> 
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="/admin/Location" class="nav-link">
-                                        <i class="far fa-circle nav-icon text-success"></i>
-                                        <p>Location</p>
-                                    </a>
-                                </li>
+                            <li class="nav-item">
+                            <a href="/admin/Shift" class="nav-link">
+                            <i class="far fa-circle nav-icon text-success"></i>
+                            <p>Shift</p>
+                            </a>
+                            </li>
                             </ul>
+                            <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                            <a href="/admin/Location" class="nav-link">
+                            <i class="far fa-circle nav-icon text-success"></i>
+                            <p>Location</p>
+                            </a>
+                            </li>
+                            </ul>*@
                         </li>
                     </ul>
                 </nav>

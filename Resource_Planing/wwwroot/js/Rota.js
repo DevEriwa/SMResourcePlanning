@@ -301,15 +301,15 @@ $(document).ready(function () {
                 txt = rowI.replace("{LOC}", x.shift.locations.abbreviatedName)
                 txt = txt.replace("{TRANGE}", x.tRange)
             } else {
-                var vvv = "'" + x.date + "'";
+                var vvv = "'" + x.date + "','" + rowCount + "'";
                 debugger
                 txt = rowII.replace("{DATEID}", vvv)
                 txt = txt.replace("{ID}", x.date)
             }
             row += txt;
         });
-
-        row += "<td>20</td><td>19</td><td>#8000</td></tr>";
+        var txtEnd = '<td id="plannedHr_{WEEKCOUNT}">{PH}</td><td>19</td><td>#8000</td></tr>'.replace("{PH}", schedule.totalPlannedHour);
+        row += txtEnd.replace("{WEEKCOUNT}", rowCount);
         rowCount++;
         return row;
     }
@@ -342,7 +342,7 @@ $(document).ready(function () {
 });
 
 
-var tzt = '<td class="text-center">{TRANGE} <span class="badge bg-success">{LOC}</span></td>';
+var tzt = "";
 function NavigateToRata() {
     debugger
     var data = {};
@@ -369,8 +369,8 @@ var endTime = "";
 
 $(document).ready(function () {
     $('.clickable-cell').click(function (event) {
-        event.preventDefault(); // Prevent the default behavior of the anchor tag
-        // Get the values from the clicked table row
+        debugger
+        event.preventDefault(); 
         var loc = $(this).closest('tr').find('.showValue:nth-child(1)').text();
         var name = $(this).closest('tr').find('.showValue:nth-child(2)').text();
         strtTime = $(this).closest('tr').find('.showValue:nth-child(3)').text();
@@ -382,7 +382,8 @@ $(document).ready(function () {
         $('#unpaid_TimeId').val(unpaidTime);
 
         var rangez = strtTime + "-" + endTime;
-        tzt = tzt.replace("{LOC}", loc)
+        var badge = '<td class="text-center">{TRANGE} <span class="badge bg-success">{LOC}</span></td>';
+        tzt = badge.replace("{LOC}", loc)
         tzt = tzt.replace("{TRANGE}", rangez)
     });
 });
