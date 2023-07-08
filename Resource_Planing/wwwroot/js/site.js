@@ -203,7 +203,7 @@ function login() {
     });
 }
 
-var timeDiff = "";
+let timeDiff = "";
 function addShift() {
     debugger;
     var defaultBtnValue = $('#submit_btn').html();
@@ -305,10 +305,16 @@ function EditShift() {
     $('#submit_Btn').attr("disabled", true);
     var data = {};
     data.Id = $('#edit_Id').val();
-    data.Name = $('#edit_shiftName').val();
-    data.AbbreviatedName = $('#edit_abbreivated').val();
+    data.Name = $('#shiftName_edit').val();
+    data.AbbreviatedName = $('#abbreivated_edit').val();
+    data.LocationId = $('#locationId_edit').val();
+    data.FixedAmount = $('#fixedAmountId_edit').val();
+    data.UnpaidTime = $('#unpaid_TimeId_edit').val();
+    data.EndTime = $('#end_TimeId_edit').val();
+    data.StartTime = $('#start_TimeId_edit').val();
+    data.IsFixed = $('#fixedId_edit').is(":checked");
+    timeDiff = errorCheck(data.StartTime, data.EndTime);
     if (data.Id != 0 && data.Name != "" && data.AbbreviatedName != "") {
-
         let shiftViewModel = JSON.stringify(data);
         if (shiftViewModel != "") {
             $.ajax({
@@ -338,7 +344,6 @@ function EditShift() {
                 }
             });
         }
-
     }
     else {
         $('#submit_Btn').html(defaultBtnValue);
@@ -359,10 +364,10 @@ function GetShiftByID(Id) {
             if (!data.isError) {
 
                 $("#edit_Id").val(data.id);
-                $("#edit_shiftName").val(data.name);
-                $("#edit_abbreivated").val(data.abbreviatedName);
+                $("#shiftName_edit").val(data.name);
+                $("#abbreivated_edit").val(data.abbreviatedName);
                 $("#select2-EditedlocationId-container").text(data.location.abbreviatedName);
-                $("#edit_locationId").val(data.locationId);
+                $("#locationId_edit").val(data.locationId);
             }
         }
     });
