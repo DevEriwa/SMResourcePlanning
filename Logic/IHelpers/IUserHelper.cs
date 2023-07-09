@@ -23,5 +23,6 @@ namespace Logic.IHelpers
 		bool AddShift(ShiftViwModel shiftDetails);
 		List<Shifts> GetShifts();
 		bool EditShift(ShiftViwModel shiftDetails);
+		bool DeleteShift(int id);
 	}
 }

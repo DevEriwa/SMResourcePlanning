@@ -239,10 +239,27 @@ namespace Resource_Planing.Controllers
 					var createProductVaccine = _userHelper.EditShift(shiftViewModel);
 					if (createProductVaccine)
 					{
-						return Json(new { isError = false, msg = "ProductVaccine Updated successfully" });
+						return Json(new { isError = false, msg = "Shift Updated successfully" });
 					}
 				}
-				return Json(new { isError = true, msg = "Unable to update ProductVaccine" });
+				return Json(new { isError = true, msg = "Unable to update Shift" });
+			}
+			return Json(new { isError = true, msg = "Network failure, please try again." });
+		}
+
+
+
+		[HttpPost]
+		public JsonResult DeleteShift(int id)
+		{
+			if (id != 0)
+			{
+				var ShiftToBeDeleted = _userHelper.DeleteShift(id);
+				if (ShiftToBeDeleted)
+				{
+					return Json(new { isError = false, msg = "Shift  deleted Successfully" });
+				}
+				return Json(new { isError = true, msg = "Unable To delete Shift" });
 			}
 			return Json(new { isError = true, msg = "Network failure, please try again." });
 		}
