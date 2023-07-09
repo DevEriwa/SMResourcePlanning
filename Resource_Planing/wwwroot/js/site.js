@@ -321,8 +321,16 @@ function EditShift() {
     data.StartTime = $('#start_TimeId_edit').val();
     data.IsFixed = $('#fixedId_edit').is(":checked");
     timeDiff = errorCheck(data.StartTime, data.EndTime);
-    if (data.Id != 0 && data.Name != "" && data.AbbreviatedName != "" && data.LocationId != "0" && data.StartTime != "" && data.EndTime != "" &&
-        timeDiff && (data.IsFixed && data.FixedAmount != "")) {
+    if (data.Id != 0 && data.Name != "" && data.AbbreviatedName != "" && data.LocationId != "0" && data.StartTime != "" && data.EndTime != "" && timeDiff) {
+        if (data.IsFixed) {
+            if (data.FixedAmount == "") {
+                shiftValidtion('_edit');
+                return;
+            }
+        } else {
+            $('#fixedAmountId_edit').val("");
+            data.FixedAmount = "";
+        }
         shiftValidtion('_edit');
         let shiftViewModel = JSON.stringify(data);
         if (shiftViewModel != "") {
@@ -347,7 +355,6 @@ function EditShift() {
                     }
                 },
                 error: function (ex) {
-                    shiftValidtion('_edit');
                     $('#submit_Btn').html(defaultBtnValue);
                     $('#submit_Btn').attr("disabled", false);
                     errorAlert("Network failure, please try again");
@@ -356,6 +363,8 @@ function EditShift() {
         }
     }
     else {
+
+        shiftValidtion('_edit');
         $('#submit_Btn').html(defaultBtnValue);
         $('#submit_Btn').attr("disabled", false);
         errorAlert("Please fill in the correct Details");
