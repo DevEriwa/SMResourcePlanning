@@ -304,9 +304,9 @@ function EditShift() {
     $('#submit_Btn').html("Please wait...");
     $('#submit_Btn').attr("disabled", true);
     var data = {};
-    data.Id = $('#edit_Id').val();
+    data.Id = $('#editshiftId').val();
     data.Name = $('#shiftName_edit').val();
-    data.AbbreviatedName = $('#abbreivated_edit').val();
+    data.AbbreviatedName = $('#abbreviatedName_edit').val();
     data.LocationId = $('#locationId_edit').val();
     data.FixedAmount = $('#fixedAmountId_edit').val();
     data.UnpaidTime = $('#unpaid_TimeId_edit').val();
@@ -314,7 +314,9 @@ function EditShift() {
     data.StartTime = $('#start_TimeId_edit').val();
     data.IsFixed = $('#fixedId_edit').is(":checked");
     timeDiff = errorCheck(data.StartTime, data.EndTime);
-    if (data.Id != 0 && data.Name != "" && data.AbbreviatedName != "") {
+    if (data.Id != 0 && data.Name != "" && data.AbbreviatedName != "" && data.LocationId != "0" && data.StartTime != "" && data.EndTime != "" &&
+        timeDiff && (data.IsFixed && data.FixedAmount != "")) {
+        shiftValidtion('_edit');
         let shiftViewModel = JSON.stringify(data);
         if (shiftViewModel != "") {
             $.ajax({
@@ -338,6 +340,7 @@ function EditShift() {
                     }
                 },
                 error: function (ex) {
+                    shiftValidtion('_edit');
                     $('#submit_Btn').html(defaultBtnValue);
                     $('#submit_Btn').attr("disabled", false);
                     errorAlert("Network failure, please try again");
@@ -352,6 +355,33 @@ function EditShift() {
     }
 }
 
+
+function deleteShift() {
+    debugger
+    var id = $('#deleteShiftId').val();
+    $.ajax({
+        type: 'Post',
+        dataType: 'Json',
+        url: '/Admin/DeleteShift',
+        data: {
+            id: id
+        },
+        success: function (result) {
+            if (!result.isError) {
+                var url = '/Admin/Shift'
+                successAlertWithRedirect(result.msg, url)
+            }
+            else {
+                errorAlert(result.msg)
+            }
+        },
+        error: function (ex) {
+            errorAlert("Network failure, please try again");
+        }
+    })
+}
+
+
 function GetShiftByID(Id) {
     debugger;
     let data = Id;
@@ -362,12 +392,22 @@ function GetShiftByID(Id) {
         dataType: 'json',
         success: function (data) {
             if (!data.isError) {
-
-                $("#edit_Id").val(data.id);
+                $("#editshiftId").val(data.id);
+                $("#deleteShiftId").val(data.id);
                 $("#shiftName_edit").val(data.name);
-                $("#abbreivated_edit").val(data.abbreviatedName);
-                $("#select2-EditedlocationId-container").text(data.location.abbreviatedName);
+                $("#abbreviatedName_edit").val(data.abbreviatedName);
                 $("#locationId_edit").val(data.locationId);
+                $('#fixedAmountId_edit').val(data.fixedAmount);
+                $('#unpaid_TimeId_edit').val(data.unpaidTime);
+                $('#end_TimeId_edit').val(data.endTime);
+                $('#start_TimeId_edit').val(data.startTime);
+                if (data.isFixed) {
+                    $('#fixedId_edit').prop('checked', true);
+                } else {
+                    $('#fixedId_edit').prop('checked', false);
+                }
+                $('#fixedId_edit').val(data.isFixed);
+                $("#select2-EditedlocationId-container").text(data.location.abbreviatedName);
             }
         }
     });

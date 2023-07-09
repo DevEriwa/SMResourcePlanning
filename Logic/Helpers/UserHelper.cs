@@ -266,5 +266,23 @@ namespace Logic.Helpers
 			return false;
 		}
 
+		public bool DeleteShift(int id)
+		{
+			if (id != 0)
+			{
+				var shift = _context.shift.Where(x => x.Id == id && x.Active && !x.Deleted).FirstOrDefault();
+				if (shift != null)
+				{
+					shift.Active = false;
+					shift.Deleted = true;
+					_context.shift.Update(shift);
+					_context.SaveChanges();
+					return true;
+				}
+			}
+			return false;
+		}
+
+
 	}
 }
