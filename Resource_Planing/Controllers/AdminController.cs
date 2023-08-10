@@ -5,6 +5,7 @@ using Logic.IHelpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using Resource_Planing.Models;
 using System.Net;
 
 namespace Resource_Planing.Controllers
@@ -227,7 +228,6 @@ namespace Resource_Planing.Controllers
 			}
 		}
 
-
 		[HttpPost]
 		public JsonResult EditShift(string shiftDetails)
 		{
@@ -246,8 +246,6 @@ namespace Resource_Planing.Controllers
 			}
 			return Json(new { isError = true, msg = "Network failure, please try again." });
 		}
-
-
 
 		[HttpPost]
 		public JsonResult DeleteShift(int id)
@@ -327,6 +325,14 @@ namespace Resource_Planing.Controllers
 					_rotaHelper.UpdateRota(data);
 				}
 			}
+		}
+
+		[HttpGet]
+		public async Task<IActionResult> ShiftLocation()
+		{
+			ViewBag.Country = await _dropdownHelper.GetCountry();
+			ViewBag.State = await _dropdownHelper.GetState();
+			return View();
 		}
 	}
 }

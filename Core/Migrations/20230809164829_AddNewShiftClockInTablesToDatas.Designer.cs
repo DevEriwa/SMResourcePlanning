@@ -4,6 +4,7 @@ using Core.Db;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Core.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230809164829_AddNewShiftClockInTablesToDatas")]
+    partial class AddNewShiftClockInTablesToDatas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -154,62 +156,6 @@ namespace Core.Migrations
                     b.ToTable("locations");
                 });
 
-            modelBuilder.Entity("Core.Models.ShiftLocation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<double>("AcceptedRadius")
-                        .HasColumnType("float");
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("CountryId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("DeteCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double>("Latitude")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Longitude")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PostalCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ShiftId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
-                    b.Property<int?>("StateId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CountryId");
-
-                    b.HasIndex("ShiftId");
-
-                    b.HasIndex("StateId");
-
-                    b.ToTable("ShiftLocations");
-                });
-
             modelBuilder.Entity("Core.Models.Shifts", b =>
                 {
                     b.Property<int>("Id")
@@ -347,6 +293,7 @@ namespace Core.Migrations
                         .HasColumnType("bit");
 
                     b.Property<int?>("CountryId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<bool>("Deleted")
@@ -672,29 +619,6 @@ namespace Core.Migrations
                     b.Navigation("Staff");
                 });
 
-            modelBuilder.Entity("Core.Models.ShiftLocation", b =>
-                {
-                    b.HasOne("Core.Models.Country", "Country")
-                        .WithMany()
-                        .HasForeignKey("CountryId");
-
-                    b.HasOne("Core.Models.Shifts", "Shift")
-                        .WithMany()
-                        .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Core.Models.State", "State")
-                        .WithMany()
-                        .HasForeignKey("StateId");
-
-                    b.Navigation("Country");
-
-                    b.Navigation("Shift");
-
-                    b.Navigation("State");
-                });
-
             modelBuilder.Entity("Core.Models.Shifts", b =>
                 {
                     b.HasOne("Core.Models.Location", "Locations")
@@ -730,7 +654,9 @@ namespace Core.Migrations
                 {
                     b.HasOne("Core.Models.Country", "Country")
                         .WithMany()
-                        .HasForeignKey("CountryId");
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Country");
                 });

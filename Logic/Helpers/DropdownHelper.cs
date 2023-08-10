@@ -184,5 +184,42 @@ namespace Logic.Helpers
 			}
 			return users;
 		}
-	}
+
+
+        public async Task<List<Country>> GetCountry()
+        {
+            var common = new Country()
+            {
+                Id = 0,
+                Name = "-- Select --"
+
+            };
+            var selectedCountry = await _context.Country.OrderBy(x => x.Name).Where(x => x.Active && !x.Deleted).ToListAsync();
+            if (selectedCountry != null)
+            {
+                selectedCountry.Insert(0, common);
+                return selectedCountry;
+            }
+            return null;
+
+
+        }
+
+        public async Task<List<State>> GetState()
+        {
+            var common = new State()
+            {
+                Id = 0,
+                Name = "-- Select --"
+
+            };
+            var selectedState = await _context.State.OrderBy(x => x.Name).Where(x => x.Active && !x.Deleted).ToListAsync();
+            if (selectedState != null)
+            {
+                selectedState.Insert(0, common);
+                return selectedState;
+            }
+            return null;
+        }
+    }
 }
