@@ -13,8 +13,7 @@ namespace Core.Models
     {
         public int? CountryId { get; set; }
         [Display(Name = "Country")]
+        [ForeignKey("CountryId")]
         public virtual Country Country { get; set; }
-        // Other properties...
     }
-
 }

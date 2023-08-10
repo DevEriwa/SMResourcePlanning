@@ -19,7 +19,6 @@ namespace Core.Db
 		public DbSet<Country> Country { get; set; }
 		public DbSet<StaffClockIn> StaffClockIns { get; set; }
 		public DbSet<State> State { get; set; }
-        public DbSet<ShiftLocation> ShiftLocations { get; set; }
     }
 }
 

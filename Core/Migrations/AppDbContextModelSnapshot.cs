@@ -73,7 +73,7 @@ namespace Core.Migrations
 
                     b.HasIndex("StaffId");
 
-                    b.ToTable("Attendances");
+                    b.ToTable("Attendances", (string)null);
                 });
 
             modelBuilder.Entity("Core.Models.Country", b =>
@@ -98,7 +98,7 @@ namespace Core.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Country");
+                    b.ToTable("Country", (string)null);
                 });
 
             modelBuilder.Entity("Core.Models.Department", b =>
@@ -123,7 +123,7 @@ namespace Core.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Departments");
+                    b.ToTable("Departments", (string)null);
                 });
 
             modelBuilder.Entity("Core.Models.Location", b =>
@@ -151,63 +151,7 @@ namespace Core.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("locations");
-                });
-
-            modelBuilder.Entity("Core.Models.ShiftLocation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<double>("AcceptedRadius")
-                        .HasColumnType("float");
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Address")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("CountryId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("DeteCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double>("Latitude")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Longitude")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PostalCode")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("ShiftId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
-                    b.Property<int?>("StateId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CountryId");
-
-                    b.HasIndex("ShiftId");
-
-                    b.HasIndex("StateId");
-
-                    b.ToTable("ShiftLocations");
+                    b.ToTable("locations", (string)null);
                 });
 
             modelBuilder.Entity("Core.Models.Shifts", b =>
@@ -258,7 +202,7 @@ namespace Core.Migrations
 
                     b.HasIndex("LocationId");
 
-                    b.ToTable("shift");
+                    b.ToTable("shift", (string)null);
                 });
 
             modelBuilder.Entity("Core.Models.StaffClockIn", b =>
@@ -301,7 +245,7 @@ namespace Core.Migrations
 
                     b.HasIndex("StaffId");
 
-                    b.ToTable("StaffClockIns");
+                    b.ToTable("StaffClockIns", (string)null);
                 });
 
             modelBuilder.Entity("Core.Models.StaffRota", b =>
@@ -332,7 +276,7 @@ namespace Core.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("StaffRotas");
+                    b.ToTable("StaffRotas", (string)null);
                 });
 
             modelBuilder.Entity("Core.Models.State", b =>
@@ -347,6 +291,7 @@ namespace Core.Migrations
                         .HasColumnType("bit");
 
                     b.Property<int?>("CountryId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<bool>("Deleted")
@@ -362,7 +307,7 @@ namespace Core.Migrations
 
                     b.HasIndex("CountryId");
 
-                    b.ToTable("State");
+                    b.ToTable("State", (string)null);
                 });
 
             modelBuilder.Entity("Core.Models.UserVerification", b =>
@@ -384,7 +329,7 @@ namespace Core.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserVerifications");
+                    b.ToTable("UserVerifications", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -672,29 +617,6 @@ namespace Core.Migrations
                     b.Navigation("Staff");
                 });
 
-            modelBuilder.Entity("Core.Models.ShiftLocation", b =>
-                {
-                    b.HasOne("Core.Models.Country", "Country")
-                        .WithMany()
-                        .HasForeignKey("CountryId");
-
-                    b.HasOne("Core.Models.Shifts", "Shift")
-                        .WithMany()
-                        .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Core.Models.State", "State")
-                        .WithMany()
-                        .HasForeignKey("StateId");
-
-                    b.Navigation("Country");
-
-                    b.Navigation("Shift");
-
-                    b.Navigation("State");
-                });
-
             modelBuilder.Entity("Core.Models.Shifts", b =>
                 {
                     b.HasOne("Core.Models.Location", "Locations")
@@ -730,7 +652,9 @@ namespace Core.Migrations
                 {
                     b.HasOne("Core.Models.Country", "Country")
                         .WithMany()
-                        .HasForeignKey("CountryId");
+                        .HasForeignKey("CountryId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Country");
                 });
