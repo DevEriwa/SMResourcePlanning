@@ -16,6 +16,7 @@ namespace Core.Models
         public string? EndTime { get; set; }
         public string? UnpaidTime { get; set; }
         public double? FixedAmount { get; set; }
+        public double? HourlyPay { get; set; }
 		public int? LocationId { get; set; }
 		[ForeignKey("LocationId")]
 		public virtual Location? Locations { get; set; }

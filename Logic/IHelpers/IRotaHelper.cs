@@ -15,7 +15,9 @@ namespace Logic.IHelpers
 		string ConvertDateToYYYYMMDD(DateTime date);
 		void CreateNewRotaObjectForUser(ApplicationUser model, int year);
 		void UpdateRota(RotaObjectViewModel model);
-		string GetTRange(int shiftId);
-		StaffRota GetWeeklyStaffRota(string userId, DateTime date, int weekCount);
-	}
+		//StaffRota GetWeeklyStaffRota(string userId, DateTime date, int weekCount);
+		RotaViewModel GenerateNewRota(DateTime sDate, DateTime eDate);
+        Shifts GetShiftById(int id);
+
+    }
 }

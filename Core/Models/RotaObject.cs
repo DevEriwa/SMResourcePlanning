@@ -11,8 +11,12 @@ namespace Core.Models
 	public class RotaObject
 	{
 		public string? Date { get; set; }
-		public int? ShiftId { get; set; }
-		public virtual Shifts shift { get; set; }
-		public string? TRange { get; set; }
-	}
+        public string? Location { get; set; }
+        public string? StartTime { get; set; }
+        public string? EndTime { get; set; }
+        public string? TRange { get; set; } 
+        public string? UnpaidTime { get; set; }
+        public double? FixedAmount { get; set; }
+        public double? HourlyPay { get; set; }
+    }
 }

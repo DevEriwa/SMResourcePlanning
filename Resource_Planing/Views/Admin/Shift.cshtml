@@ -52,6 +52,7 @@
 										<th>End Time</th>
 										<th>Is Fixed</th>
 										<th>Fixed Amount</th>
+										<th>Hourly Pay</th>
 										<th>Location Name</th>
 										<th>Unpaid Time</th>
 										<th class="text-right">Action</th>
@@ -67,8 +68,9 @@
 											<td>@shift.EndTime</td>
 											<td>@shift.IsFixed</td>
 											<td>@shift.FixedAmount</td>
-											<td>@shift.Locations.Name</td>
-											<td>@shift.UnpaidTime</td>
+											<td>@shift.HourlyPay</td>
+											<td>@shift?.Locations?.Name</td>
+											<td>@shift?.UnpaidTime</td>
 											<td class="text-right">
                                                 <div class="btn-group">
                                                     <button type="button" class="btn btn-default btn-flat">Action</button>
@@ -109,91 +111,7 @@
 <!-- Main Wrapper -->
 <div class="main-wrapper">
 	<div class="page-wrapper">
-		<!-- Add copy Modal -->
-		<div id="add_Shift" class="modal custom-modal fade" role="dialog">
-			<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title">Add Shift</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						<div class="card">
-							<div class="card-body">
-								<div class="row">
-									<div class="col-sm-6">
-										<div class="form-group">
-											<label class="col-form-label">Shift Name <span class="text-danger">*</span></label>
-											<input class="form-control" type="text" id="shiftName">
-										</div>
-									</div>
-									<div class="col-sm-6">
-										<div class="form-group">
-											<label class="col-form-label">Abbreviated Shift Name <span class="text-danger">*</span></label>
-											<input class="form-control" type="text" id="abbreviationlocationName">
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-sm-6">
-										<div class="form-group">
-											<label class="col-form-label">Start Time <span class="text-danger">*</span></label>
-											<input class="form-control" type="time" id="start_TimeId">
-										</div>
-									</div>
-
-									<div class="col-sm-6">
-										<div class="form-group">
-											<label class="col-form-label">End Time <span class="text-danger">*</span></label>
-											<input class="form-control" type="time" id="end_TimeId">
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-sm-6">
-										<div class="form-group">
-											<div class="status-toggle">
-												<h5 class="pt-2">Is Fixed Shift</h5>
-												<input type="checkbox" id="fixedId" class="check visit_listner">
-												<label for="fixedId" class="checktoggle">checkbox</label>
-											</div>
-										</div>
-									</div>
-
-									<div class="col-sm-6">
-										<div class="form-group">
-											<label class="col-form-label">Fixed Amount</label>
-											<input class="form-control" type="number" id="fixedAmountId">
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-sm-6">
-										<div class="form-group">
-											<label>Location <span class="text-danger">*</span></label>
-											<select id="locationId" style="width:100%" asp-items="@(new SelectList(ViewBag.Location  ,"Id", "Name" ))" class="makeFilter form-control"> </select>
-										</div>
-									</div>
-									<div class="col-sm-6">
-										<div class="form-group">
-											<label class="col-form-label">Unpaid Time<span class="text-danger">*</span></label>
-											<input class="form-control" type="time" id="unpaid_TimeId">
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<button type="button" class="btn btn-block bg-gradient-success" onclick="addShift()">Create</button>
-								</div>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- /Add copy Modal -->
-				<!-- Edit shift Modal -->
+		<!-- Edit shift Modal -->
 		<div id="edit_shift" class="modal custom-modal fade" role="dialog">
 			<div class="modal-dialog modal-dialog-centered modal-lg" role="document">
 				<div class="modal-content">
@@ -237,20 +155,25 @@
 									</div>
 								</div>
 								<div class="row">
-									<div class="col-sm-6">
+									<div class="col-sm-2">
 										<div class="form-group">
 											<div class="status-toggle">
-												<h5 class="pt-2">Is Fixed Shift</h5>
+												<h5 class="pt-2">IsFixed</h5>
 												<input type="checkbox" id="fixedId_edit" class="check visit_listner">
 												<label for="fixedId" class="checktoggle">checkbox</label>
 											</div>
 										</div>
 									</div>
-
-									<div class="col-sm-6">
+									<div class="col-sm-5">
 										<div class="form-group">
 											<label class="col-form-label">Fixed Amount</label>
 											<input class="form-control" type="number" id="fixedAmountId_edit">
+										</div>
+									</div>
+									<div class="col-sm-5">
+										<div class="form-group">
+											<label class="col-form-label">Hourly Pay</label>
+											<input class="form-control" type="number" id="hourlyPay_edit">
 										</div>
 									</div>
 								</div>

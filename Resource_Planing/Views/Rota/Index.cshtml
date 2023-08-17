@@ -1,0 +1,168 @@
+﻿@*@model Core.ViewModels.RotaViewModel*@
+@{
+	ViewData["Title"] = "AllocateShifts";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+	var shiftList = ViewBag.ListOFShifts;
+	//var startDat = @Model?.DateCreated?.ToString("s").Split("T")[0];
+}
+<style>
+	body {
+		font-family: Arial, sans-serif;
+	}
+	label {
+		font-weight: bold;
+	}
+
+	input {
+		padding: 2px;
+		width: 200px;
+	}
+</style>
+<!-- Content Header (Page header) -->
+<section class="content-header">
+	<div class="container-fluid">
+		<div class="row mb-2">
+			<div class="col-sm-6">
+				<h1>Shifts Allocation</h1>
+			</div>
+			<div class="col-sm-6">
+				<div class="row">
+					<div class="input-group input-group-sm col-4">
+						<div class="input-group-prepend">
+							<span class="input-group-text"><small>Start</small></span>
+						</div>
+						<input type="date" id="start_DateId" class="form-control">
+					</div>
+					<div class="input-group input-group-sm col-4">
+						<div class="input-group-prepend">
+							<span class="input-group-text"><small>End</small></span>
+						</div>
+						<input type="date" id="end_DateId" class="form-control">
+					</div>
+					<div class="input-group input-group-sm col-4">
+						<button class="form-control btn btn-success" onclick="GetRotaByDateRange()">Submit</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div><!-- /.container-fluid -->
+</section>
+
+
+<!-- Main content -->
+<section class="content">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Rota schedule view</h3>
+					</div>
+					<!-- /.card-header -->
+					<div class="card-body table-responsive">
+						<table id="rotaTBLContainer" class="table table-bordered table-hover text-nowrap">
+							@*@if(Model != null && Model.RotaTableContainer != null)
+							{
+								@Html.Raw(Model?.RotaTableContainer)
+							}*@
+						</table>
+					</div>
+					<!-- /.card-body -->
+				</div>
+				<!-- /.card -->
+			</div>
+			<!-- /.col -->
+		</div>
+		<!-- /.row -->
+	</div>
+	<!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+<!-- Main Wrapper -->
+<div>
+	<!-- Add Shift Modal -->
+	<div id="allocate_Shift" class="modal custom-modal fade" role="dialog">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="modal-content">
+				<div class="modal-header py-2">
+					<div class="modal-title text-center row">
+						<div class="col-4 p-1">
+							<button class="btn btn-primary py-1" data-toggle="modal" data-target="#add_Shift">Add</button>
+						</div>
+						<div class="col-4 p-1">
+							<button class="btn btn-success py-1" onclick="updateRota()">Save</button>
+						</div>
+						<div class="col-4 p-1">
+							<button class="btn btn-warning py-1" data-dismiss="modal" aria-label="Close">Cancel</button>
+						</div>
+					</div>
+				</div>
+				<div class="modal-body">
+					<div class="direct-chat-messages p-0">
+						<div class="row table-responsive m-0">
+							<div class="col-sm-12 p-0" id="dataBoard">
+								<table id="example2" class="table table-bordered table-hover text-nowrap">
+									<thead>
+										<tr>
+											<th class="py-0">Loc</th>
+											<th class="py-0">Name</th>
+											<th class="py-0">S-Time</th>
+											<th class="py-0">E-Time</th>
+											<th class="py-0">U-Time</th>
+										</tr>
+									</thead>
+									@if (shiftList != null)
+									{
+										<tbody id="shiftTblBody">
+											@foreach (var shift in shiftList)
+											{
+												<tr onclick="mapShiftDetails('@shift.Id')">
+													<td class="showValue py-0"><a href="#">@shift.Locations.AbbreviatedName</a></td>
+													<td class="showValue py-0"><a href="#">@shift.Name</a></td>
+													<td class="showValue py-0"><a href="#">@shift.StartTime</a></td>
+													<td class="showValue py-0"><a href="#">@shift.EndTime</a></td>
+													<td class="showValue py-0"><a href="#">@shift.UnpaidTime</a></td>
+												</tr>
+											}
+										</tbody>
+									}
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="card mb-0">
+							<div class="card-body p-1">
+								<div class="row ">
+									<div class="col-4">
+										<input type="text" class="form-control" placeholder="Start Time" id="s_TimeId">
+									</div>
+									<div class="col-4">
+										<input type="text" class="form-control" placeholder="End Time" id="e_TimeId">
+									</div>
+									<div class="col-4">
+										<input type="text" class="form-control" placeholder="Unpaid Time" id="u_TimeId">
+									</div>
+									<div class="col-4" hidden>
+										<input type="text" id="loc_Abb">
+										<input type="text" id="t_Range">
+										<input type="text" id="f_Amt">
+										<input type="text" id="h_Pay">
+										<input type="text" id="h_Pay">
+										<input type="text" id="h_Pay">
+										<input type="text" id="uId">
+										<input type="text" id="yeaR">
+										<input type="text" id="datE">
+									</div>
+								</div>
+							</div>
+							<!-- /.card-body -->
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /Add Shift Modal -->
+</div>
+<!-- /Main Wrapper -->

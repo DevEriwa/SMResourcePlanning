@@ -285,7 +285,6 @@ function departmentToBeDeleted(id) {
 }
 
 $(document).ready(function () {
-    debugger
     var rowCount = 1; // Initial number of rows
     // Function to generate a new row
     function generateRow(schedule) {
@@ -353,12 +352,20 @@ function NavigateToRata() {
     window.location.href = url;
 }
 
-
-function popModal(id, plannedId) {
+function LoadRota() {
     debugger
-    currentPlannedId = "plannedHr_" + plannedId;
-    crrPlandHr = document.getElementById(currentPlannedId).innerHTML,
-    $('#datId').val(id);
+    var sDate = $('#start_DateId').val();
+    var eDate = $('#end_DateId').val();
+    var url = '/Rota/Index?startDate=' + encodeURIComponent(sDate) + '&endDate=' + encodeURIComponent(eDate);
+    window.location.href = url;
+}
+
+function popModal(date, uid, year) {
+    //currentPlannedId = "plannedHr_" + plannedId;
+    //crrPlandHr = document.getElementById(currentPlannedId).innerHTML,
+    $('#datE').val(date);
+    $('#uId').val(uid);
+    $('#yeaR').val(year);
     $('#allocate_Shift').modal('show');
 }
 
@@ -389,21 +396,57 @@ $(document).ready(function () {
 });
 
 function mapShiftDetails(id) {
-    $('#shfId').val(id);
+    let data = id;
+    $.ajax({
+        type: 'GET',
+        url: '/Admin/GetShiftByID',
+        data: { rotaShiftId: data },
+        dataType: 'json',
+        success: function (data) {
+            if (!data.isError) {
+                debugger
+                var tRang = data.startTime + " - " + data.endTime;
+                $('#s_TimeId').val(data.startTime);
+                $('#e_TimeId').val(data.endTime);
+                $('#u_TimeId').val(data.unpaidTime);
+                $('#loc_Abb').val(data.locations.abbreviatedName);
+                $('#t_Range').val(tRang);
+                $('#f_Amt').val(data.fixedAmount);
+                $('#h_Pay').val(data.hourlyPay);
+                tzt = tRang + '<span class="badge bg-success">' + data.locations.abbreviatedName + '</span>';
+            }
+        }
+    });
 }
 
 function updateRota() {
     debugger;
     var data = {};
-    data.Date = $("#datId").val();
+    data.Date = $("#datE").val();
     data.UserId = $("#uId").val();
-    data.Year = $("#yearId").val();
-    data.ShiftId = $("#shfId").val();
-    if (data.Date != "" && data.UserId != "" && data.Year != "" && data.ShiftId != "") {
-        let time11 = subtractTime(strtTime, endTime);
-        let newPlannedhr = addHour(crrPlandHr, time11);
-        document.getElementById(data.Date).innerHTML = tzt;
-        document.getElementById(currentPlannedId).innerHTML = newPlannedhr;
+    data.Year = $("#yeaR").val();
+    data.StartTime = $('#s_TimeId').val();
+    data.EndTime = $('#e_TimeId').val();
+    data.UnpaidTime = $('#u_TimeId').val();
+    data.Location = $('#loc_Abb').val();
+    data.TRange = $('#t_Range').val();
+    var fAmt = $('#f_Amt').val();
+    if (fAmt == "") {
+        data.FixedAmount = 0;
+    } else {
+        data.FixedAmount = parseFloat(fAmt);
+    }
+    var hPay = $('#h_Pay').val();
+    if (hPay == "") {
+        data.HourlyPay = 0;
+    } else {
+        data.HourlyPay = parseFloat(hPay);
+    }
+    if (data.Date != "" && data.UserId != "" && data.Year != "") {
+        //let time11 = subtractTime(strtTime, endTime);
+        //let newPlannedhr = addHour(crrPlandHr, time11);
+        document.getElementById(data.Date + "_" + data.UserId).innerHTML = tzt;
+        //document.getElementById(currentPlannedId).innerHTML = newPlannedhr;
         $.ajax({
             type: 'POST',
             url: '/Admin/UpdateRotaData',
@@ -462,4 +505,25 @@ function errorCheck(x, y) {
         return false;
     }
     return true;
+}
+
+function GetRotaByDateRange() {
+    debugger
+    var sDate = $('#start_DateId').val();
+    var eDate = $('#end_DateId').val();
+    if (sDate != "" && eDate != "") {
+        $.ajax({
+            type: 'GET',
+            url: '/Rota/GetRotaDataByDateRange',
+            data: { startDate: sDate, endDate: eDate, },
+            dataType: 'json',
+            success: function (data) {
+                if (!data.isError) {
+                    debugger
+                    $("#rotaTBLContainer").empty();
+                    $("#rotaTBLContainer").append(data.rotaTableContainer);
+                }
+            }
+        });
+    }
 }

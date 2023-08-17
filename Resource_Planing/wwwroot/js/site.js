@@ -214,6 +214,7 @@ function addShift() {
     data.AbbreviatedName = $('#abbreviationlocationName').val();
     data.LocationId = $('#locationId').val();
     data.FixedAmount = $('#fixedAmountId').val();
+    data.HourlyPay = $('#hourlyPay').val();
     data.UnpaidTime = $('#unpaid_TimeId').val();
     data.EndTime = $('#end_TimeId').val();
     data.StartTime = $('#start_TimeId').val();
@@ -224,8 +225,14 @@ function addShift() {
             if (data.FixedAmount == "") {
                 shiftValidtion('');
                 return;
+            } else {
+                $('#hourlyPay').val("");
             }
         } else {
+            if (data.HourlyPay == "") {
+                shiftValidtion('');
+                return;
+            }
             $('#fixedAmountId').val("");
             data.FixedAmount = "";
         }
@@ -241,9 +248,23 @@ function addShift() {
             },
             success: function (result) {
                 if (!result.isError) {
-                    var url = '/Admin/Shift';
-                    successAlertWithRedirect(result.msg, url);
+                    debugger
+                    var url = window.location.pathname;
+                    if (url.toLocaleLowerCase() == "admin/shift") {
+                        successAlertWithRedirect(result.msg, url);
+                    } else {
+                        var shiftTbl = $('#shiftTblBody');
+                        var newRow = "<tr onclick=\"mapShiftDetails('" + result.data.id + "')\">" +
+                            "<td class=\"showValue py-0\"> <a href=\"#\">" + result.data.locations.abbreviatedName + "</a></td>" +
+                            "<td class=\"showValue py-0\"> <a href=\"#\">" + result.data.name + "</a></td>" +
+                            "<td class=\"showValue py-0\"> <a href=\"#\">" + result.data.startTime + "</a></td>" +
+                            "<td class=\"showValue py-0\"> <a href=\"#\">" + result.data.endTime + "</a></td>" +
+                            "<td class=\"showValue py-0\"> <a href=\"#\">" + result.data.unpaidTime + "</a></td></tr>";
+                        shiftTbl.append(newRow);
+                        $('#add_Shift').modal('hide');
+                    }
                     $('#submit_btn').html(defaultBtnValue);
+                    $('#submit_btn').attr("disabled", false);
                 }
                 else {
                     $('#submit_btn').html(defaultBtnValue);
@@ -292,7 +313,13 @@ function shiftValidtion(i) {
     }
     if (($('#fixedId' + i).is(":checked") && $('#fixedAmountId' + i).val() == "")) {
         $('#fixedAmountId' + i).css('border', 'solid 2px red');
+        $('#hourlyPay' + i).css('border', 'solid 1px #ccc');
     } else {
+        if ($('#hourlyPay' + i).val() == "") {
+            $('#hourlyPay' + i).css('border', 'solid 2px red');
+        } else {
+            $('#hourlyPay' + i).css('border', 'solid 1px #ccc');
+        }
         $('#fixedAmountId' + i).css('border', 'solid 1px #ccc');
     }
     if ($('#start_TimeId' + i).val() == "") {
@@ -316,6 +343,7 @@ function EditShift() {
     data.AbbreviatedName = $('#abbreviatedName_edit').val();
     data.LocationId = $('#locationId_edit').val();
     data.FixedAmount = $('#fixedAmountId_edit').val();
+    data.HourlyPay = $('#hourlyPay_edit').val();
     data.UnpaidTime = $('#unpaid_TimeId_edit').val();
     data.EndTime = $('#end_TimeId_edit').val();
     data.StartTime = $('#start_TimeId_edit').val();
@@ -326,8 +354,14 @@ function EditShift() {
             if (data.FixedAmount == "") {
                 shiftValidtion('_edit');
                 return;
+            } else {
+                $('#hourlyPay_edit').val("");
             }
         } else {
+            if (data.HourlyPay == "") {
+                shiftValidtion('_edit');
+                return;
+            }
             $('#fixedAmountId_edit').val("");
             data.FixedAmount = "";
         }
@@ -371,7 +405,6 @@ function EditShift() {
     }
 }
 
-
 function deleteShift() {
     debugger
     var id = $('#deleteShiftId').val();
@@ -396,7 +429,6 @@ function deleteShift() {
         }
     })
 }
-
 
 function GetShiftByID(Id) {
     debugger;

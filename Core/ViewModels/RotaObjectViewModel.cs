@@ -9,11 +9,14 @@ namespace Core.ViewModels
 {
 	public class RotaObjectViewModel
 	{
-		public string? Date { get; set; }
-		public DateTime Datee { get; set; }
-		public int? ShiftId { get; set; }
-		public string? TRange { get; set; }
-		public int WeekCount { get; set; }
+        public string? Date { get; set; }
+        public string? Location { get; set; }
+        public string? StartTime { get; set; }
+        public string? EndTime { get; set; }
+        public string? TRange { get; set; }
+        public string? UnpaidTime { get; set; }
+        public double? FixedAmount { get; set; }
+        public double? HourlyPay { get; set; }
 		public string? UserId { get; set; }
 		public string? Year { get; set; }
 	}

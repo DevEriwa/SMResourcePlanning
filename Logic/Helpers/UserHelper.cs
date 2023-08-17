@@ -206,7 +206,7 @@ namespace Logic.Helpers
 			return false;
 		}
 
-        public bool AddShift(ShiftViwModel shiftDetails)
+        public Shifts AddShift(ShiftViwModel shiftDetails)
         {
             if (shiftDetails != null)
             {
@@ -223,13 +223,15 @@ namespace Logic.Helpers
 					EndTime = shiftDetails.EndTime,
 					UnpaidTime = shiftDetails.UnpaidTime,
 					FixedAmount = shiftDetails.FixedAmount,
+					HourlyPay = shiftDetails.HourlyPay,
 					LocationId = shiftDetails.LocationId,
 				};
 				_context.shift?.Add(shiftData);
 				_context.SaveChanges();
-				return true;
+                var result = _context.shift.Where(s => s.Id == shiftData.Id).Include(l => l.Locations).FirstOrDefault();
+                return result;
 			}
-            return false;
+            return null;
         }
 		public List<Shifts> GetShifts()
 		{
@@ -257,6 +259,7 @@ namespace Logic.Helpers
 					productVaccineEdit.EndTime = shiftDetails.EndTime;
 					productVaccineEdit.UnpaidTime = shiftDetails.UnpaidTime;
 					productVaccineEdit.FixedAmount = shiftDetails.FixedAmount;
+					productVaccineEdit.HourlyPay = shiftDetails.HourlyPay;
 					productVaccineEdit.LocationId = shiftDetails.LocationId;
 				}
 				_context.shift.Update(productVaccineEdit);
@@ -282,7 +285,5 @@ namespace Logic.Helpers
 			}
 			return false;
 		}
-
-
 	}
 }

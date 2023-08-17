@@ -1,0 +1,265 @@
+﻿@inject Microsoft.AspNetCore.Http.IHttpContextAccessor HttpContextAccessor
+<div>
+    @{
+        var currentUrl = HttpContextAccessor.HttpContext.Request.Path.ToString();
+    }
+    @if (currentUrl.ToLower().Contains("/rota") || currentUrl.ToLower().Contains("/admin/shift"))
+    {
+        <!-- Add copy Modal -->
+        <div id="add_Shift" class="modal custom-modal fade" role="dialog">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Shift</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-form-label">Shift Name <span class="text-danger">*</span></label>
+                                            <input class="form-control" type="text" id="shiftName">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-form-label">Abbreviated Shift Name <span class="text-danger">*</span></label>
+                                            <input class="form-control" type="text" id="abbreviationlocationName">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-form-label">Start Time <span class="text-danger">*</span></label>
+                                            <input class="form-control" type="time" id="start_TimeId">
+                                        </div>
+                                    </div>
+
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-form-label">End Time <span class="text-danger">*</span></label>
+                                            <input class="form-control" type="time" id="end_TimeId">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <div class="status-toggle">
+                                                <h5 class="pt-2">IsFixed</h5>
+                                                <input type="checkbox" id="fixedId" class="check visit_listner">
+                                                <label for="fixedId" class="checktoggle">checkbox</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <div class="form-group">
+                                            <label class="col-form-label">Fixed Amount</label>
+                                            <input class="form-control" type="number" id="fixedAmountId">
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <div class="form-group">
+                                            <label class="col-form-label">Hourly Pay</label>
+                                            <input class="form-control" type="number" id="hourlyPay">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label>Location <span class="text-danger">*</span></label>
+                                            <select id="locationId" style="width:100%" asp-items="@(new SelectList(ViewBag.Location  ,"Id", "Name" ))" class="makeFilter form-control"> </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <div class="form-group">
+                                            <label class="col-form-label">Unpaid Time<span class="text-danger">*</span></label>
+                                            <input class="form-control" type="time" id="unpaid_TimeId">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <button type="button" class="btn btn-block bg-gradient-success" onclick="addShift()">Create</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /Add copy Modal -->
+    }
+    <div class="modal fade" id="change_password">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 25px;">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h5 class="modal-title text-center">Change Account Password</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="input-group mb-3">
+                                <input type="password" id="oldPassword" class="form-control" placeholder="Password">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-lock"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="input-group mb-3">
+                                <input type="password" id="newPassword" class="form-control" placeholder="New Password">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-lock"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="input-group mb-3">
+                                <input type="password" class="form-control" id="confirmPassword" placeholder="Confirm Password">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-lock"></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row justify-content-center">
+                                <!-- /.col -->
+                                <div class="col-8">
+                                    <button type="submit" class="btn btn-primary btn-block" onclick="ChangePassword()">Update Password</button>
+                                </div>
+                                <!-- /.col -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="update_email">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius: 25px;">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h5 class="modal-title text-center">Enter your email</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <div class="card">
+                        <div class="card-body pt-0">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <!-- text input -->
+                                    <div class="form-group">
+                                        <label>Transaction Pin :</label>
+                                        <input class="form-control" type="email" id="emailUpdate">
+                                    </div>
+                                </div>
+                            </div>
+                            <!--  profile wrapper start -->
+                            <div class="row">
+                                <button type="button" class="btn btn-block bg-gradient-success" onclick="UpdateEmail()">Update Email</button>
+                            </div>
+                        </div>
+                        <!--  profile wrapper end -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script> 
+    function ChangePassword() {
+        var changePassword = {};
+        changePassword.Password = $("#oldPassword").val();
+        changePassword.NewPassword = $("#newPassword").val();
+        changePassword.ConfirmPassword = $("#confirmPassword").val();
+        if (changePassword.Password != "" && changePassword.NewPassword != "" && changePassword.NewPassword == changePassword.ConfirmPassword) {
+            changePassValidation()
+            debugger;
+            $.ajax({
+                type: 'POST',
+                url: '/Account/ChangePassword', // we are calling json method
+                dataType: 'json',
+                data: { applicationViewModel: JSON.stringify(changePassword) },
+
+                success: function (result) {
+                    debugger;
+                    if (!result.isError) {
+                        successAlert(result.msg);
+                    }
+                    else {
+                        errorAlert(result.msg);
+                    }
+                },
+                error: function (ex) {
+                    "Something went wrong, contact the support - " + errorAlert(ex);
+                }
+            });
+        } else {
+            changePassValidation();
+        }
+    }
+
+    function GetEmailUpdateModel() {
+        debugger;
+        $.ajax({
+            type: 'GET',
+            url: '/User/GetUsersEmail', //we are calling json method
+            data: {},
+            success: function (email) {
+                debugger
+                $("#emailUpdate").val(email);
+
+                $("#update_email").modal();
+            }
+        });
+    }
+
+    function UpdateEmail() {
+        debugger;
+        var email = $("#emailUpdate").val();
+        if (email == "") {
+            errorAlert("Enter Email");
+        } else {
+            $("#status").show();
+            $("#preloader").show().delay(3000).fadeOut("slow");
+            $.ajax({
+                type: 'POST',
+                url: '/Account/ChangeEmail',
+                data: {
+                    email: email
+                },
+                success: function (result) {
+                    debugger;
+                    if (!result.isError) {
+                        successAlert(result.msg);
+                        location.reload();
+                    }
+                    else {
+                        errorAlert(result.msg);
+                    }
+                },
+                Error: function (ex) {
+                    errorAlert(ex);
+                }
+            });
+        }
+    }
+</script>
+

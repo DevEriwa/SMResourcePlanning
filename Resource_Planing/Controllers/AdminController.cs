@@ -4,6 +4,7 @@ using Core.ViewModels;
 using Logic.IHelpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System.Net;
 
@@ -26,6 +27,7 @@ namespace Resource_Planing.Controllers
 			_webHostEnvironment = webHostEnvironment;
 			_rotaHelper = rotaHelper;
 		}
+		
 		public IActionResult Index()
         {
             return View();
@@ -211,9 +213,9 @@ namespace Resource_Planing.Controllers
 					if (shiftModel != null)
 					{
 						var freque = _userHelper.AddShift(shiftModel);
-						if (freque)
+						if (freque != null)
 						{
-							return Json(new { isError = false, msg = "Shift Added successfully" });
+							return Json(new { isError = false, data = freque, msg = "Shift Added successfully" });
 						}
 						return Json(new { isError = true, msg = "Shift already exist" });
 					}
@@ -226,7 +228,6 @@ namespace Resource_Planing.Controllers
 				throw exp;
 			}
 		}
-
 
 		[HttpPost]
 		public JsonResult EditShift(string shiftDetails)
@@ -247,8 +248,6 @@ namespace Resource_Planing.Controllers
 			return Json(new { isError = true, msg = "Network failure, please try again." });
 		}
 
-
-
 		[HttpPost]
 		public JsonResult DeleteShift(int id)
 		{
@@ -268,7 +267,7 @@ namespace Resource_Planing.Controllers
 		{
 			if (rotaShiftId != 0)
 			{
-				var productVaccine = _context.shift.Where(c => c.Id == rotaShiftId).FirstOrDefault();
+				var productVaccine = _context.shift.Where(s => s.Id == rotaShiftId).Include(l => l.Locations).FirstOrDefault();
 				if (productVaccine != null)
 				{
 					return Json(productVaccine);
@@ -277,45 +276,45 @@ namespace Resource_Planing.Controllers
 			return null;
 		}
 
-		[HttpGet]
-		public IActionResult AllocateShifts(RotaObjectViewModel rotaData)
-		{
-			var mod = new StaffRota();
-			ViewBag.UserInRota = _dropdownHelper.GetAllUsersInRota();
-			ViewBag.ListOFShifts = _userHelper.GetShifts();
-			if (rotaData.UserId != null)
-			{
-				var model = _rotaHelper.GetWeeklyStaffRota(rotaData.UserId, rotaData.Datee, rotaData.WeekCount);
-				if(rotaData.Datee == DateTime.MinValue)
-				{model.DateCreated = DateTime.Now;}
-				else
-				{model.DateCreated = rotaData.Datee;}
-				if (model != null)
-				{
-					return View(model);
-				}
-			}
-			mod.ShowAddBTN = "d-none";
-			return View(mod);
-		}
+		//[HttpGet]
+		//public IActionResult AllocateShifts(RotaObjectViewModel rotaData)
+		//{
+		//	var mod = new StaffRota();
+		//	ViewBag.UserInRota = _dropdownHelper.GetAllUsersInRota();
+		//	ViewBag.ListOFShifts = _userHelper.GetShifts();
+		//	if (rotaData.UserId != null)
+		//	{
+		//		var model = _rotaHelper.GetWeeklyStaffRota(rotaData.UserId, rotaData.Datee, rotaData.WeekCount);
+		//		if(rotaData.Datee == DateTime.MinValue)
+		//		{model.DateCreated = DateTime.Now;}
+		//		else
+		//		{model.DateCreated = rotaData.Datee;}
+		//		if (model != null)
+		//		{
+		//			return View(model);
+		//		}
+		//	}
+		//	mod.ShowAddBTN = "d-none";
+		//	return View(mod);
+		//}
 
-		[HttpGet]
-		public JsonResult GetWeeklyUserRota(string rotaData)
-		{
-			if(rotaData != null)
-			{
-				var data = JsonConvert.DeserializeObject<RotaObjectViewModel>(rotaData);
-				if (data.UserId != null)
-				{
-					var model = _rotaHelper.GetWeeklyStaffRota(data.UserId, DateTime.Parse(data.Date), data.WeekCount);
-					if (model != null)
-					{
-						return Json(model);
-					}
-				}
-			}
-			return null;
-		}
+		//[HttpGet]
+		//public JsonResult GetWeeklyUserRota(string rotaData)
+		//{
+		//	if(rotaData != null)
+		//	{
+		//		var data = JsonConvert.DeserializeObject<RotaObjectViewModel>(rotaData);
+		//		if (data.UserId != null)
+		//		{
+		//			var model = _rotaHelper.GetWeeklyStaffRota(data.UserId, DateTime.Parse(data.Date), data.WeekCount);
+		//			if (model != null)
+		//			{
+		//				return Json(model);
+		//			}
+		//		}
+		//	}
+		//	return null;
+		//}
 
 		public void UpdateRotaData(string rotaData)
 		{
