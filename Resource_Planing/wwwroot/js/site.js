@@ -567,3 +567,211 @@ function ResetPassword(token) {
 }
 
 
+function createShiftLocation() {
+    var defaultBtnValue = $('#submit_btn').html();
+    $('#submit_btn').html("Please wait...");
+    $('#submit_btn').attr("disabled", true);
+    var data = {};
+    data.PostalCode = $('#postalCode').val();
+    data.Address = $('#adrress').val();
+    data.Name = $('#Name').val();
+    data.Shifts = $('#shiftId').val();
+    data.State = $('#stateId').val();
+
+    if (data.PostalCode != "" && data.Address != "" && data.Name != "" && data.Shifts != "0" && data.State != "0") {
+        let ShiftViewModel = JSON.stringify(data);
+        $.ajax({
+            type: 'Post',
+            dataType: 'json',
+            url: '/Admin/CreateShiftLocation',
+            data:
+            {
+                shiftDetails: ShiftViewModel,
+            },
+            success: function (result) {
+                if (!result.isError) {
+                    var url = '/Admin/ShiftLocation';
+                    successAlertWithRedirect(result.msg, url)
+                    $('#submit_btn').html(defaultBtnValue);
+                }
+                else {
+                    $('#submit_btn').html(defaultBtnValue);
+                    $('#submit_btn').attr("disabled", false);
+                    errorAlert(result.msg)
+                }
+            },
+            error: function (ex) {
+                $('#submit_btn').html(defaultBtnValue);
+                $('#submit_btn').attr("disabled", false);
+                errorAlert("Network failure, please try again");
+            }
+        });
+
+    }
+    else {
+        $('#submit_btn').html(defaultBtnValue);
+        $('#submit_btn').attr("disabled", false);
+        errorAlert("please fill the form correctly");
+    }
+
+}
+
+function EditTreatment() {
+    var defaultBtnValue = $('#submit_Btn').html();
+    $('#submit_Btn').html("Please wait...");
+    $('#submit_Btn').attr("disabled", true);
+    var data = {};
+    data.Id = $('#editId').val();
+    data.Name = $('#edit_Name').val();
+    data.Price = $('#edit_Price').val();
+    data.Description = $('#edit_Discription').val();
+    if (data.Name != "" && data.Price != "") {
+        let TreatmentViewModel = JSON.stringify(data);
+        $.ajax({
+            type: 'Post',
+            dataType: 'json',
+            url: '/Treatment/EditTreatment',
+            data:
+            {
+                treatmentDetails: TreatmentViewModel,
+            },
+            success: function (result) {
+                if (!result.isError) {
+                    newSuccessAlert(result.msg, result.url)
+                    $('#submit_Btn').html(defaultBtnValue);
+                }
+                else {
+                    $('#submit_Btn').html(defaultBtnValue);
+                    $('#submit_Btn').attr("disabled", false);
+                    errorAlert(result.msg)
+                }
+            },
+            error: function (ex) {
+                $('#submit_Btn').html(defaultBtnValue);
+                $('#submit_Btn').attr("disabled", false);
+                errorAlert("Network failure, please try again");
+            }
+        });
+    }
+    else {
+        $('#submit_Btn').html(defaultBtnValue);
+        $('#submit_Btn').attr("disabled", false);
+        errorAlert("please fill the form correctly");
+    }
+}
+
+function DeleteTreatment() {
+    var data = {};
+    data.Id = $('#delete_Id').val();
+    if (data.Id != null) {
+        let TreatmentViewModel = JSON.stringify(data);
+        if (TreatmentViewModel != "") {
+            $.ajax({
+                type: 'Post',
+                dataType: 'json',
+                url: '/Treatment/DeleteTreatment',
+                data:
+                {
+                    treatmentDetails: TreatmentViewModel,
+                },
+                success: function (result) {
+                    if (!result.isError) {
+                        var url = '/Treatment/Index';
+                        successAlertWithRedirect(result.msg, url)
+                    }
+                    else {
+                        errorAlert(result.msg)
+                    }
+                },
+                error: function (ex) {
+                    errorAlert("Network failure, please try again");
+                }
+            });
+        }
+        else {
+            errorAlert("Please fill the form correctly");
+        }
+    }
+}
+
+function GetTreatment(id) {
+    $.ajax({
+        type: 'GET',
+        url: '/Treatment/GetTreatmentByID', // we are calling json method
+        dataType: 'json',
+        data:
+        {
+            treatmentID: id
+        },
+        success: function (data) {
+            if (!data.isError) {
+
+                $("#delete_Id").val(data.data.id);
+                $("#editId").val(data.data.id);
+                $("#edit_Name").val(data.data.name);
+                $("#edit_Price").val(data.data.price);
+                $("#edit_Discription").val(data.data.description);
+            }
+        },
+        error: function (ex) {
+            "please fill the form correctly" + errorAlert(ex);
+        }
+    });
+}
+
+function addShiftLocation(id) {
+    debugger;
+    $.ajax({
+        type: 'GET',
+        url: '@Url.Action("AddShiftLocation", "Admin")', //we are calling json method
+        data: { branchId: id },
+        success: function (data) {
+            $("#myModalBody").html(data);
+        }
+    });
+    $("#myModal").modal();
+};
+
+
+function GetLocation() {
+    debugger;
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (showPosition) {
+            var latitude = showPosition.coords.latitude;
+            var longitude = showPosition.coords.longitude;
+            $("#lat").val(latitude).prop("readonly", true);
+            $("#long").val(longitude).prop("readonly", true);
+            // $("#getcode").hide();
+        });
+
+    }
+}
+
+
+function UpdateLocation(id) {
+    var latitude = $("#lat").val();
+    var longitude = $("#long").val();
+    var radius = $("#Autocomp").val();
+
+    debugger;
+    $.ajax({
+        type: 'Get',
+        url: '@Url.Action("AddBranchLocation", "Api")',
+        dataType: 'json',
+        data: { branchId: id, latitude: latitude, longitude: longitude, radius: radius },
+        success: function (result) {
+            debugger;
+            if (!result.isError) {
+
+                successAlert(result.msg);
+                location.reload("AddCompanyBranch");
+            }
+            else {
+                errorAlert(result.msg);
+            }
+        },
+        error: function (ex) {
+            errorAlert(result.msg);
+        }
+    });
+}

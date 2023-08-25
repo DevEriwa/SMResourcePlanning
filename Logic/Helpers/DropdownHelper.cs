@@ -221,5 +221,26 @@ namespace Logic.Helpers
             }
             return null;
         }
+
+        public List<Shifts> GetShifts()
+        {
+            var shifts = new List<Shifts>();
+            var common = new Shifts()
+            {
+                Id = 0,
+                Name = "-- Select --"
+            };
+            var shift = _context.shift.Where(a => a.Id > 0 && a.Active && !a.Deleted).Select(c => new Shifts()
+            {
+                Id = c.Id,
+                Name = c.AbbreviatedName,
+            }).ToList();
+            shift.Insert(0, common);
+            if (shift.Any())
+            {
+                shifts = shift;
+            }
+            return shifts;
+        }
     }
 }

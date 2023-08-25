@@ -12,5 +12,6 @@ namespace Logic.IHelpers
 		List<ApplicationUser> GetAllUsersInRota();
 		Task<List<Country>> GetCountry();
 		Task<List<State>> GetState();
+		List<Shifts> GetShifts();
     }
 }

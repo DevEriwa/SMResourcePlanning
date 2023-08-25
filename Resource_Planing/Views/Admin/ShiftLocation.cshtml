@@ -1,11 +1,8 @@
-﻿@model Core.Models.ApplicationUser
-@inject Logic.IHelpers.IUserHelper helper;
-@{
-
-    ViewData["Title"] = "AllocateShifts";
+﻿@*@model Core.Models.ApplicationUser
+*@@{
+    ViewData["Title"] = "Shift Location";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-
 
 <div class="page-wrapper">
     <div class="content container-fluid">
@@ -46,96 +43,104 @@
                                     <th class="text-right">Action</th>
                                 </tr>
                             </thead>
-                            <tbody>
-                                @*@foreach (var obj in CompanyBranch)
-                                {*@
-                                    <tr>
-
-                                        @*<td> @obj.Name</td>
-                                        <td> @obj.Country?.Name</td>
-                                        <td> @obj.State?.Name</td>
-                                        <td> @obj.PostalCode</td>
-                                        <td> @obj.Address</td>
-                                        <td>
-
-                                            <div class="">
-
-                                                <button class="btn add-tg-btn" onclick="addBranchLocation('@obj.Id')" data-target="#approve_leave" id="fff"> Update Location</button>
-
-                                            </div>
-                                        </td>
-                                        <td class="text-right">
-                                            <div class="dropdown dropdown-action">
-                                                <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
-                                                <div class="dropdown-menu dropdown-menu-right">
-                                                    <a class="dropdown-item" data-toggle="modal" data-target="#edit_department" asp-route-id="@obj.Id"><i class="fa fa-pencil m-r-5"></i> Edit</a>
-                                                    <a class="dropdown-item" data-toggle="modal" data-target="#delete_department" asp-route-id="@obj.Id"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
+                            @*@if (Model.Count() > 0 && Model != null)
+                            {
+                                <tbody id="bookingDetails">
+                                    @foreach (var bookingGroup in Model)
+                                    {
+                                        <tr>
+                                            <td></td>
+                                            <td>@bookingGroup.Name</td>
+                                            <td>@bookingGroup.ExpectedCostPrice</td>
+                                            <td>@bookingGroup.ExpectedDateOfArrival</td>
+                                            <td>@bookingGroup.TotalQuantityBooked</td>
+                                            <td>
+                                                <div class="">
+                                                  <button class="btn add-tg-btn" onclick="addShiftLocation('@obj.Id')" data-target="#approve_leave" id="fff"> Update Shift Location</button>
                                                 </div>
-                                            </div>
-                                        </td>
-*@
-                                    </tr>
+                                            </td>
+                                            <td class="text-right">
 
-
-
-
-                                @*}*@
-                            </tbody>
+                                                <div class="dropdown dropdown-action">
+                                                    <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
+                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                        <a class="dropdown-item" data-toggle="modal" data-target="#edit_termination" onclick="GetBookingGroupById('@bookingGroup.Id')"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+                                                        <a class="dropdown-item" data-toggle="modal" data-target="#delete_termination" onclick="GetBookingGroupById('@bookingGroup.Id')"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    }
+                                </tbody>
+                            }*@
                         </table>
                     </div>
                 </div>
             </div>
-
-
-       @* }
-        else
-        {
-            <h2 class="text-center text-primary">No Branch Created for this company </h2>
-        }*@
     </div>
-    @*Add CompanyBranch Modal*@
+    <!-- Add Shiftocation Modal -->
     <div id="add_department" class="modal custom-modal fade" role="dialog">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add Company's Branch</h5>
+                    <h5 class="modal-title">Add Shifts Location</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    @*<form asp-action="AddCompanyBranch" asp-controller="Admin" method="post">
-                        <div class="form-group">
-                            <label>Branch Name <span class="text-danger">*</span></label>
-                            <input asp-for="Name" class="form-control" type="text" required>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Shift Location Name<span class="text-danger">*</span></label>
+                                <input class="form-control" type="text" id="sl_Name">
+                                <p class="text-danger" id="NameVDT" hidden></p>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Country <span class="text-danger">*</span></label>
-                            <select class="form-control" required asp-for="CountryId" id="CountryId" asp-items="@(new SelectList(@ViewBag.Country,  "Id", "Name" ))"> </select>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Address<span class="text-danger">*</span></label>
+                                <input class="form-control floating" type="date" id="adrress">
+                                <p class="text-danger" id="adrressVDT" hidden></p>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>State</label>
-                            <select class="form-control" type="text" asp-for="StateId" id="StateId" required> </select>
+                    </div> 
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Shifts <span class="text-danger">*</span></label>
+                                <div>
+                                    @*<select id="shiftId" style="width:100%" asp-items="@(new SelectList(ViewBag.Shifts  ,"Id", "Name" ))" class="makeFilter form-control"> </select>*@
+                                </div>
+                            </div>
                         </div>
-
-                        <div class="form-group">
-                            <label>Postal Code <span class="text-danger">*</span></label>
-                            <input class="form-control" asp-for="PostalCode" type="text" required placeholder="Enter Postal code">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>State <span class="text-danger">*</span></label>
+                                <div>
+                                    @*<select id="stateId" style="width:100%" asp-items="@(new SelectList(ViewBag.State  ,"Id", "Name" ))" class="makeFilter form-control"> </select>*@
+                                </div>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label>Address</label>
-                            <input class="form-control " type="text" asp-for="Address" placeholder="Please Enter Branch Address" required>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label>Postal Code<span class="text-danger">*</span></label>
+                                <input class="form-control floating" type="date" id="postalCode">
+                                <p class="text-danger" id="postalCodeVDT" hidden></p>
+                            </div>
                         </div>
-                        <div class="submit-section">
-                            <button class="btn btn-primary submit-btn">Submit</button>
-                        </div>
-                    </form>*@
+                    </div>
+                    <div class="submit-section">
+                        <button class="btn btn-primary submit-btn" onclick="createShiftLocation()">Submit</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-    @*/Add Department Modal
-    Edit Department Modal*@
+    <!-- Add Shiftocation Modal -->
+    <!-- Edit Shiftocation Modal -->
     <div id="edit_department" class="modal custom-modal fade" role="dialog">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
@@ -176,8 +181,8 @@
             </div>
         </div>
     </div>
-    @*/Edit Department Modal
-    Delete Department Modal*@
+    <!-- Edit Shiftocation Modal -->
+    <!-- Delete Shiftocation Modal -->
     <div class="modal custom-modal fade" id="delete_department" role="dialog">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -200,5 +205,13 @@
             </div>
         </div>
     </div>
-    @*/Delete Department Modal*@
+    <!-- Delete Shiftocation Modal -->
+
+    <div class="modal" id="myModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content w-75 m-auto" id="myModalBody">
+                @*<img src="~/images/loader.gif" id="myLoader" />*@
+            </div>
+        </div>
+    </div>
 </div>
