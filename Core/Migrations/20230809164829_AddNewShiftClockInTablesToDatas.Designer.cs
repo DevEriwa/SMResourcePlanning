@@ -4,6 +4,7 @@ using Core.Db;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Core.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230809164829_AddNewShiftClockInTablesToDatas")]
+    partial class AddNewShiftClockInTablesToDatas
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -183,9 +185,6 @@ namespace Core.Migrations
                     b.Property<double?>("FixedAmount")
                         .HasColumnType("float");
 
-                    b.Property<double?>("HourlyPay")
-                        .HasColumnType("float");
-
                     b.Property<bool?>("IsFixed")
                         .HasColumnType("bit");
 
@@ -206,59 +205,6 @@ namespace Core.Migrations
                     b.HasIndex("LocationId");
 
                     b.ToTable("shift");
-                });
-
-            modelBuilder.Entity("Core.Models.ShiftsLocation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<double>("AcceptedRadius")
-                        .HasColumnType("float");
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("DeteCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double>("Latitude")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Longitude")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PostalCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ShiftId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("StateId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ShiftId");
-
-                    b.HasIndex("StateId");
-
-                    b.ToTable("ShiftsLocations");
                 });
 
             modelBuilder.Entity("Core.Models.StaffClockIn", b =>
@@ -680,25 +626,6 @@ namespace Core.Migrations
                         .HasForeignKey("LocationId");
 
                     b.Navigation("Locations");
-                });
-
-            modelBuilder.Entity("Core.Models.ShiftsLocation", b =>
-                {
-                    b.HasOne("Core.Models.Shifts", "Shift")
-                        .WithMany()
-                        .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Core.Models.State", "State")
-                        .WithMany()
-                        .HasForeignKey("StateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Shift");
-
-                    b.Navigation("State");
                 });
 
             modelBuilder.Entity("Core.Models.StaffClockIn", b =>

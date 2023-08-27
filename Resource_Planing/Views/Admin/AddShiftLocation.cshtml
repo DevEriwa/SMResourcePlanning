@@ -1,0 +1,51 @@
+﻿@model Core.Models.ShiftsLocation
+
+
+<div class">
+    <div class="">
+
+        <div class="modal-body m-3 ">
+
+            <form asp-action="AddBranchLocation" asp-controller="Api" method="post">
+                <p>By clicking the <b>Generate coordinate</b> button, we will take your current location as the accepted location of your company branch </p>
+                <div class="submit-section mt-2">
+                    <a id="getcode" onclick="GetLocation()" class="btn btn-primary submit-btn">Generate Coordinates</a>
+                </div>
+                <div class="form-group ">
+                    <label class="text-primary">Latitude <span class="text-danger">*</span></label>
+                    <input class="form-control" asp-for="Latitude" id="lat" type="text" value="@Model?.Latitude" placeholder="Latitude" required>
+                </div>
+                <div class="form-group ">
+                    <label class="text-primary">Longitude <span class="text-danger">*</span></label>
+                    <input required class="form-control" id="long" value="@Model?.Longitude" asp-for="Longitude" placeholder="Longitude">
+                </div>
+                <p class="mb-0">This is the distance from which an employee is allowed to clockin from.</p>
+                <p class=" mb-0"><b>Note:</b>&nbsp; Anyone outside this range will not be detected, we advice you use <b>50</b> (meters). </p>
+                <div class="form-group">
+                    <label class="text-primary">max clockIn Radius <span class="text-danger">*</span></label>
+                    <div class="input-group">
+                        <input id="Autocomp" required class="form-control" value="@Model.AcceptedRadius" asp-for="AcceptedRadius" placeholder="Acceted ClockIn Radius">
+                        <div class="input-group-append">
+                            <span class="input-group-text">Meters</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="submit-section">
+                    <a onclick="UpdateLocation('@Model.Id')" class="btn btn-primary submit-btn">Save</a>
+                </div>
+            </form>
+
+        </div>
+
+
+    </div>
+
+</div>
+
+
+
+<script>
+    
+
+</script>
