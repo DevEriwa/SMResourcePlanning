@@ -121,6 +121,11 @@
                         <label class="col-form-label">Abbreviated Location Name <span class="text-danger">*</span></label>
                         <input class="form-control" type="text" id="abbreviationlocationName">
                     </div>
+                    <div class="form-group">
+                        <label class="col-form-label">Users</label>
+                        <select class="select2" multiple="multiple" data-placeholder="Select a State" style="width: 100%;" id="userIds" name="userIds" asp-items="@(new SelectList(ViewBag.UserInRota ,"Id", "Name" ))">
+                        </select>
+                    </div>
                     <div class="submit-section">
                         <button class="btn btn-primary submit-btn" id="submit_btn" onclick="addLocation()">Submit</button>
                     </div>

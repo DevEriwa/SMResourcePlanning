@@ -5,6 +5,7 @@ using Logic.IHelpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Net;
 using System.Runtime.CompilerServices;
@@ -61,11 +62,16 @@ namespace Logic.Helpers
 		{
 			if (locationDetails != null)
 			{
+				if(locationDetails.ListOfUserId != null)
+				{
+					locationDetails.UserIds = JsonConvert.SerializeObject(locationDetails.ListOfUserId);
+                }
 				var locationModel = new Location()
 				{
 					Name = locationDetails.Name,
 					AbbreviatedName = locationDetails.AbbreviatedName,
-					Active = true,
+					UserIds = locationDetails.UserIds,
+                    Active = true,
 					Deleted = false,
 					DeteCreated = DateTime.Now,
 				};

@@ -37,7 +37,8 @@ namespace Resource_Planing.Controllers
 		{
 			var newLocationList = new List<Location>();
 			var locations = _userHelper.GetLocations();
-			if (locations.Any())
+            ViewBag.UserInRota = _dropdownHelper.GetAllUsersInRota();
+            if (locations.Any())
 			{
 				newLocationList = locations;
 			}
