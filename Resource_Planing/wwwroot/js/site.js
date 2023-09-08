@@ -600,29 +600,30 @@ function ResetPassword(token) {
 
 
 function createShiftLocation() {
+    debugger;
     var defaultBtnValue = $('#submit_btn').html();
     $('#submit_btn').html("Please wait...");
     $('#submit_btn').attr("disabled", true);
     var data = {};
     data.PostalCode = $('#postalCode').val();
     data.Address = $('#adrress').val();
-    data.Name = $('#Name').val();
-    data.Shifts = $('#shiftId').val();
-    data.State = $('#stateId').val();
+    data.Name = $('#sl_Name').val();
+    data.ShiftId = $('#shiftId').val();
+    data.StateId = $('#stateId').val();
 
-    if (data.PostalCode != "" && data.Address != "" && data.Name != "" && data.Shifts != "0" && data.State != "0") {
+    if (data.PostalCode != "" && data.Address != "" && data.Name != "" && data.ShiftId != "0" && data.StateId != "0") {
         let ShiftViewModel = JSON.stringify(data);
         $.ajax({
             type: 'Post',
             dataType: 'json',
-            url: '/Admin/CreateShiftLocation',
+            url: '/ClockIn/CreateShiftLocation',
             data:
             {
                 shiftDetails: ShiftViewModel,
             },
             success: function (result) {
                 if (!result.isError) {
-                    var url = '/Admin/ShiftLocation';
+                    var url = '/ClockIn/Index';
                     successAlertWithRedirect(result.msg, url)
                     $('#submit_btn').html(defaultBtnValue);
                 }
@@ -648,24 +649,26 @@ function createShiftLocation() {
 
 }
 
-function EditTreatment() {
+function EditShiftLocation() {
+    debugger
     var defaultBtnValue = $('#submit_Btn').html();
     $('#submit_Btn').html("Please wait...");
     $('#submit_Btn').attr("disabled", true);
     var data = {};
-    data.Id = $('#editId').val();
-    data.Name = $('#edit_Name').val();
-    data.Price = $('#edit_Price').val();
-    data.Description = $('#edit_Discription').val();
-    if (data.Name != "" && data.Price != "") {
-        let TreatmentViewModel = JSON.stringify(data);
+    data.PostalCode = $('#edit_postalCode').val();
+    data.Address = $('#edit_adrress').val();
+    data.Name = $('#edit_sl_Name').val();
+    data.ShiftId = $('#edit_shiftId').val();
+    data.StateId = $('#edit_stateId').val();
+    if (data.PostalCode != "" && data.Address != "" && data.Name != "" && data.ShiftId != "0" && data.StateId != "0") {
+        let ShiftViewModel = JSON.stringify(data);
         $.ajax({
             type: 'Post',
             dataType: 'json',
-            url: '/Treatment/EditTreatment',
+            url: '/ClockIn/EditShiftLocation',
             data:
             {
-                treatmentDetails: TreatmentViewModel,
+                shiftDetails: ShiftViewModel,
             },
             success: function (result) {
                 if (!result.isError) {
@@ -692,23 +695,23 @@ function EditTreatment() {
     }
 }
 
-function DeleteTreatment() {
+function DeleteShiftLocation() {
     var data = {};
     data.Id = $('#delete_Id').val();
     if (data.Id != null) {
-        let TreatmentViewModel = JSON.stringify(data);
-        if (TreatmentViewModel != "") {
+        let ShiftViewModel = JSON.stringify(data);
+        if (ShiftViewModel != "") {
             $.ajax({
                 type: 'Post',
                 dataType: 'json',
-                url: '/Treatment/DeleteTreatment',
+                url: '/ClockIn/DeleteShiftLocation',
                 data:
                 {
-                    treatmentDetails: TreatmentViewModel,
+                    shiftDetails: ShiftViewModel,
                 },
                 success: function (result) {
                     if (!result.isError) {
-                        var url = '/Treatment/Index';
+                        var url = '/ClockIn/Index';
                         successAlertWithRedirect(result.msg, url)
                     }
                     else {
@@ -726,23 +729,28 @@ function DeleteTreatment() {
     }
 }
 
-function GetTreatment(id) {
+function GetShiftLocationById(id) {
+    debugger
     $.ajax({
         type: 'GET',
-        url: '/Treatment/GetTreatmentByID', // we are calling json method
+        url: '/ClockIn/GetShiftLocationById', // we are calling json method
         dataType: 'json',
         data:
         {
-            treatmentID: id
+            shiftLocationID: id
         },
         success: function (data) {
+            debugger
             if (!data.isError) {
-
-                $("#delete_Id").val(data.data.id);
                 $("#editId").val(data.data.id);
-                $("#edit_Name").val(data.data.name);
-                $("#edit_Price").val(data.data.price);
-                $("#edit_Discription").val(data.data.description);
+                $("#deleteId").val(data.data.id);
+                $("#edit_stateId").val(data.data.state.id);
+                $("#edit_shiftId").val(data.data.shift.id);
+                $("#edit_sl_Name").val(data.data.name);
+                $("#edit_adrress").val(data.data.address);
+                $("#edit_postalCode").val(data.data.postalCode);
+                //$("#select2-EditedproductTypeId-container").text(data.data.productType.name);
+               //$("#EditedproductTypeId").val(data.data.productType.id);
             }
         },
         error: function (ex) {
@@ -750,21 +758,21 @@ function GetTreatment(id) {
         }
     });
 }
-
 function addShiftLocation(id) {
     debugger;
     $.ajax({
         type: 'GET',
-        url: '@Url.Action("AddShiftLocation", "Admin")', //we are calling json method
-        data: { branchId: id },
+        url: '/ClockIn/AddShiftLocation/' + id, // Update the URL as needed
+        data: { shiftId: id },
         success: function (data) {
             $("#myModalBody").html(data);
+            $("#myModal").modal(); // Show the modal after content is loaded
+        },
+        error: function (ex) {
+            "No Data Found" + errorAlert(ex);
         }
     });
-    $("#myModal").modal();
-};
-
-
+}
 function GetLocation() {
     debugger;
     if (navigator.geolocation) {
@@ -781,29 +789,26 @@ function GetLocation() {
 
 
 function UpdateLocation(id) {
+    debugger
     var latitude = $("#lat").val();
     var longitude = $("#long").val();
     var radius = $("#Autocomp").val();
 
-    debugger;
     $.ajax({
-        type: 'Get',
-        url: '@Url.Action("AddBranchLocation", "Api")',
+        type: 'POST', // Change to 'POST'
+        url: '/ClockIn/AddLocationShift/', // Update URL as needed
         dataType: 'json',
-        data: { branchId: id, latitude: latitude, longitude: longitude, radius: radius },
+        data: { shiftId: id, latitude: latitude, longitude: longitude, radius: radius },
         success: function (result) {
-            debugger;
             if (!result.isError) {
-
                 successAlert(result.msg);
-                location.reload("AddCompanyBranch");
-            }
-            else {
+                location.reload(); // No need to pass "Index" here
+            } else {
                 errorAlert(result.msg);
             }
         },
         error: function (ex) {
-            errorAlert(result.msg);
+            "please fill the form correctly" + errorAlert(ex);
         }
     });
 }

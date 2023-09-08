@@ -1,12 +1,11 @@
 ﻿@model Core.Models.ShiftsLocation
 
-
 <div class">
     <div class="">
 
         <div class="modal-body m-3 ">
 
-            <form asp-action="AddBranchLocation" asp-controller="Api" method="post">
+            <form asp-action="AddLocationShift" asp-controller="ClockIn" method="post">
                 <p>By clicking the <b>Generate coordinate</b> button, we will take your current location as the accepted location of your company branch </p>
                 <div class="submit-section mt-2">
                     <a id="getcode" onclick="GetLocation()" class="btn btn-primary submit-btn">Generate Coordinates</a>
@@ -42,10 +41,3 @@
     </div>
 
 </div>
-
-
-
-<script>
-    
-
-</script>
