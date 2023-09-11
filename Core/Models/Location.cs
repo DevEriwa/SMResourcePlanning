@@ -11,6 +11,6 @@ namespace Core.Models
 	public class Location : BaseModel
 	{
 		public string? AbbreviatedName { get; set; }
-
+		public string? UserIds { get; set; }		
 	}
 }

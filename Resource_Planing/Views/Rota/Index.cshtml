@@ -22,24 +22,30 @@
 <section class="content-header">
 	<div class="container-fluid">
 		<div class="row mb-2">
-			<div class="col-sm-6">
+			<div class="col-sm-4">
 				<h1>Shifts Allocation</h1>
 			</div>
-			<div class="col-sm-6">
+			<div class="col-sm-8">
 				<div class="row">
 					<div class="input-group input-group-sm col-4">
+						<div class="input-group-prepend">
+							<span class="input-group-text"><small>Home</small></span>
+						</div>
+						<select id="locId" asp-items="@(new SelectList(ViewBag.Location  ,"Id", "Name" ))" class="form-control"> </select>
+					</div>
+					<div class="input-group input-group-sm col-3">
 						<div class="input-group-prepend">
 							<span class="input-group-text"><small>Start</small></span>
 						</div>
 						<input type="date" id="start_DateId" class="form-control">
 					</div>
-					<div class="input-group input-group-sm col-4">
+					<div class="input-group input-group-sm col-3">
 						<div class="input-group-prepend">
 							<span class="input-group-text"><small>End</small></span>
 						</div>
 						<input type="date" id="end_DateId" class="form-control">
 					</div>
-					<div class="input-group input-group-sm col-4">
+					<div class="input-group input-group-sm col-2">
 						<button class="form-control btn btn-success" onclick="GetRotaByDateRange()">Submit</button>
 					</div>
 				</div>
