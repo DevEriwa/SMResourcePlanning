@@ -70,7 +70,7 @@
                                                         <span class="sr-only">Toggle Dropdown</span>
                                                     </button>
                                                     <div class="dropdown-menu" role="menu">
-                                                        <a class="dropdown-item" href="#" data-toggle="modal" data-target="#edit_location" onclick="locationToBeEdited('@location.Id')"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+                                                        <a class="dropdown-item" href="#"  onclick="locationToBeEdited('@location.Id')"><i class="fa fa-pencil m-r-5"></i> Edit</a>
                                                         <div class="dropdown-divider"></div>
                                                         <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_location" onclick="locationToBeDeleted('@location.Id')"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
                                                     </div>
@@ -123,7 +123,8 @@
                     </div>
                     <div class="form-group">
                         <label class="col-form-label">Users</label>
-                        <select class="select2" multiple="multiple" data-placeholder="Select a State" style="width: 100%;" id="userIds" name="userIds" asp-items="@(new SelectList(ViewBag.UserInRota ,"Id", "Name" ))">
+                        <select class="select2" multiple="multiple" data-placeholder="Select User" style="width: 100%;" id="userIds" name="userIds" 
+                                asp-items="@(new SelectList(ViewBag.UserInRota ,"Id", "Name" ))">
                         </select>
                     </div>
                     <div class="submit-section">
@@ -156,8 +157,10 @@
                     </div>
 
                     <div class="col-sm-12">
-                        <label class="col-form-label">Date Created <span class="text-danger">*</span></label>
-                        <input class="form-control" type="date" id="editDateCreate_date">
+                        <label class="col-form-label">Users</label>
+                        <select class="select2" multiple="multiple" data-placeholder="Select users" style="width: 100%;" id="editUserIds" name="editUserIds"
+                                asp-items="@(new SelectList(ViewBag.UserInRota ,"Id", "Name" ))">
+                        </select>
                     </div>
 
                     <div class="col-sm-12">

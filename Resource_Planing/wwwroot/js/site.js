@@ -660,7 +660,16 @@ function locationToBeEdited(id) {
                 $('#editLocationId').val(result.id);
                 $('#editLocation_Name').val(result.name);
                 $('#editabbreviationlocation_Name').val(result.abbreviatedName);
-                $('#editDateCreate_date').val(date);
+                if (result.userIds != null) {
+                    var userArray = JSON.parse(result.userIds)
+                    if (userArray.length > 0) {
+                        $('#editUserIds').val(userArray);
+                        $('#editUserIds').trigger('change');
+                    }
+                } else {
+                    $('#editUserIds').val(null).trigger('change');
+                }
+                $('#edit_location').modal('show');
             }
             else {
                 errorAlert(result.msg)
@@ -680,8 +689,8 @@ function LocationToSave() {
     data.Id = $("#editLocationId").val();
     data.Name = $("#editLocation_Name").val();
     data.AbbreviatedName = $("#editabbreviationlocation_Name").val();
-    data.DateCreated = $("#editDateCreate_date").val();
-    if (data.Name != "" && data.DateCreated != "" && data.AbbreviatedName != "") {
+    data.ListOfUserId = $('#editUserIds').val();
+    if (data.Name != "" && data.ListOfUserId != "" && data.AbbreviatedName != "") {
         let editlocationdetails = JSON.stringify(data);
         $.ajax({
             type: 'POST',
