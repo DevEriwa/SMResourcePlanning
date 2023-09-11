@@ -15,6 +15,11 @@ namespace Core.Db
         public DbSet<Location> locations { get; set; }
         public DbSet<Shifts> shift { get; set; }
         public DbSet<StaffRota> StaffRotas { get; set; }
+		public DbSet<Attendance> Attendances { get; set; }
+		public DbSet<Country> Country { get; set; }
+		public DbSet<StaffClockIn> StaffClockIns { get; set; }
+		public DbSet<State> State { get; set; }
+		public DbSet<ShiftsLocation> ShiftsLocations { get; set; }
     }
 }
 

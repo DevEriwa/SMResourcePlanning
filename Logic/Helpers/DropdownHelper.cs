@@ -178,5 +178,63 @@ namespace Logic.Helpers
 			}
 			return users;
 		}
-	}
+
+
+        public async Task<List<Country>> GetCountry()
+        {
+            var common = new Country()
+            {
+                Id = 0,
+                Name = "-- Select --"
+
+            };
+            var selectedCountry = await _context.Country.OrderBy(x => x.Name).Where(x => x.Active && !x.Deleted).ToListAsync();
+            if (selectedCountry != null)
+            {
+                selectedCountry.Insert(0, common);
+                return selectedCountry;
+            }
+            return null;
+
+
+        }
+
+        public async Task<List<State>> GetState()
+        {
+            var common = new State()
+            {
+                Id = 0,
+                Name = "-- Select --"
+
+            };
+            var selectedState = await _context.State.OrderBy(x => x.Name).Where(x => x.Active && !x.Deleted).ToListAsync();
+            if (selectedState != null)
+            {
+                selectedState.Insert(0, common);
+                return selectedState;
+            }
+            return null;
+        }
+
+        public List<Shifts> GetShifts()
+        {
+            var shifts = new List<Shifts>();
+            var common = new Shifts()
+            {
+                Id = 0,
+                Name = "-- Select --"
+            };
+            var shift = _context.shift.Where(a => a.Id > 0 && a.Active && !a.Deleted).Select(c => new Shifts()
+            {
+                Id = c.Id,
+                Name = c.AbbreviatedName,
+            }).ToList();
+            shift.Insert(0, common);
+            if (shift.Any())
+            {
+                shifts = shift;
+            }
+            return shifts;
+        }
+    }
 }

@@ -10,6 +10,8 @@ namespace Logic.IHelpers
 		List<Location> GetLocations();
 		List<Department> GetDepartments();
 		List<ApplicationUser> GetAllUsersInRota();
-
-	}
+		Task<List<Country>> GetCountry();
+		Task<List<State>> GetState();
+		List<Shifts> GetShifts();
+    }
 }
