@@ -30,11 +30,11 @@ namespace Resource_Planing.Controllers
             return View();
         }
 
-		public JsonResult GetRotaDataByDateRange(DateTime startDate, DateTime endDate)
+		public JsonResult GetRotaDataByDateRange(DateTime startDate, DateTime endDate, int locId)
 		{
-            if (startDate != DateTime.MinValue && endDate != DateTime.MinValue)
+            if (startDate != DateTime.MinValue && endDate != DateTime.MinValue && locId > 0)
             {
-                var model = _rotaHelper.GenerateNewRota(startDate, endDate);
+                var model = _rotaHelper.GenerateNewRota(startDate, endDate, locId);
                 if (model != null)
                 {
                     return Json(model);
