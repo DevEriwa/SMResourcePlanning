@@ -24,5 +24,12 @@ namespace Logic.IHelpers
 		List<Shifts> GetShifts();
 		bool EditShift(ShiftViwModel shiftDetails);
 		bool DeleteShift(int id);
-	}
+		List<EmployeeLeave> GetListOfAllLeave();
+		List<EmployeeLeave> GetEmployeeLeave(string username);
+		Leave GetAnnualLeave(string username);
+		EmployeeLeave GetLeaveById(int id);
+		EmployeeLeave GetEmployeeLeaveById(int id);
+		string EditEmployeeLeave(EmployeeLeaveViewModel employeeLeaveViewModel);
+		List<EmployeeLeave> GetAllLeave(string currentAdminUsername);
+    }
 }

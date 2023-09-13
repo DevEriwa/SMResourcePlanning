@@ -1,0 +1,700 @@
+﻿@using static Core.Enums.Resource_Planing
+@inject Logic.IHelpers.IUserHelper _userHelper;
+@model Core.Models.EmployeeLeave
+@{
+    ViewData["Title"] = "RequestLeave";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    var name = User.Identity.Name;
+    var tableUpdate = _userHelper.GetEmployeeLeave(name);
+    var annualLeaves = tableUpdate.Where(x => x.Name.ToLower().Contains("annual")).ToList();
+    var annualLeave = _userHelper.GetAnnualLeave(User.Identity.Name);
+}
+
+
+<div class="page-wrapper">
+
+    <!-- Page Content -->
+    <div class="content container-fluid">
+
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="row align-items-center">
+                <div class="col">
+                    <h3 class="page-title">Leaves</h3>
+                    <ul class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="index.html">Dashboard</a></li>
+                        <li class="breadcrumb-item active">Leaves</li>
+                    </ul>
+
+                </div>
+                <div class="col-auto float-right ml-auto">
+                    <a href="#" class="btn add-btn" data-toggle="modal"
+                       data-target="#add_leave"><i class="fa fa-plus"></i> Request For Leave</a>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- /Page Header -->
+        <!-- Leave Statistics -->
+        @if (tableUpdate == null || tableUpdate.Count() == 0)
+        {
+            <div><h2 class="text-center text-primary">No leave yet</h2></div>
+
+        }
+        else
+        {
+            @if (annualLeaves.Count() != 0)
+            {
+                <div class="row">
+                    <div class="col-md-3" onclick="getleaveByLeaveType(@annualLeaves.FirstOrDefault().Id)">
+                        <div class="stats-info">
+                            <h6>Annual Leave </h6>
+                            <h4>@annualLeaves.Count()</h4>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group form-focus select-focus">
+                            <select class="select floating form-control" id="leaveTypeId" onchange="getleaveByLeaveType()" asp-items="@(new SelectList(@ViewBag.Leave,  "Id" ,"Name"))"></select>
+                            <label class="focus-label">Other Leaves</label>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            <!-- /Leave Statistics -->
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="table-responsive">
+                        <table class="table table-striped custom-table mb-0 datatable">
+                            <thead>
+                                <tr>
+                                    <th>Leave Type</th>
+                                    <th>From</th>
+                                    <th>To</th>
+                                    <th>Date Applied</th>
+                                    <th class="text-center">Reason for leave</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="text-right no-sort">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="leaveDetails">
+                                @foreach (var obj in tableUpdate)
+                                {
+                                    <tr>
+
+                                        <td>@obj.StaffName</td>
+                                        <td>@obj.LeaveType</td>
+                                        <td>@obj.StartDate.ToString("D")</td>
+                                        <td>@obj.EndDate.ToString("D")</td>
+                                        <td>@obj.DeteCreated.ToString("D")</td>
+                                        <td class="submit-section">
+                                            <a class="btn btn-primary submit-btn" data-target="#viewMore_department" data-toggle="modal"
+                                               onclick="employeeViewLeaveReason('@obj.Id')">
+                                                View Reason
+                                            </a>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="action-label">
+                                                <a class="btn btn-white btn-sm btn-rounded disabled" href="javascript:void(0);">
+                                                    <i class="fa fa-dot-circle-o text-purple"></i> @obj.LeaveStatus
+                                                </a>
+                                            </div>
+                                        </td>
+
+                                        <td class="text-right">
+                                            <div class="dropdown dropdown-action">
+                                                <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    @if (obj.LeaveStatus == LeaveStatus.Applied)
+                                                    {
+                                                        <a class="dropdown-item" data-toggle="modal" data-target="#edit_leave" onclick="employeeLeaveToBeEdited('@obj.Id')"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+                                                        <a href="#" data-toggle="modal" data-target="#Cancel_leave" onclick="leaveToBeCancel('@obj.Id')" style="color:black"><i class="fa fa-times-circle-o ml-3 m-r-5" style="font-size:25px;color:red"></i>Cancel</a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a class="dropdown-item" onclick="leaveToBeEdited('APPROVE','DECLINE','CANCEL')"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+
+                                                        <a href="#" onclick="employeeCancelLeave('CANCELED')" style="color:black"><i class="fa fa-times-circle-o ml-3 m-r-5" style="font-size:25px;color:red"></i> Cancel</a>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        }
+    </div>
+    <!-- /Page Content -->
+    <!-- Add Leave Modal -->
+    <div id="add_leave" class="modal custom-modal fade" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Leave Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+
+                </div>
+                <div class="modal-body">
+                    <form asp-action="RequestLeave" asp-controller="Leave" method="post">
+                        <div class="form-group row p-3 ">
+                            <div class="radio ">
+                                <input asp-items="@annualLeave?.Id" type="radio" name="radio" id="CloseLeave">
+                                <label>Annual Leave </label>
+                            </div>
+                            <div class="radio ml-3">
+                                <input type="radio" name="radio" id="Btn">
+                                <label> Others</label>
+                            </div>
+                        </div>
+                        <div class="form-group" id="dropDown">
+                            <label>Leave Type <span class="text-danger">*</span></label>
+                            <select class="select form-control" required asp-for="Name" asp-items="@(new SelectList(@ViewBag.Leave,"Id", "Name"))">
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>From <span class="text-danger">*</span></label>
+                            <div>
+                                <input asp-for="StartDate" required class="form-control " min="@DateTime.Today.ToString("yyyy-MM-dd")" id="Start" type="date">
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <label>To <span class="text-danger">*</span></label>
+                            <div>
+                                <input asp-for="EndDate" required id="End" class="form-control " min="@DateTime.Today.ToString("yyyy-MM-dd")" type="date">
+                            </div>
+                            <div id="text" style="color:red">Ensure that your selected date contains a working day</div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <label>Leave Reason <span class="text-danger">*</span></label>
+                            <textarea rows="4" class="form-control" id="hh" asp-for="LeaveReason" required></textarea>
+                        </div>
+                        <div class="submit-section">
+                            <button class="btn btn-primary submit-btn" id="submit1" type="submit">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Add Leave Modal -->
+    <!-- Edit Leave Modal -->
+    <div id="edit_leave" class="modal custom-modal fade" role="dialog">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Leave Details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+
+                </div>
+                <div class="modal-body">
+                    <div class="form-group row p-3 ">
+                        <input class="form-control" type="text" id="leaveStaffId" hidden>
+                        <div class="radio ">
+                            <input type="radio" name="radio" id="annaulLeaveId" value="@annualLeave?.Id">
+                            <label>Annual Leave </label>
+                        </div>
+                        <div class="radio ml-3">
+                            <input type="radio" name="radio" id="btns">
+                            <label> Others</label>
+                        </div>
+                    </div>
+                    <div class="form-group" id="dropDowns">
+                        <label>Leave Type <span class="text-danger">*</span></label>
+                        <select class="select form-control" required id="otherTypeLeaveId" value="Name" asp-items="@(new SelectList(@ViewBag.Leave,"Id", "Name"))">
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>From <span class="text-danger">*</span></label>
+                        <div>
+                            <input id="startDate" required class="form-control " min="@DateTime.Today.ToString("yyyy-MM-dd")" type="date">
+                        </div>
+                        <div class="radio pt-1" style="float:right">
+                            <input type="checkbox" id="halfDay1" name="name" value="false" />
+                            <label>Half Day?</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>To <span class="text-danger">*</span></label>
+                        <div>
+                            <input id="endDate" required class="form-control " min="@DateTime.Today.ToString("yyyy-MM-dd")" type="date">
+                        </div>
+                        <div class="radio pt-1" style="float:right">
+                            <input type="checkbox" id="halfDay2" name="name" value="false" />
+                            <label>Half Day?</label>
+                        </div>
+                        <div id="text1" style="color:red">Ensure that your selected date contains a working day</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Number of days <span class="text-danger">*</span></label>
+                        <input id="numberOfDaysRemaining" class="form-control" type="text" disabled required>
+                    </div>
+                    <div class="form-group" id="remains">
+                        <label>Remaining Leaves <span class="text-danger">*</span></label>
+                        <input class="form-control" id="remainingLeaveDays" value="@ViewData["CompanyLeave"]" type="text" readonly>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Leave Reason <span class="text-danger">*</span></label>
+                        <textarea rows="4" class="form-control" id="leaveReason" required></textarea>
+                    </div>
+                    <div class="submit-section">
+                        <button class="btn btn-primary submit-btn" id="submit11" onclick="editStaffleave()" type="submit">Submit</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /Edit Leave Modal -->
+    <!-- /Cancel Leave Modal -->
+    <div class="modal custom-modal fade" id="Cancel_leave" role="dialog">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <div class="form-header">
+                        <h3>Employee Cancel Leave</h3>
+                        <p>Do You Wish to cancel this Leave?</p>
+                    </div>
+                    <div class="modal-btn delete-action">
+                        <div class="row">
+                            <div class="form-group d-none">
+                                <input type="text" id="cancel_Id" hidden>
+                            </div>
+                            <div class="col-6">
+                                <a onclick="employeeCancelLeave('NotCANCELED')" class="btn btn-primary continue-btn">Yes</a>
+                            </div>
+                            <div class="col-6">
+                                <a href="javascript:void(0);" data-dismiss="modal" class="btn btn-primary cancel-btn">Back</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function employeeViewLeaveReason(id) {
+        debugger;
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("ViewLeaveReason", "Leave")', //we are calling json method
+            data: { leaveId: id },
+            success: function (data) {
+                $("#employeeViewLeaveModalBody").html(data);
+            }
+        });
+        $("#employeeViewLeaveModal").modal();
+    };
+
+    function MarkAbsence() {
+	var date =	$('#abstoDate').val();
+	var id = $('#absId').val();
+
+	$.ajax({
+		type: 'POST',
+		dataType: 'Json',
+		url: '/Leave/EmployeeAbsence',
+		data:
+		{
+			date: date,
+			staffId : id
+		},
+		success: function (result) {
+			debugger;
+			$('#loader').show();
+			$('#loader-wrapper').fadeOut(3000);
+			if (!result.isError) {
+				var reloadUrl = window.location;
+				newSuccessAlert(result.msg, reloadUrl);
+			}
+
+			else {
+				$('#loader').show();
+				$('#loader-wrapper').fadeOut(3000);
+				errorAlert(result.msg);
+			}
+		},
+		error: function (ex) {
+			$('#loader').show();
+			$('#loader-wrapper').fadeOut(3000);
+			errorAlert(ex.responseText);
+		}
+	});
+}
+
+
+function leaveToBeCancel(Id) {
+	debugger;
+	$("#cancel_Id").val(Id);
+}
+
+
+function employeeCancelLeave(action) {
+	debugger
+	if (action == "CANCELED") {
+		errorAlert("Oops! This leave can't be canceled again");
+	}
+	else {
+		var cancelId = $("#cancel_Id").val();
+
+		$.ajax({
+			type: 'Post',
+			dataType: 'json',
+			url: '/Leave/CancelLeave',
+			data:
+			{
+				id: cancelId,
+			},
+			success: function (result) {
+				debugger
+				if (!result.isError) {
+					var url = '/Leave/RequestLeave';
+					successAlertWithRedirect(result.msg, url)
+				}
+				else {
+					errorAlert(result.msg)
+				}
+			},
+			error: function (ex) {
+				errorAlert("Error occured try again");
+			}
+		});
+	}
+}
+
+function leaveToBeEdited(action) {
+	debugger;
+	if (action == "APPROVE"||"DECLINE"||"CANCEL") {
+		errorAlert("Oops! This leave can't be Edit again");
+	};
+}
+
+function employeeLeaveToBeEdited(id) {
+	debugger;
+	$.ajax({
+		type: 'Get',
+		dataType: 'Json',
+		url: '/Leave/EditStaffLeave',
+		data: {
+			id: id
+		},
+		success: function (result) {
+			debugger;
+			if (!result.isError) {
+				$('#leaveStaffId').val(result.id);
+				if (result.name.includes("Annual Leave")) {
+					$('#btns').prop('checked', false);
+					$('#annaulLeaveId').prop('checked', true);
+				} else {
+					$('#btns').prop('checked', true);
+					$('#annaulLeaveId').prop('checked', false);
+				}
+				$('#otherTypeLeaveId').val(result.name);
+				$('#startDate').val(dateToInput(result.startDateInString));
+				$('#endDate').val(dateToInput(result.endDateInString));
+				$('#numberOfDaysRemaining').val(result.numberOfDays);
+				$('#remainingLeaveDays').val(result.remainingLeave);
+				$('#leaveReason').val(result.leaveReason);
+			}
+			else {
+				errorAlert(result.msg)
+			}
+		},
+		error: function (ex) {
+			errorAlert("Error occured try again");
+		}
+	})
+}
+
+function dateToInput(dateString) {
+
+	var now = new Date(dateString);
+	var day = ("0" + now.getDate()).slice(-2);
+	var month = ("0" + (now.getMonth() + 1)).slice(-2);
+
+	var today = now.getFullYear() + "-" + (month) + "-" + (day);
+
+	return today;
+}
+
+
+function editStaffleave() {
+	debugger;
+	var data = {};
+	var leaveId;
+	var leaveId = document.getElementById("annaulLeaveId").checked;
+	var otherTypeLeaveId = document.getElementById("otherTypeLeaveId").checked;
+	if (leaveId == true) {
+		data.LeaveId = $('#annaulLeaveId').val();
+	} else {
+		data.LeaveId = $('#otherTypeLeaveId').val();
+	}
+	data.Id = $('#leaveStaffId').val();
+	data.StartDate = $('#startDate').val();
+	data.EndDate = $('#endDate').val();
+	data.numberOfDays = $('#numberOfDaysRemaining').val();
+	data.remainingLeave = $('#remainingLeaveDays').val();
+	data.leaveReason = $('#leaveReason').val();
+	let leaveDetail = JSON.stringify(data);
+	$.ajax({
+		type: 'Post',
+		dataType: 'Json',
+		url: '/Leave/EditStaffLeave',
+		data: {
+			leaveDetails: leaveDetail,
+		},
+		success: function (result) {
+			debugger;
+			if (!result.isError) {
+				var url = '/Leave/RequestLeave'
+				successAlertWithRedirect(result.msg, url)
+			}
+			else {
+				errorAlert(result.msg)
+			}
+		},
+		error: function (ex) {
+			errorAlert("Error occured try again");
+		}
+	})
+}
+</script>
+
+<script>
+
+    $(document).ready(function () {
+        debugger;
+        $("#text").hide();
+        $('#dropDown').hide();
+     });
+    $('#Btn').click(function () {
+        $('#dropDown').show();
+		$('#remain').hide();
+    });
+    $('#CloseLeave').click(function () {
+        $('#dropDown').hide();
+        $('#remain').show();
+    });
+
+
+    $("#HalfDay1").change(function () {
+        debugger;
+        var isHalfDay = $("#HalfDay1").val();
+        if (isHalfDay == "false") {
+			$("#HalfDay1").val(true);
+        }
+        else {
+			$("#HalfDay1").val(false);
+        }
+		$("#End").change();
+    });
+
+    $("#HalfDay2").change(function () {
+        debugger;
+        var isHalfDay = $("#HalfDay2").val();
+        if (isHalfDay == "false") {
+			$("#HalfDay2").val(true);
+        }
+        else {
+			$("#HalfDay2").val(false);
+        }
+        $("#End").change();
+    });
+
+     $("#Start").change(function () {
+        debugger;
+        var start = $("#Start").val();
+        $("#End").change();
+    });
+
+    $("#End").change(function () {
+        debugger;
+        var start = $("#Start").val();
+        var end = $("#End").val();
+        var startdt = Date.parse(start);
+        var enddt = Date.parse(end);
+        var aDayInMilli = 86400000;
+        var isStartDayHalf = $("#HalfDay1").val();
+        var isEndDayHalf = $("#HalfDay2").val();
+        var halfDayInMiliseconds = (aDayInMilli / 2);
+
+        var subtract = enddt - startdt;
+        @*var leaveadded = subtract - deduct;*@
+        var Totaldays = subtract / aDayInMilli;
+        if (enddt === startdt) { Totaldays = 1 }
+        debugger;
+        var count = 0;
+        for (iterate = 0; iterate < Totaldays; iterate++) {
+            if (new Date(startdt + (aDayInMilli * iterate)).getDay() == 1 || new Date(startdt + (aDayInMilli * iterate)).getDay() == 2 ||
+                new Date(startdt + (aDayInMilli * iterate)).getDay() == 3 ||
+                new Date(startdt + (aDayInMilli * iterate)).getDay() == 4 || new Date(startdt + (aDayInMilli * iterate)).getDay() == 5) {
+
+                ++count;
+            }
+        }
+
+
+        if (isStartDayHalf == "true" && isEndDayHalf == "true")
+        {
+            var deduct = (halfDayInMiliseconds * 2);
+        }
+        else if (isStartDayHalf == "true" || isEndDayHalf == "true")
+        {
+            var deduct = (halfDayInMiliseconds);
+        }
+        else
+        {
+            var deduct = 0;
+        }
+
+        var newLeave = (aDayInMilli * (count ));
+        var actualMillSec = newLeave - deduct;
+        var actualLeaveDay = actualMillSec / aDayInMilli;
+
+        if (actualLeaveDay > 0) {
+            $("#text").show();
+            $("#Calc").val(actualLeaveDay);
+        }
+        else
+        {
+            $("#text").hide();
+            $("#Calc").val(0);
+        }
+     });
+
+
+
+    $('#submit1').click(function () {
+        $('#Calc').removeAttr("disabled");
+    });
+</script>
+
+<script>
+     $(document).ready(function () {
+        debugger;
+        $("#text1").hide();
+        $('#dropDowns').hide();
+    });
+    $('#btns').click(function () {
+        $('#dropDowns').show();
+        $('#remains').hide();
+    });
+    $('#annaulLeaveId').click(function () {
+        $('#dropDowns').hide();
+        $('#remains').show();
+    });
+
+
+    $("#halfDay1").change(function () {
+        debugger;
+        var isHalfDay = $("#halfDay1").val();
+        if (isHalfDay == "false") {
+            $("#halfDay1").val(true);
+        }
+        else {
+            $("#halfDay1").val(false);
+        }
+        $("#endDate").change();
+    });
+
+    $("#halfDay2").change(function () {
+        debugger;
+        var isHalfDay = $("#halfDay2").val();
+        if (isHalfDay == "false") {
+            $("#halfDay2").val(true);
+        }
+        else {
+            $("#halfDay2").val(false);
+        }
+        $("#endDate").change();
+    });
+
+    $("#startDate").change(function () {
+        debugger;
+        var start = $("#startDate").val();
+        $("#endDate").change();
+    });
+
+    $("#endDate").change(function () {
+        debugger;
+        var start = $("#startDate").val();
+        var end = $("#endDate").val();
+        var startdt = Date.parse(start);
+        var enddt = Date.parse(end);
+        var aDayInMilli = 86400000;
+        var isStartDayHalf = $("#halfDay1").val();
+        var isEndDayHalf = $("#halfDay2").val();
+        var halfDayInMiliseconds = (aDayInMilli / 2);
+
+        var subtract = enddt - startdt;
+    @*var leaveadded = subtract - deduct;*@
+                var Totaldays = subtract / aDayInMilli;
+        debugger;
+        var count = 0;
+        for (iterate = 0; iterate < Totaldays; iterate++) {
+            if (new Date(startdt + (aDayInMilli * iterate)).getDay() == 1 || new Date(startdt + (aDayInMilli * iterate)).getDay() == 2 ||
+                new Date(startdt + (aDayInMilli * iterate)).getDay() == 3 ||
+                new Date(startdt + (aDayInMilli * iterate)).getDay() == 4 || new Date(startdt + (aDayInMilli * iterate)).getDay() == 5) {
+
+                ++count;
+            }
+        }
+
+
+        if (isStartDayHalf == "true" && isEndDayHalf == "true") {
+            var deduct = (halfDayInMiliseconds * 2);
+        }
+        else if (isStartDayHalf == "true" || isEndDayHalf == "true") {
+            var deduct = (halfDayInMiliseconds);
+        }
+        else {
+            var deduct = 0;
+        }
+
+        var newLeave = (aDayInMilli * (count));
+        var actualMillSec = newLeave - deduct;
+        var actualLeaveDay = actualMillSec / aDayInMilli;
+
+        if (actualLeaveDay > 0) {
+            $("#text1").show();
+            $("#numberOfDaysRemaining").val(actualLeaveDay);
+        }
+        else {
+            $("#text1").hide();
+            $("#numberOfDaysRemaining").val(0);
+        }
+    });
+
+
+
+    $('#submit11').click(function () {
+        $('#numberOfDaysRemaining').removeAttr("disabled");
+    });
+</Script>
+
+<div class="modal" id="employeeViewLeaveModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content w-75 m-auto" id="employeeViewLeaveModalBody">
+        </div>
+    </div>
+</div>

@@ -9,6 +9,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Xml.Linq;
+using static Core.Enums.Resource_Planing;
 
 namespace Logic.Helpers
 {
@@ -285,5 +286,105 @@ namespace Logic.Helpers
 			}
 			return false;
 		}
+
+		public List<EmployeeLeave> GetListOfAllLeave()
+		{
+			var leaves = new List<EmployeeLeave>();
+			var leavesApplied = _context.EmployeeLeaves.Where(x => x.StaffName == null && leaves.Count() > 0).ToList();
+			if (leavesApplied != null)
+			{
+				leaves = leavesApplied;
+			}
+			return leaves;
+		}
+
+        public List<EmployeeLeave> GetEmployeeLeave(string username)
+        {
+            var listOfLeaves = new List<EmployeeLeave>();
+            var currentUserId = GetCurrentUserId(username);
+            if (currentUserId != null)
+            {
+                var leaves = _context.EmployeeLeaves.Where(x => (x.Active == true) && (x.Deleted == false) && (x.StaffName == currentUserId) && (x.DeteCreated != DateTime.MinValue))?.ToList();
+                leaves = leaves.OrderByDescending(x => x.DeteCreated).ToList();
+                if (leaves.Any())
+                {
+                    return leaves;
+                }
+            }
+            return listOfLeaves;
+        }
+
+        public string GetCurrentUserId(string username)
+        {
+            return _userManager.Users.Where(s => s.UserName == username)?.FirstOrDefaultAsync().Result.Id?.ToString();
+        }
+
+        public Leave GetAnnualLeave(string username)
+        {
+            var user = _userManager.Users.Where(s => s.UserName == username).FirstOrDefault();
+            return _context.Leave.Where(x => x.Active == true && x.Deleted == false && x.Name.ToLower().Contains("annual") && x.Name == user.Name)?.FirstOrDefault();
+        }
+
+        public EmployeeLeave GetLeaveById(int id)
+        {
+            var leave = _context.EmployeeLeaves.Where(x => x.Id == id  && x.StaffName != null && !x.Deleted).Include(s => s.User).FirstOrDefault();
+            if (leave != null)
+            {
+                return (leave);
+            }
+            return null;
+        }
+
+		public EmployeeLeave GetEmployeeLeaveById(int id)
+		{
+			var employeeLeave = new EmployeeLeave();
+			if (id > 0)
+			{
+				var staffLeave = _context.EmployeeLeaves.Where(x => x.Id == id && x.Name != null).Select(x => new EmployeeLeave()
+				{
+					Id = x.Id,
+					Name = x.Name,
+					StartDate = x.StartDate,
+					EndDate = x.EndDate,
+					LeaveReason = x.LeaveReason,
+					LeaveStatus = x.LeaveStatus,
+					LeaveType = x.LeaveType,
+				}).FirstOrDefault();
+				return staffLeave;
+			}
+			return employeeLeave;
+		}
+
+		public string EditEmployeeLeave(EmployeeLeaveViewModel employeeLeaveViewModel)
+        {
+            if (employeeLeaveViewModel != null)
+            {
+                var staffLeave = _context.EmployeeLeaves.Where(x => x.Id == employeeLeaveViewModel.Id && !x.Deleted).FirstOrDefault();
+                if (staffLeave != null)
+                {
+
+                    staffLeave.StartDate = employeeLeaveViewModel.StartDate;
+                    staffLeave.EndDate = employeeLeaveViewModel.EndDate;
+                    staffLeave.LeaveReason = employeeLeaveViewModel.LeaveReason;
+                    staffLeave.LeaveStatus = LeaveStatus.Applied;
+                    _context.EmployeeLeaves.Update(staffLeave);
+                    _context.SaveChanges();
+                    return "Leave Successfully Updated";
+                }
+            }
+            return "Leave failed To Update";
+        }
+
+		public List<EmployeeLeave> GetAllLeave(string currentAdminUsername)
+		{
+			var admin = FindByUserName(currentAdminUsername);
+			var leave = _context.EmployeeLeaves.Where(x => x.Active == true && x.Deleted == false && x.LeaveStatus != LeaveStatus.Absence && x
+			.StartDate.Year == DateTime.Now.Year).Include(s => s.User).ToList();
+			leave = leave.OrderByDescending(x => x.DeteCreated).ToList();
+			return leave;
+		}
+
+
+
 	}
 }

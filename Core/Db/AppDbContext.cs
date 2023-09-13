@@ -7,6 +7,7 @@ namespace Core.Db
 {
     public class AppDbContext : IdentityDbContext
     {
+
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         { }
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
@@ -15,6 +16,7 @@ namespace Core.Db
         public DbSet<Location> locations { get; set; }
         public DbSet<Shifts> shift { get; set; }
         public DbSet<StaffRota> StaffRotas { get; set; }
-    }
+        public DbSet<EmployeeLeave> EmployeeLeaves { get; set; }
+		public DbSet<Leave> Leave { get; set; }
+	}
 }
-

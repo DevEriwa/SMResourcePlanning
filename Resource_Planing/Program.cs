@@ -13,10 +13,11 @@ builder.Services.AddScoped<IUserHelper, UserHelper>();
 builder.Services.AddScoped<IDropdownHelper, DropdownHelper>();
 builder.Services.AddScoped<IAccountHelper, AccountHelper>();
 builder.Services.AddScoped<IRotaHelper, RotaHelper>();
+builder.Services.AddScoped<ILeaveHelper, LeaveHelper>();
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(
-    builder.Configuration.GetConnectionString("Resource_Planing")));
+    builder.Configuration.GetConnectionString("ResourcePlaning")));
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
@@ -63,5 +64,15 @@ static void UpdateDatabase(IApplicationBuilder app)
         {
             context?.Database.Migrate();
         }
+    }
+
+
+}
+public class AppContextSeed
+{
+    public static void Seed(AppDbContext appContext, int migrationsTimeout)
+    {
+        appContext.Database.SetCommandTimeout(migrationsTimeout);
+        appContext.Database.Migrate();
     }
 }

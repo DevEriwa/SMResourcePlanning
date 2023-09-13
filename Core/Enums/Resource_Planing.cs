@@ -159,5 +159,17 @@ namespace Core.Enums
 			Purple,
 		}
 
+		public enum LeaveStatus
+		{
+			[Description("For New")]
+			Applied = 1,
+			[Description("For Approved")]
+			Approved,
+			[Description("For Rejected")]
+			Declined,
+			[Description("For Cancel")]
+			Cancel,
+			Absence,
+		}
 	}
 }

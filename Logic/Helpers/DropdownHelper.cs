@@ -184,5 +184,26 @@ namespace Logic.Helpers
 			}
 			return users;
 		}
+
+		public List<Leave> GetLeaveTypeDropDown(string name)
+		{
+			var leaves = new List<Leave>();
+			var getUser = _userManager.Users.Where(x => x.UserName == name)?.FirstOrDefault();
+			var common = new Leave()
+			{
+				Id = 0,
+				Name = "-- Select --"
+			};
+			if (getUser != null)
+			{
+				var selectedLeave = _context.Leave.OrderBy(x => x.Name).Where(x => x.Name == getUser.Name && !x.Deleted == true && !x.Name.ToLower().Contains("annual")).ToList();
+				if (selectedLeave != null)
+				{
+					selectedLeave.Insert(0, common);
+					return selectedLeave;
+				}
+			}
+			return leaves;
+		}
 	}
 }

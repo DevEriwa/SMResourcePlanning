@@ -1,0 +1,109 @@
+﻿@model IEnumerable<Core.Models.EmployeeLeave>
+
+@{
+	ViewData["Title"] = "Applied Leave";
+	Layout = "~/Views/Shared/_AdminLayout.cshtml";
+
+}
+<style>
+	body {
+		counter-reset: Serial; /* / Set the Serial counter to 0 /*/
+	}
+
+	tr td:first-child:before {
+		counter-increment: Serial; /* / Increment the Serial counter /*/
+		content: counter(Serial); /*  / Display the counter /*/
+	}
+</style>
+<!-- Content Header (Page header) -->
+<section class="content-header">
+	<div class="container-fluid">
+		<div class="row mb-2">
+			<div class="col-sm-6">
+				<h1>Leave</h1>
+			</div>
+@*			<div class="col-sm-6">
+				<ol class="breadcrumb float-sm-right">
+					<li class="breadcrumb-item active btn btn-success" data-toggle="modal" data-target=""><i class="fa fa-plus"></i>Apply For Leave</li>
+				</ol>
+			</div>*@
+		</div>
+	</div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">Leave List</h3>
+					</div>
+					<!-- /.card-header -->
+					<div class="card-body table-responsive">
+						@if ( Model != null)
+						{
+							<table id="example2" class="table table-bordered table-hover text-nowrap">
+								<thead>
+									<tr>
+										<th>S/N</th>
+										<th>Name</th>
+										<th>Leave Type</th>
+										<th>Start Date</th>
+										<th>End Date</th>
+										<th>Reasons</th>
+										<th class="text-right">Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									@foreach (var leave in Model)
+									{
+										<tr>
+											<td></td>
+											<td>@(leave.Name != null ? leave.Name : "")</td>
+											<td>@(leave.LeaveType != null ? leave.LeaveType : "")</td>
+											<td>@(leave.StartDate != null ? leave.StartDate.ToString() : "")</td>
+											<td>@(leave.EndDate != null ? leave.EndDate.ToString() : "")</td>
+											<td>@(leave.LeaveReason != null ? leave.LeaveReason : "")</td>
+											@*<td>@(leave.DateApplied != null ? leave.DateApplied.ToString() : "")</td>*@
+											<td class="text-right">
+												<!-- Dropdown menu code... -->
+												<div class="btn-group">
+													<button type="button" class="btn btn-default btn-flat">Action</button>
+													<button type="button" class="btn btn-default btn-flat dropdown-toggle dropdown-icon" data-toggle="dropdown">
+														<span class="sr-only">Toggle Dropdown</span>
+													</button>
+													<div class="dropdown-menu" role="menu">
+														<a class="dropdown-item" href="#" data-toggle="modal" data-target="" onclick=""><i class="fa fa-pencil m-r-5"></i> Aprove</a>
+														<div class="dropdown-divider"></div>
+														<a class="dropdown-item" href="#" data-toggle="modal" data-target="" onclick=""><i class="fa fa-trash-o m-r-5"></i> Decline</a>
+													</div>
+												</div>
+											</td>
+										</tr>
+									
+									}
+							</table>
+						}
+						else
+						{
+							<div class="row p5 m-5">
+								<div class="col-md-12 text-center p-5 m5">
+									<h2>No Record Found</h2>
+								</div>
+							</div>
+						}
+					</div>
+					<!-- /.card-body -->
+				</div>
+				<!-- /.card -->
+			</div>
+			<!-- /.col -->
+		</div>
+		<!-- /.row -->
+	</div>
+	<!-- /.container-fluid -->
+</section>
+<!-- /.content -->
+

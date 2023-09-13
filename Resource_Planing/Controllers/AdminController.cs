@@ -18,7 +18,11 @@ namespace Resource_Planing.Controllers
 		private IRotaHelper _rotaHelper;
 		private UserManager<ApplicationUser> _userManager;
 		private readonly IWebHostEnvironment _webHostEnvironment;
-		public AdminController(AppDbContext context, IDropdownHelper dropdownHelper, UserManager<ApplicationUser> userManager, IUserHelper userHelper, IWebHostEnvironment webHostEnvironment, IRotaHelper rotaHelper)
+        private ILeaveHelper _leaveHelper; // Add this
+        private ILeaveHelper leaveHelper;
+
+        public AdminController(AppDbContext context, IDropdownHelper dropdownHelper, UserManager<ApplicationUser> userManager, IUserHelper userHelper, 
+			IWebHostEnvironment webHostEnvironment, IRotaHelper rotaHelper, ILeaveHelper _leaveHelper)
 		{
 			_context = context;
 			_dropdownHelper = dropdownHelper;
@@ -26,8 +30,10 @@ namespace Resource_Planing.Controllers
 			_userHelper = userHelper;
 			_webHostEnvironment = webHostEnvironment;
 			_rotaHelper = rotaHelper;
-		}
-		
+            _leaveHelper = leaveHelper;
+
+        }
+
 		public IActionResult Index()
         {
             return View();
@@ -316,6 +322,34 @@ namespace Resource_Planing.Controllers
 		//	return null;
 		//}
 
+		[HttpGet]
+		public IActionResult AppliedLeave()
+		{
+			try
+			{
+				var Leaves = new List<EmployeeLeave>();
+				var appliedLeaveList =  _userHelper.GetListOfAllLeave();
+				if (appliedLeaveList != null)
+				{
+					// Handle the case where appliedLeaveList is null
+					Leaves = appliedLeaveList;
+					return View(Leaves);
+				}
+				else
+				{
+					return View(Leaves);
+				}
+
+			}
+			catch (Exception ex)
+			{
+
+				throw ex;
+			}
+		}
+
+
+
 		public void UpdateRotaData(string rotaData)
 		{
 			if (rotaData != null)
@@ -327,5 +361,8 @@ namespace Resource_Planing.Controllers
 				}
 			}
 		}
-	}
+        // AdminController.cs
+
+
+    }
 }

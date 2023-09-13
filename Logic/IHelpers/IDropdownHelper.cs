@@ -10,6 +10,7 @@ namespace Logic.IHelpers
 		List<Location> GetLocations();
 		List<Department> GetDepartments();
 		List<ApplicationUser> GetAllUsersInRota();
+		List<Leave> GetLeaveTypeDropDown(string name);
 
 	}
 }
