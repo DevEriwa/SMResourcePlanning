@@ -5,6 +5,7 @@ using Logic.IHelpers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
 using System.Diagnostics;
 using System.Net;
 using System.Runtime.CompilerServices;
@@ -62,11 +63,16 @@ namespace Logic.Helpers
 		{
 			if (locationDetails != null)
 			{
+				if(locationDetails.ListOfUserId != null)
+				{
+					locationDetails.UserIds = JsonConvert.SerializeObject(locationDetails.ListOfUserId);
+                }
 				var locationModel = new Location()
 				{
 					Name = locationDetails.Name,
 					AbbreviatedName = locationDetails.AbbreviatedName,
-					Active = true,
+					UserIds = locationDetails.UserIds,
+                    Active = true,
 					Deleted = false,
 					DeteCreated = DateTime.Now,
 				};
@@ -98,11 +104,13 @@ namespace Logic.Helpers
 				var location = _context.locations.Where(x => x.Id == locationViewModel.Id && !x.Deleted).FirstOrDefault();
 				if (location != null)
 				{
-					location.Name = locationViewModel.Name;
+                    if (locationViewModel.ListOfUserId != null)
+                    {
+                        locationViewModel.UserIds = JsonConvert.SerializeObject(locationViewModel.ListOfUserId);
+                    }
+                    location.Name = locationViewModel.Name;
 					location.AbbreviatedName = locationViewModel.AbbreviatedName;
-					location.Active = true;
-					location.Deleted = false;
-					location.DeteCreated = locationViewModel.DeteCreated;
+					location.UserIds = locationViewModel.UserIds;
 					
 					_context.locations.Update(location);
 					_context.SaveChanges();

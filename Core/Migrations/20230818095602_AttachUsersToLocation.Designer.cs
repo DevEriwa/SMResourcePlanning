@@ -4,6 +4,7 @@ using Core.Db;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Core.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230818095602_AttachUsersToLocation")]
+    partial class AttachUsersToLocation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,85 +23,6 @@ namespace Core.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("Core.Models.Attendance", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("Break")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("CheckInTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("CheckOutTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Date")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("DeteCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("OverTime")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ShiftId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("StaffId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("TimeSpent")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ShiftId");
-
-                    b.HasIndex("StaffId");
-
-                    b.ToTable("Attendances");
-                });
-
-            modelBuilder.Entity("Core.Models.Country", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("DeteCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Country");
-                });
 
             modelBuilder.Entity("Core.Models.Department", b =>
                 {
@@ -124,88 +47,6 @@ namespace Core.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Departments");
-                });
-
-            modelBuilder.Entity("Core.Models.EmployeeLeave", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("DeteCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LeaveReason")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("LeaveStatus")
-                        .HasColumnType("int");
-
-                    b.Property<string>("LeaveType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StaffName")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StaffName");
-
-                    b.ToTable("EmployeeLeaves");
-                });
-
-            modelBuilder.Entity("Core.Models.Leave", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Abbreviations")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("DeductFromAnnualLeave")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("DeteCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("HoursDeductedFromTimesheet")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("NumberOfDays")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Leave");
                 });
 
             modelBuilder.Entity("Core.Models.Location", b =>
@@ -293,102 +134,6 @@ namespace Core.Migrations
                     b.ToTable("shift");
                 });
 
-            modelBuilder.Entity("Core.Models.ShiftsLocation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<double>("AcceptedRadius")
-                        .HasColumnType("float");
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Address")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("DeteCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double>("Latitude")
-                        .HasColumnType("float");
-
-                    b.Property<double>("Longitude")
-                        .HasColumnType("float");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("PostalCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("ShiftId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("StateId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ShiftId");
-
-                    b.HasIndex("StateId");
-
-                    b.ToTable("ShiftsLocations");
-                });
-
-            modelBuilder.Entity("Core.Models.StaffClockIn", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<Guid>("ClockId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("ClockInDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<double>("ClockInLatitude")
-                        .HasColumnType("float");
-
-                    b.Property<double>("ClockInLongitude")
-                        .HasColumnType("float");
-
-                    b.Property<double>("ClockOutLatitude")
-                        .HasColumnType("float");
-
-                    b.Property<double>("ClockOutLongitude")
-                        .HasColumnType("float");
-
-                    b.Property<DateTime>("DateTimeIn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("DateTimeOut")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("StaffId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StaffId");
-
-                    b.ToTable("StaffClockIns");
-                });
-
             modelBuilder.Entity("Core.Models.StaffRota", b =>
                 {
                     b.Property<int>("Id")
@@ -418,37 +163,6 @@ namespace Core.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("StaffRotas");
-                });
-
-            modelBuilder.Entity("Core.Models.State", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<int?>("CountryId")
-                        .IsRequired()
-                        .HasColumnType("int");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("DeteCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CountryId");
-
-                    b.ToTable("State");
                 });
 
             modelBuilder.Entity("Core.Models.UserVerification", b =>
@@ -739,34 +453,6 @@ namespace Core.Migrations
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });
 
-            modelBuilder.Entity("Core.Models.Attendance", b =>
-                {
-                    b.HasOne("Core.Models.Shifts", "Shift")
-                        .WithMany()
-                        .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Core.Models.ApplicationUser", "Staff")
-                        .WithMany()
-                        .HasForeignKey("StaffId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Shift");
-
-                    b.Navigation("Staff");
-                });
-
-            modelBuilder.Entity("Core.Models.EmployeeLeave", b =>
-                {
-                    b.HasOne("Core.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("StaffName");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Core.Models.Shifts", b =>
                 {
                     b.HasOne("Core.Models.Location", "Locations")
@@ -774,36 +460,6 @@ namespace Core.Migrations
                         .HasForeignKey("LocationId");
 
                     b.Navigation("Locations");
-                });
-
-            modelBuilder.Entity("Core.Models.ShiftsLocation", b =>
-                {
-                    b.HasOne("Core.Models.Shifts", "Shift")
-                        .WithMany()
-                        .HasForeignKey("ShiftId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Core.Models.State", "State")
-                        .WithMany()
-                        .HasForeignKey("StateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Shift");
-
-                    b.Navigation("State");
-                });
-
-            modelBuilder.Entity("Core.Models.StaffClockIn", b =>
-                {
-                    b.HasOne("Core.Models.ApplicationUser", "Staff")
-                        .WithMany()
-                        .HasForeignKey("StaffId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Staff");
                 });
 
             modelBuilder.Entity("Core.Models.StaffRota", b =>
@@ -815,17 +471,6 @@ namespace Core.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
-                });
-
-            modelBuilder.Entity("Core.Models.State", b =>
-                {
-                    b.HasOne("Core.Models.Country", "Country")
-                        .WithMany()
-                        .HasForeignKey("CountryId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Country");
                 });
 
             modelBuilder.Entity("Core.Models.UserVerification", b =>

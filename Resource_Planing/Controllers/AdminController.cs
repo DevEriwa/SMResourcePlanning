@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using Resource_Planing.Models;
 using System.Net;
 
 namespace Resource_Planing.Controllers
@@ -18,6 +19,8 @@ namespace Resource_Planing.Controllers
 		private IRotaHelper _rotaHelper;
 		private UserManager<ApplicationUser> _userManager;
 		private readonly IWebHostEnvironment _webHostEnvironment;
+		private IAdminHelper _adminHelper;
+		public AdminController(AppDbContext context, IDropdownHelper dropdownHelper, UserManager<ApplicationUser> userManager, IUserHelper userHelper, IWebHostEnvironment webHostEnvironment, IRotaHelper rotaHelper, IAdminHelper adminHelper)
         private ILeaveHelper _leaveHelper; // Add this
         private ILeaveHelper leaveHelper;
 
@@ -30,10 +33,8 @@ namespace Resource_Planing.Controllers
 			_userHelper = userHelper;
 			_webHostEnvironment = webHostEnvironment;
 			_rotaHelper = rotaHelper;
-            _leaveHelper = leaveHelper;
-
-        }
-
+		}
+		
 		public IActionResult Index()
         {
             return View();
@@ -43,7 +44,8 @@ namespace Resource_Planing.Controllers
 		{
 			var newLocationList = new List<Location>();
 			var locations = _userHelper.GetLocations();
-			if (locations.Any())
+            ViewBag.UserInRota = _dropdownHelper.GetAllUsersInRota();
+            if (locations.Any())
 			{
 				newLocationList = locations;
 			}
@@ -361,8 +363,5 @@ namespace Resource_Planing.Controllers
 				}
 			}
 		}
-        // AdminController.cs
-
-
-    }
+	}
 }

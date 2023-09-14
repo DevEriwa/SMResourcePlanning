@@ -192,7 +192,7 @@ namespace Logic.Helpers
 			return totalHoursMinutesString; 
 		}
 
-		public RotaViewModel GenerateNewRota(DateTime sDate, DateTime eDate)
+		public RotaViewModel GenerateNewRota(DateTime sDate, DateTime eDate, int locId)
 		{
 			var model = new RotaViewModel();
 			//Let get the DateList for the date range provide
@@ -200,7 +200,7 @@ namespace Logic.Helpers
 			 
 			//var daysOfTheWeekString = eDate.ToString("ddd");
 			//int daysOfTheWeekInt = eDate.Day;
-			model.RotaTableContainer = GenerateContent(dateList);
+			model.RotaTableContainer = GenerateContent(dateList, locId);
 			return model;
 		}
 
@@ -218,8 +218,13 @@ namespace Logic.Helpers
 			return dList;
 		}
 
-		public string GenerateContent(List<DateTime> data)
+		public string GenerateContent(List<DateTime> data, int locId)
 		{
+			var usersInRota = GetUsersInRota(locId);
+			if(usersInRota.Count == 0)
+			{
+				return null;
+			}
 			var dateIds = GetDateIdsForAGivenPeriod(data);
 			var year = data.FirstOrDefault().Year;
 			var thead = "<thead><tr><th class=\"p-1 text-center\">Users</th>";
@@ -238,8 +243,6 @@ namespace Logic.Helpers
 			tbody += "</tr>";
 			thead += tbody;
 			var row = "";
-			var usersInRota = GetUsersInRota();
-
 			foreach (var user in usersInRota)
 			{
 				var userTD = "<td  class='p-1 text-center'>" + user.FirstName + " " + user.LastName + "</td>";
@@ -281,16 +284,23 @@ namespace Logic.Helpers
 			return thead + row + "</tbody>";
 		}
 
-		public List<ApplicationUser> GetUsersInRota() 
-		{ 
+		public List<ApplicationUser> GetUsersInRota(int locId) 
+		{
 			var users = new List<ApplicationUser>();
-			var list = _context.ApplicationUser.Where(a => a.DisplayOnRota).ToList();
-			if(list.Count > 0)
+			var location = _context.locations.Where(l => l.Id == locId).FirstOrDefault();
+			if(location.UserIds != null)
 			{
-				users = list;
+				var userIds = JsonConvert.DeserializeObject<List<String>>(location.UserIds);
+				if (userIds.Any())
+				{
+					var list = _context.ApplicationUser.Where(a => userIds.Contains(a.Id)).ToList();
+					if (list.Count > 0)
+					{
+						users = list;
+					}
+				}
 			}
 			return users;
-
 		}
 
 		public List<string> GetDateIdsForAGivenPeriod(List<DateTime> data)

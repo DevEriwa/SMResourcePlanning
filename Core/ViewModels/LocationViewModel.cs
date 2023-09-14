@@ -17,6 +17,7 @@ namespace Core.ViewModels
 		public DateTime DeteCreated { get; set; }
 		public string? AbbreviatedName { get; set; }
 		public string? UserId { get; set; }
-		
-	}
+        public List<string>? ListOfUserId { get; set; }
+        public string? UserIds { get; set; }
+    }
 }

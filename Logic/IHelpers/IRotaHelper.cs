@@ -16,8 +16,7 @@ namespace Logic.IHelpers
 		void CreateNewRotaObjectForUser(ApplicationUser model, int year);
 		void UpdateRota(RotaObjectViewModel model);
 		//StaffRota GetWeeklyStaffRota(string userId, DateTime date, int weekCount);
-		RotaViewModel GenerateNewRota(DateTime sDate, DateTime eDate);
+		RotaViewModel GenerateNewRota(DateTime sDate, DateTime eDate, int locId);
         Shifts GetShiftById(int id);
-
     }
 }

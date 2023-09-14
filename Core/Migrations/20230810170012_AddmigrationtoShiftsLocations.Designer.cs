@@ -4,6 +4,7 @@ using Core.Db;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Core.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230810170012_AddmigrationtoShiftsLocations")]
+    partial class AddmigrationtoShiftsLocations
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -126,88 +128,6 @@ namespace Core.Migrations
                     b.ToTable("Departments");
                 });
 
-            modelBuilder.Entity("Core.Models.EmployeeLeave", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("DeteCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("LeaveReason")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("LeaveStatus")
-                        .HasColumnType("int");
-
-                    b.Property<string>("LeaveType")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("StaffName")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StaffName");
-
-                    b.ToTable("EmployeeLeaves");
-                });
-
-            modelBuilder.Entity("Core.Models.Leave", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<string>("Abbreviations")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("Active")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("DeductFromAnnualLeave")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("DeteCreated")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("HoursDeductedFromTimesheet")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("NumberOfDays")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Leave");
-                });
-
             modelBuilder.Entity("Core.Models.Location", b =>
                 {
                     b.Property<int>("Id")
@@ -229,9 +149,6 @@ namespace Core.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UserIds")
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -266,9 +183,6 @@ namespace Core.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double?>("FixedAmount")
-                        .HasColumnType("float");
-
-                    b.Property<double?>("HourlyPay")
                         .HasColumnType("float");
 
                     b.Property<bool?>("IsFixed")
@@ -756,15 +670,6 @@ namespace Core.Migrations
                     b.Navigation("Shift");
 
                     b.Navigation("Staff");
-                });
-
-            modelBuilder.Entity("Core.Models.EmployeeLeave", b =>
-                {
-                    b.HasOne("Core.Models.ApplicationUser", "User")
-                        .WithMany()
-                        .HasForeignKey("StaffName");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("Core.Models.Shifts", b =>
