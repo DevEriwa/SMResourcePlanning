@@ -29,15 +29,6 @@ namespace Resource_Planing.Controllers
             return View(shiftLocationList);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> ShiftLocation()
-        {
-            ViewBag.Shifts = _dropdownHelper.GetShifts();
-            ViewBag.State = await _dropdownHelper.GetState();
-            ViewBag.Country = await _dropdownHelper.GetCountry();
-            return View();
-        }
-
 
         [HttpPost]
         public async Task<JsonResult> CreateShiftLocation(string shiftDetails)

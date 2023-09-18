@@ -18,5 +18,6 @@ namespace Logic.IHelpers
 		//StaffRota GetWeeklyStaffRota(string userId, DateTime date, int weekCount);
 		RotaViewModel GenerateNewRota(DateTime sDate, DateTime eDate, int locId);
         Shifts GetShiftById(int id);
+		bool UpdateLocation(int locationId, double latitude, double longitude, double acceptedRadius);
     }
 }

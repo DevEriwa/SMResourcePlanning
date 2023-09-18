@@ -329,5 +329,27 @@ namespace Resource_Planing.Controllers
 				}
 			}
 		}
+
+
+        [HttpPost]
+        public ActionResult UpdateLocation(int locationId, double latitude, double longitude, double acceptedRadius)
+        {
+            try
+            {
+                var locationUpdate = _rotaHelper.UpdateLocation(locationId, latitude, longitude, acceptedRadius);
+				if (locationUpdate)
+				{
+                    var url = "/Admin/Location/";
+                    return Json(new { isError = false, msg = "ClockIn location updated succesfully", url = url });
+                }
+                return Json(new { isError = true, msg = "Unable to update" });
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, errorMessage = ex.Message });
+            }
+           
+        }
     }
 }
+
