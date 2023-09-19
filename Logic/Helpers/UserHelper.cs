@@ -14,34 +14,34 @@ using static Core.Enums.Resource_Planing;
 
 namespace Logic.Helpers
 {
-    public class UserHelper : IUserHelper
-    {
-        //private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly AppDbContext _context;
+	public class UserHelper : IUserHelper
+	{
+		//private readonly SignInManager<ApplicationUser> _signInManager;
+		private readonly UserManager<ApplicationUser> _userManager;
+		private readonly AppDbContext _context;
 
-        public UserHelper(AppDbContext context, UserManager<ApplicationUser> userManager)
-        {
+		public UserHelper(AppDbContext context, UserManager<ApplicationUser> userManager)
+		{
 			_context = context;
-            _userManager = userManager;
-        }
+			_userManager = userManager;
+		}
 
-        public async Task<ApplicationUser> FindByUserNameAsync(string userName)
-        {
-            return await _userManager.Users.Where(u => u.UserName == userName).FirstOrDefaultAsync();
-        }
-        public async Task<ApplicationUser> FindByPhoneNumberAsync(string phoneNumber)
-        {
-            return await _userManager.Users.Where(s => s.PhoneNumber == phoneNumber)?.FirstOrDefaultAsync();
-        }
-        public async Task<ApplicationUser> FindByEmailAsync(string email)
-        {
-            return await _userManager.Users.Where(s => s.Email == email)?.FirstOrDefaultAsync();
-        }
-        public async Task<ApplicationUser> FindByIdAsync(string Id)
-        {
-            return await _userManager.Users.Where(s => s.Id == Id)?.FirstOrDefaultAsync();
-        }
+		public async Task<ApplicationUser> FindByUserNameAsync(string userName)
+		{
+			return await _userManager.Users.Where(u => u.UserName == userName).FirstOrDefaultAsync();
+		}
+		public async Task<ApplicationUser> FindByPhoneNumberAsync(string phoneNumber)
+		{
+			return await _userManager.Users.Where(s => s.PhoneNumber == phoneNumber)?.FirstOrDefaultAsync();
+		}
+		public async Task<ApplicationUser> FindByEmailAsync(string email)
+		{
+			return await _userManager.Users.Where(s => s.Email == email)?.FirstOrDefaultAsync();
+		}
+		public async Task<ApplicationUser> FindByIdAsync(string Id)
+		{
+			return await _userManager.Users.Where(s => s.Id == Id)?.FirstOrDefaultAsync();
+		}
 
 		public ApplicationUser FindByUserName(string username)
 		{
@@ -136,7 +136,7 @@ namespace Logic.Helpers
 			}
 			return false;
 		}
-		
+
 		public bool AddDepartment(DepartmentViewModel departmentDetails)
 		{
 			if (departmentDetails != null)
@@ -215,10 +215,10 @@ namespace Logic.Helpers
 			return false;
 		}
 
-        public Shifts AddShift(ShiftViwModel shiftDetails)
-        {
-            if (shiftDetails != null)
-            {
+		public Shifts AddShift(ShiftViwModel shiftDetails)
+		{
+			if (shiftDetails != null)
+			{
 				var shiftData = new Shifts()
 				{
 					Active = true,
@@ -237,15 +237,15 @@ namespace Logic.Helpers
 				};
 				_context.shift?.Add(shiftData);
 				_context.SaveChanges();
-                var result = _context.shift.Where(s => s.Id == shiftData.Id).Include(l => l.Locations).FirstOrDefault();
-                return result;
+				var result = _context.shift.Where(s => s.Id == shiftData.Id).Include(l => l.Locations).FirstOrDefault();
+				return result;
 			}
-            return null;
-        }
+			return null;
+		}
 		public List<Shifts> GetShifts()
 		{
 			var shifts = new List<Shifts>();
-			var shift = _context.shift.Where(a => a.Active && !a.Deleted).Include(v=> v.Locations).ToList();
+			var shift = _context.shift.Where(a => a.Active && !a.Deleted).Include(v => v.Locations).ToList();
 			if (shift.Any())
 			{
 				shifts = shift;
@@ -294,6 +294,107 @@ namespace Logic.Helpers
 			}
 			return false;
 		}
+
+
+		public bool AddShiftLocation(ShiftLocationViewModel shiftDetails)
+		{
+			if (shiftDetails != null)
+			{
+				var shiftData = new ShiftsLocation()
+				{
+					Active = true,
+					DeteCreated = DateTime.Now,
+					Deleted = false,
+					Name = shiftDetails.Name,
+					ShiftId = shiftDetails.ShiftId,
+					StateId = shiftDetails.StateId,
+					Address = shiftDetails.Address,
+					PostalCode = shiftDetails.PostalCode,
+				};
+				_context.ShiftsLocations.Add(shiftData);
+				_context.SaveChanges();
+				return true;
+			}
+			return false;
+		}
+
+
+		public bool EditShiftLocation(ShiftLocationViewModel shiftDetails)
+		{
+			if (shiftDetails != null)
+			{
+				var shiftlocToEdit = _context.ShiftsLocations.Where(c => c.Id == shiftDetails.Id).Include(sl => sl.Shift)
+                .Include(sl => sl.State).FirstOrDefault();
+				if (shiftlocToEdit != null)
+				{
+					shiftlocToEdit.Name = shiftDetails.Name;
+					shiftlocToEdit.ShiftId = shiftDetails.ShiftId;
+					//shiftlocToEdit.Shift = shiftDetails.Shift;
+					shiftlocToEdit.StateId = shiftDetails.StateId;
+					//shiftlocToEdit.State = shiftDetails.State;
+					shiftlocToEdit.Address = shiftDetails.Address;
+					shiftlocToEdit.PostalCode = shiftDetails.PostalCode;
+					_context.ShiftsLocations.Update(shiftlocToEdit);
+					_context.SaveChanges();
+					return true;
+				}
+			}
+			return false;
+		}
+
+
+		public bool DeleteShiftLocation(ShiftLocationViewModel shiftDetails)
+		{
+			if (shiftDetails != null)
+			{
+				var shiftLocToDelete = _context.ShiftsLocations.Where(c => c.Id == shiftDetails.Id && c.Active).FirstOrDefault();
+				if (shiftLocToDelete != null)
+				{
+                    shiftLocToDelete.Active = false;
+                    shiftLocToDelete.Deleted = true;
+				}
+				_context.ShiftsLocations.Update(shiftLocToDelete);
+				_context.SaveChanges();
+				return true;
+			}
+			return false;
+		}
+		public async Task<ShiftsLocation> GetShiftById(int shiftId)
+		{
+			try
+			{
+				if (shiftId > 0)
+				{
+					var companyBranch = await _context.ShiftsLocations.Where(x => !x.Deleted && x.Id == shiftId).FirstOrDefaultAsync();
+					if (companyBranch != null)
+						return companyBranch;
+				}
+				return null;
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+		}
+        public List<ShiftsLocation> GetShiftLocationList()
+        {
+            var shiftsLocationList = _context.ShiftsLocations
+                .Where(sl => !sl.Deleted && sl.Active)
+                .OrderByDescending(sl => sl.DeteCreated)
+                .ToList();
+            return shiftsLocationList;
+        }
+
+        public ShiftsLocation GetShiftLocation(int shiftId)
+        {
+            var shiftLocation = _context.ShiftsLocations
+                .Include(sl => sl.Shift)
+                .Include(sl => sl.State)
+                .FirstOrDefault(sl => sl.Id == shiftId);
+
+            return shiftLocation;
+        }
+    }
 
 		public List<EmployeeLeave> GetListOfAllLeave()
 		{

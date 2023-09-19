@@ -24,6 +24,13 @@ namespace Logic.IHelpers
 		List<Shifts> GetShifts();
 		bool EditShift(ShiftViwModel shiftDetails);
 		bool DeleteShift(int id);
+		bool AddShiftLocation(ShiftLocationViewModel shiftDetails);
+		Task<ShiftsLocation> GetShiftById(int shiftId);
+		List<ShiftsLocation> GetShiftLocationList();
+		bool EditShiftLocation(ShiftLocationViewModel shiftDetails);
+		bool DeleteShiftLocation(ShiftLocationViewModel shiftDetails);
+		ShiftsLocation GetShiftLocation(int shiftId);
+
 		List<EmployeeLeave> GetListOfAllLeave();
 		List<EmployeeLeave> GetEmployeeLeave(string username);
 		Leave GetAnnualLeave(string username);

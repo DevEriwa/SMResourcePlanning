@@ -19,13 +19,7 @@ namespace Resource_Planing.Controllers
 		private IRotaHelper _rotaHelper;
 		private UserManager<ApplicationUser> _userManager;
 		private readonly IWebHostEnvironment _webHostEnvironment;
-		private IAdminHelper _adminHelper;
-		public AdminController(AppDbContext context, IDropdownHelper dropdownHelper, UserManager<ApplicationUser> userManager, IUserHelper userHelper, IWebHostEnvironment webHostEnvironment, IRotaHelper rotaHelper, IAdminHelper adminHelper)
-        private ILeaveHelper _leaveHelper; // Add this
-        private ILeaveHelper leaveHelper;
-
-        public AdminController(AppDbContext context, IDropdownHelper dropdownHelper, UserManager<ApplicationUser> userManager, IUserHelper userHelper, 
-			IWebHostEnvironment webHostEnvironment, IRotaHelper rotaHelper, ILeaveHelper _leaveHelper)
+		public AdminController(AppDbContext context, IDropdownHelper dropdownHelper, UserManager<ApplicationUser> userManager, IUserHelper userHelper, IWebHostEnvironment webHostEnvironment, IRotaHelper rotaHelper)
 		{
 			_context = context;
 			_dropdownHelper = dropdownHelper;
@@ -337,31 +331,54 @@ namespace Resource_Planing.Controllers
 					Leaves = appliedLeaveList;
 					return View(Leaves);
 				}
-				else
-				{
-					return View(Leaves);
-				}
-
-			}
-			catch (Exception ex)
-			{
-
-				throw ex;
 			}
 		}
 
-
-
-		public void UpdateRotaData(string rotaData)
+		[HttpGet]
+		public async Task<IActionResult> ShiftLocation()
 		{
-			if (rotaData != null)
-			{
-				var data = JsonConvert.DeserializeObject<RotaObjectViewModel>(rotaData);
-				if (data.UserId != null)
-				{
-					_rotaHelper.UpdateRota(data);
-				}
-			}
+			ViewBag.Shifts = _dropdownHelper.GetShifts();
+			ViewBag.State = await _dropdownHelper.GetState();
+			return View();
 		}
-	}
+
+
+        [HttpPost]
+        public async Task<JsonResult> CreateShiftLocation(string shiftDetails)
+        {
+            try
+            {
+                if (shiftDetails != null)
+                {
+                    var shiftModel = JsonConvert.DeserializeObject<ShiftLocationViewModel>(shiftDetails);
+                    if (shiftModel != null)
+                    {
+                        var shiftLocation = _adminHelper.AddShiftLocation(shiftModel);
+                        if (shiftLocation)
+                        {
+                            return Json(new { isError = false, msg = "Shift Location Added successfully" });
+                        }
+                        return Json(new { isError = true, msg = "Shift Location already exist" });
+                    }
+                    return Json(new { isError = true, msg = "Unable to Add Shift Location" });
+                }
+                return Json(new { isError = true, msg = "Network failure, please try again." });
+            }
+            catch (Exception exp)
+            {
+                throw exp;
+            }
+        }
+
+        [HttpGet]
+        public IActionResult AddShiftLocation(int shiftId)
+        {
+            var shift = _adminHelper.GetShiftById(shiftId).Result;
+            if (shift != null)
+            {
+                return PartialView(shift);
+            }
+            return PartialView();
+        }
+    }
 }
