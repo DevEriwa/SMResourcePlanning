@@ -793,8 +793,6 @@ function addDepartment() {
         $('#submit_btn').attr("disabled", false);
         errorAlert("Please fill the form Correctly");
     }
-
-
 }
 
 function departmentToBeEdited(id) {
@@ -1027,7 +1025,7 @@ function GetShiftLocationById(id) {
     debugger
     $.ajax({
         type: 'GET',
-        url: '/ClockIn/GetShiftLocationById', // we are calling json method
+        url: '/ClockIn/GetShiftLocationById', 
         dataType: 'json',
         data:
         {
@@ -1056,53 +1054,95 @@ function addShiftLocation(id) {
     debugger;
     $.ajax({
         type: 'GET',
-        url: '/ClockIn/AddShiftLocation/' + id, // Update the URL as needed
+        url: '/ClockIn/AddShiftLocation/' + id, 
         data: { shiftId: id },
         success: function (data) {
             $("#myModalBody").html(data);
-            $("#myModal").modal(); // Show the modal after content is loaded
+            $("#myModal").modal(); 
         },
         error: function (ex) {
             "No Data Found" + errorAlert(ex);
         }
     });
 }
-function GetLocation() {
-    debugger;
+function GetLocations() {
     if (navigator.geolocation) {
+        debugger
         navigator.geolocation.getCurrentPosition(function (showPosition) {
             var latitude = showPosition.coords.latitude;
             var longitude = showPosition.coords.longitude;
             $("#lat").val(latitude).prop("readonly", true);
             $("#long").val(longitude).prop("readonly", true);
-            // $("#getcode").hide();
         });
-
     }
 }
 
+function collectInputData() {
+    var latitude = document.getElementById("lat").value;
+    var longitude = document.getElementById("long").value;
+    var acceptedRadius = document.getElementById("Autocomp").value;
+    var locationId = "@Model.Id";
+    var data = {
+        Latitude: latitude,
+        Longitude: longitude,
+        AcceptedRadius: acceptedRadius,
+        LocationId: locationId
+    };
+    return data;
+}
 
-function UpdateLocation(id) {
-    debugger
-    var latitude = $("#lat").val();
-    var longitude = $("#long").val();
-    var radius = $("#Autocomp").val();
-
+function saveLocation() {
+    var data = collectInputData();
     $.ajax({
-        type: 'POST', // Change to 'POST'
-        url: '/ClockIn/AddLocationShift/', // Update URL as needed
-        dataType: 'json',
-        data: { shiftId: id, latitude: latitude, longitude: longitude, radius: radius },
-        success: function (result) {
-            if (!result.isError) {
-                successAlert(result.msg);
-                location.reload(); // No need to pass "Index" here
-            } else {
-                errorAlert(result.msg);
-            }
+        type: "POST",
+        url: "/ClockIn/AddLocationShift", 
+        data: data,
+        success: function (response) {
+            alert("Location updated successfully!");
         },
-        error: function (ex) {
-            "please fill the form correctly" + errorAlert(ex);
+        error: function (error) {
+            alert("An error occurred while updating the location.");
         }
     });
 }
+
+function locationToBeEdited(locationId) {
+    debugger
+    document.getElementById("editLocationId").value = locationId;
+    $('#edit_Shift_location').modal('show');
+}
+
+
+function updateLocation() {
+    debugger
+    var locationId = document.getElementById("editLocationId").value;
+    var latitude = document.getElementById("lat").value;
+    var longitude = document.getElementById("long").value;
+    var acceptedRadius = document.getElementById("Autocomp").value;
+
+    var data = {
+        locationId: locationId,
+        latitude: latitude,
+        longitude: longitude,
+        acceptedRadius: acceptedRadius
+    };
+
+    $.ajax({
+        url: "/Admin/UpdateLocation", 
+        method: 'POST',
+        data: data,
+       success: function (data) {
+            if (data.isError === false) { 
+                $('#updateModal').modal('hide');
+                successAlertWithRedirect(data.msg, data.url);
+            } else {
+                errorAlert(data.msg);
+            }
+       },
+        error: function (ex) {
+            errorAlert("Network failure, please try again");
+        }
+    });
+}
+
+

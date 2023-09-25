@@ -52,6 +52,10 @@
                                         <th>Location Name</th>
                                         <th>Location AbbreviationName</th>
                                         <th>Date Created</th>
+                                        <th>Longitude</th>
+                                        <th>Latitude</th>
+                                        <th>Accepted Radius</th>
+                                        <th>Shift Location</th>
                                         <th class="text-right">Action</th>
                                     </tr>
                                 </thead>
@@ -63,6 +67,15 @@
                                             <td>@location.Name</td>
                                             <td>@location.AbbreviatedName</td>
                                             <td>@location.DeteCreated</td>
+                                            <td>@location.Longitude</td>
+                                            <td>@location.Latitude</td>
+                                            <td>@location.AcceptedRadius</td>
+                                            <td>
+                                                <div class="">
+                                                    <a class="breadcrumb-item active btn btn-success" href="#" data-toggle="modal" @*data-target="#edit_Shift_location"*@ onclick="locationToBeEdited('@location.Id')" @*data-location-id="@location.Id"*@> Update Shift Location</a>
+                                                </div>
+                                            </td>
+
                                             <td class="text-right">
                                                 <div class="btn-group">
                                                     <button type="button" class="btn btn-default btn-flat">Action</button>
@@ -218,5 +231,55 @@
         </div>
     </div>
     <!-- /DELETE Purchase Plan Modal -->
-</div>
 
+    @*<div class="modal" id="myModal">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content w-75 m-auto" id="myModalBody">
+                @*<img src="~/images/loader.gif" id="myLoader" />*@
+           @* </div>
+        </div>
+    </div>*@
+    <!-- Shift location Modal -->
+    <div id="edit_Shift_location" class="modal custom-modal fade" role="dialog">
+        <div class="modal-dialog modal-dialog-centered modal-md" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Shift Location</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>By clicking the <b>Generate coordinate</b> button, we will take your current location as the accepted location of your company branch </p>
+                    <div class="submit-section mt-2">
+                        <a id="getcode" onclick="GetLocations()" class="btn btn-primary submit-btn">Generate Coordinates</a>
+                    </div>
+                    <div class="col-sm-12">
+                        <label class="text-primary">Latitude <span class="text-danger">*</span></label>
+                        <input class="form-control" id="lat" type="text" placeholder="Latitude" required>
+                        <input class="form-control" type="text" hidden id="editLocationId">
+                    </div>
+                    <div class="col-sm-12">
+                        <label class="text-primary">Longitude <span class="text-danger">*</span></label>
+                        <input required class="form-control" id="long" placeholder="Longitude">
+                    </div>
+                    <p class="mb-0">This is the distance from which an employee is allowed to clockin from.</p>
+                    <p class=" mb-0"><b>Note:</b>&nbsp; Anyone outside this range will not be detected, we advice you use <b>50</b> (meters). </p>
+                    <div class="col-sm-12">
+                        <input id="Autocomp" required class="form-control" placeholder="Acceted ClockIn Radius">
+                        <div class="input-group-append">
+                            <span class="input-group-text">Meters</span>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 text-center">
+                        <div class="submit-section">
+                            <button class="btn btn-primary submit-btn" id="submit_Btn" onclick="updateLocation()" style="width: 150px; margin: 0 auto;">Update</button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Shift location Modal -->
+</div>

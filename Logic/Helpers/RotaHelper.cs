@@ -313,5 +313,21 @@ namespace Logic.Helpers
 			}
 			return list;
 		}
-	}
+
+        public bool UpdateLocation(int locationId, double latitude, double longitude, double acceptedRadius)
+        {
+            var clockInLocation = _context.locations.Find(locationId);
+            if (clockInLocation != null)
+            {
+				clockInLocation.Id = locationId;
+                clockInLocation.Longitude = longitude;
+                clockInLocation.Latitude = latitude;
+                clockInLocation.AcceptedRadius = acceptedRadius;
+                _context.Update(clockInLocation);
+                _context.SaveChanges();
+                return true;
+            }
+            return false;
+        }
+    }
 }
