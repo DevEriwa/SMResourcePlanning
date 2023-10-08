@@ -90,16 +90,10 @@
 	<div id="allocate_Shift" class="modal custom-modal fade" role="dialog">
 		<div class="modal-dialog modal-dialog-centered" role="document">
 			<div class="modal-content">
-				<div class="modal-header py-2">
+				<div class="modal-header py-2 justify-content-center">
 					<div class="modal-title text-center row">
 						<div class="col-4 p-1">
-							<button class="btn btn-primary py-1" data-toggle="modal" data-target="#add_Shift">Add</button>
-						</div>
-						<div class="col-4 p-1">
-							<button class="btn btn-success py-1" onclick="updateRota()">Save</button>
-						</div>
-						<div class="col-4 p-1">
-							<button class="btn btn-warning py-1" data-dismiss="modal" aria-label="Close">Cancel</button>
+							<h2>Location</h2>
 						</div>
 					</div>
 				</div>
@@ -139,8 +133,26 @@
 					<div class="row">
 						<div class="card mb-0">
 							<div class="card-body p-1">
-								<div class="row ">
+								<div class="row">
 									<div class="col-4">
+										<label class="col-form-label">Start Time</label>
+									</div>
+									<div class="col-8">
+										<input type="text" class="form-control" placeholder="Start Time" id="s_TimeId">
+									</div>
+									<div class="col-4">
+										<label class="col-form-label">End Time</label>
+									</div>
+									<div class="col-8">
+										<input type="text" class="form-control" placeholder="End Time" id="e_TimeId">
+									</div><div class="col-4">
+										<label class="col-form-label">Unpaid Time</label>
+									</div>
+									<div class="col-8">
+										<input type="text" class="form-control" placeholder="Unpaid Time" id="u_TimeId">
+									</div>
+
+									@*<div class="col-4">
 										<input type="text" class="form-control" placeholder="Start Time" id="s_TimeId">
 									</div>
 									<div class="col-4">
@@ -148,7 +160,7 @@
 									</div>
 									<div class="col-4">
 										<input type="text" class="form-control" placeholder="Unpaid Time" id="u_TimeId">
-									</div>
+									</div>*@
 									<div class="col-4" hidden>
 										<input type="text" id="loc_Abb">
 										<input type="text" id="t_Range">
@@ -163,6 +175,19 @@
 								</div>
 							</div>
 							<!-- /.card-body -->
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer py-2 justify-content-center">
+					<div class="modal-title text-center row">
+						<div class="col-4 p-1">
+							<button class="btn btn-primary py-1" data-toggle="modal" data-target="#add_Shift">Add</button>
+						</div>
+						<div class="col-4 p-1">
+							<button class="btn btn-success py-1" onclick="updateRota()">Save</button>
+						</div>
+						<div class="col-4 p-1">
+							<button class="btn btn-warning py-1" data-dismiss="modal" aria-label="Close">Cancel</button>
 						</div>
 					</div>
 				</div>
