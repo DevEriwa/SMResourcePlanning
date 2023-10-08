@@ -644,7 +644,7 @@ function addLocation() {
 
 }
 
-function locationToBeEdited(id) {
+function GetlocationToBeEdited(id) {
     debugger
     $.ajax({
         type: 'Get',
