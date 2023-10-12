@@ -44,5 +44,6 @@ namespace Core.Models
         public virtual Department Departments { get; set; }
         public DateTime? DateOfBirth { get; set; }
         public string? Religion { get; set; }
+        public string? FaceImageData { get; set; }
     }
 }

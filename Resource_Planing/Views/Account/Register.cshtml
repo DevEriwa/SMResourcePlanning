@@ -1,119 +1,432 @@
 ﻿@model Core.Models.ApplicationUser
 
 @{
-	ViewData["Title"] = "Register";
-	Layout = "~/Views/Shared/_HomePageLayout.cshtml";
+    ViewData["Title"] = "Register";
+    Layout = "~/Views/Shared/_HomePageLayout.cshtml";
 }
+<style>
+    #captureFaceBtn {
+        margin-bottom: 10px;
+    }
 
-
-
+    #capturedFaceImage {
+        max-width: 100%;
+        margin-top: 10px;
+    }
+</style>
+<head>
+    <title>Capture picture from your webcam</title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/webcamjs/1.0.25/webcam.js"></script>
+</head>
 <!-- Page Content -->
-<div class="content container-fluid pt-5">
-	<div class="card mt-5 p-3">
-		<div class="row">
-			<div class="col-md-6 m-auto">
-				<!-- Page Header -->
-				<div class="page-header">
-					<div class="row mb-2">
-						<div class="col-sm-12 mt-4">
-							<h3 class="page-title text-center">Staff Registration Details</h3>
-						</div>
-					</div>
-				</div>
-				<!-- /Page Header -->
-				<div class="row mb-2">
-					<div class="col-sm-6">
-						<div class="form-group">
-							<label>First Name <span class="text-danger">*</span></label>
-							<input class="form-control" id="firstName" type="text">
-						</div>
-					</div>
-					<div class="col-sm-6">
-						<div class="form-group">
-							<label>Last Name <span class="text-danger">*</span></label>
-							<input class="form-control" id="lastName" type="text">
-						</div>
-					</div>
-				</div>
-				<div class="row mb-2">
-					<div class="col-sm-6">
-						<div class="form-group">
-							<label>Phone Number <span class="text-danger">*</span></label>
-							<input class="form-control" id="phoneNumber" type="number">
-							@*<p class="text-danger" id="phoneWarningMsg" hidden></p>*@
-						</div>
-					</div>
-					<div class="col-sm-6">
-						<div class="form-group">
-							<label>Mobile Number <span class="text-danger">Optional</span></label>
-							<input class="form-control" id="mobileNumber" type="number">
-							@*<p class="text-danger" id="moblieWarningMsg" hidden></p>*@
-						</div>
-					</div>
-				</div>
-				<div class="row mb-2">
-					<div class="col-sm-6">
-						<div class="form-group">
-							<label>Email <span class="text-danger">*</span></label>
-							<input class="form-control" id="email" type="email">
-						</div>
-					</div>
-					<div class="col-sm-6">
-						<div class="form-group">
-							<label>Address <span class="text-danger">Optional</span></label>
-							<input class="form-control" id="address" type="text">
-						</div>
-					</div>
-					
-				</div>
-				<div class="row mb-2">
-					<div class="col-sm-6">
-						<div class="form-group">
-							<label>Gender <span class="text-danger">*</span></label>
-							<select id="genderId" class="select form-control " asp-items="@(new SelectList(ViewBag?.Gender, "Id", "Name"))"> </select>
-						</div>
-					</div>
-					<div class="col-sm-6">
-						<div class="form-group">
-							<label>Religion<span class="text-danger">Optional</span></label>
-							<input id="religion" type="text" class="form-control">
-						</div>
-					</div>
-				</div>
-				<div class="row mb-2">
-					<div class="col-sm-6">
-						<div class="form-group">
-							<label>Password <span class="text-danger">*</span></label>
-							<input class="form-control" id="password" type="password">
-						</div>
-					</div>
-					<div class="col-sm-6">
-						<div class="form-group">
-							<label>Password Confirm <span class="text-danger">*</span></label>
-							<input class="form-control" id="confirmpassword" type="password">
-						</div>
-					</div>
-				</div>
-				<div class="row mb-2">
-					<div class="col-sm-6">
-						<div class="tacbox">
-							<input id="displayOnRota" type="checkbox">
-							<label for="checkbox" generated="true"> I agree to be in Rota</label>
-						</div>
-					</div>
-					<div class="col-sm-6">
-						<div class="tacbox">
-							<input id="termsCondition" type="checkbox" required>
-							<label for="checkbox" generated="true"> I agree to these <a href="#" data-toggle="modal" data-target="#myModal">Terms and Conditions</a>.</label>
-						</div>
-					</div>
-				</div>
+<div class="content container pt-5">
+    <div class="card mt-5 p-3">
+        <div class="row">
+            <div class="col-md-2 pt-3">
+                <div class="row justify-content-center">
+                    <div class="col-md-12" onclick="showPatientBoarding()">
+                        <h5 class="pt-0 tickcheck01 visit_listner" style="color: #4c5b64;"><i class="fa fa-check-circle" style="font-size: 25px;"></i>Registration page</h5>
+                        <h5 class="px-2 pt-0 tickcheck01 visit_listner" style="color: #4c5b64;">|</h5>
+                        <h5 class="px-2 pt-0 tickcheck01 visit_listner" style="color:  #4c5b64;">|</h5>
+                    </div>
+                    <div class="col-md-12" onclick="hidepatientboardingPage()">
+                        <h5 class="pt-0 tickcheck02 visit_listner" style="color: #4c5b64;"><i class="fa fa-check-circle" style="font-size: 25px;"></i>Face Verification Page</h5>
+                        <h5 class="px-2 pt-0 tickcheck02 visit_listner" style="color: #4c5b64;"></h5>
+                        <h5 class="px-2 pt-0 tickcheck02 visit_listner" style="color: #4c5b64;"></h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-10" id="patientboardingPage">
+                <div class="card mb-0">
+                    <div class="card-body">
+                        <!-- Page Header -->
+                        <div class="page-header text-center mb-4">
+                            <h3 class="page-title">Staff Registration Details</h3>
+                        </div>
+                        <!-- /Page Header -->
 
-				<div class="submit-section mb-3">
-					<button onclick="Registeration()" class="btn btn-primary submit-btn text-center">Save</button>
-				</div>
-			</div>
-		</div>
-	</div>
+                        <div class="row mb-3" id="registrationPage">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="firstName">First Name <span class="text-danger">*</span></label>
+                                    <input class="form-control" id="firstName" type="text">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="lastName">Last Name <span class="text-danger">*</span></label>
+                                    <input class="form-control" id="lastName" type="text">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="phoneNumber">Phone Number <span class="text-danger">*</span></label>
+                                    <input class="form-control" id="phoneNumber" type="number">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="mobileNumber">Mobile Number (Optional)</label>
+                                    <input class="form-control" id="mobileNumber" type="number">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="email">Email <span class="text-danger">*</span></label>
+                                    <input class="form-control" id="email" type="email">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="address">Address (Optional)</label>
+                                    <input class="form-control" id="address" type="text">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="genderId">Gender <span class="text-danger">*</span></label>
+                                    <select id="genderId" class="form-control" asp-items="@(new SelectList(ViewBag?.Gender, "Id", "Name"))"></select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="religion">Religion (Optional)</label>
+                                    <input id="religion" type="text" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="password">Password <span class="text-danger">*</span></label>
+                                    <input class="form-control" id="password" type="password">
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="confirmpassword">Password Confirm <span class="text-danger">*</span></label>
+                                    <input class="form-control" id="confirmpassword" type="password">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="displayOnRota">
+                                    <label class="form-check-label" for="displayOnRota">I agree to be in Rota</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="termsCondition" required>
+                                    <label class="form-check-label" for="termsCondition">I agree to these <a href="#" data-toggle="modal" data-target="#myModal">Terms and Conditions</a>.</label>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="text-right">
+                            <button type="submit" class="btn btn-primary" onclick="hidepatientboardingPage()">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-10" id="boardingMedicationFoodPage" style="display: none;">
+                <div class="chat-window">
+
+                    <div class="task-wrapper">
+                        <div class="task-list-container">
+
+
+
+                            <div class="text-center">
+                                <h4>Face Verification</h4>
+                            </div>
+                            <div class="page-header">
+                                <div class="row align-items-center">
+                                    <div class="col">
+                                        <p class="page-title" style="font-size:medium">
+                                            We want to ensure the health and safety of each boarding pet,
+                                            therefore,the following vaccines are Required for boarding. 
+                                            Proof of vaccination is required at time of boarding admission. 
+                                            If a patient is not up to date with one or more of the vaccines
+                                            listed below, you give the attending Veterinarian permission to
+                                            examine and vaccinate your pet as appropriate.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="row align-items-center">
+                                    <div col-sm-4>
+                                    </div>
+                                    <div col-sm-4 class="col-md-6 d-flex justify-content-center align-items-center">
+                                        <div id="camera" >
+                                            <!-- Camera view will be displayed here -->
+                                        </div>
+                                    </div>
+                                    <div col-sm-4>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <div col-sm-4>
+                                    </div>
+                                    <div col-sm-4 class="col-md-6 d-flex justify-content-center align-items-center">
+                                        <button id="captureBtn" class="btn btn-primary">Capture</button>
+                                    </div>
+                                    <div col-sm-4>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div col-sm-3>
+                                    </div>
+                                    <div col-sm-6 class="col-md-6 d-flex justify-content-center align-items-center">
+                                        <div id="snapShot" class="text-center">
+                                            <!-- Captured snapshot will be displayed here -->
+                                        </div>
+                                        <!-- Hidden input field to store the captured image data -->
+                                        <input type="file" id="capturedImageData" name="capturedImageData"hidden>
+                                    </div>
+                                    <div col-sm-3>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row text-center mb-4 mt-2">
+                                <div class="col-2">
+                                    <button type="submit" class="btn btn-primary" onclick="previousBoardingMedicationFoodPage()">Previous</button>
+                                </div>
+                                <div class="col-8">
+                                </div>
+                                <div class="col-2">
+                                    <button onclick="Registeration()" class="btn btn-primary">Save Data</button>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-<!-- /Page Content -->			
+<!-- /Page Content -->
+<script>
+    function ChangeColorToValid(selectedClass) {
+
+        for (var i = 0; i < selectedClass.length; i++) {
+            selectedClass[i].style.color = "#FF851A";
+        }
+    }
+    function ChangeColorToInValid(selectedClass) {
+
+        for (var i = 0; i < selectedClass.length; i++) {
+            selectedClass[i].style.color = "gray";
+        }
+    }
+    function hidepatientboardingPage() {
+        var patientboardingPage = document.getElementsByClassName("tickcheck01");
+        var boardingMedicationFoodPage = document.getElementsByClassName("tickcheck02");
+        var boardingRequiredVaccinesPage = document.getElementsByClassName("tickcheck03");
+        //var boardingAdditionalServicesPage = document.getElementsByClassName("tickcheck4");
+        var boardingPetId = $('#boardingPatientPackageId').val();
+        var patientId = $('#boardingPatientId').val();
+        var authorizedName = $('#authorizedName').val();
+        var authorizedPhone = $('#authorizedPhone').val();
+        var startDate = $('#boardingStartDate').val();
+        var lastName = $('#lastName').val();
+        var firstName = $('#firstName').val();
+        if (firstName != "" && lastName != "") {
+            $('#patientboardingPage').hide();
+            $('#boardingMedicationFoodPage').show();
+            $('#boardingRequiredVaccinesPage').hide();
+            $('#boardingAdditionalServicesPage').hide();
+            ChangeColorToValid(patientboardingPage);
+            ChangeColorToValid(boardingMedicationFoodPage);
+            ChangeColorToInValid(boardingRequiredVaccinesPage);
+            ChangeColorToInValid(boardingAdditionalServicesPage);
+        }
+        else {
+            errorAlert("Please fill the form properly");
+        }
+    }
+    function hideBoardingMedicationFoodPage() {
+        var patientboardingPage = document.getElementsByClassName("tickcheck01");;
+        var boardingMedicationFoodPage = document.getElementsByClassName("tickcheck02");
+        var boardingRequiredVaccinesPage = document.getElementsByClassName("tickcheck03");
+        var boardingAdditionalServicesPage = document.getElementsByClassName("tickcheck04");
+        var headers = $('#headers').val();
+        let button1 = $('#medicationFoodId').val();
+        let button2 = $('#frenquencyId').val();
+        let notification = $('#amountGivenId').val();
+        var addPatientBoardingItem = $('#addPatientBoardingItem').val();
+        if (button1 != "0" && button2 != "0") {
+            $('#patientboardingPage').hide();
+            $('#boardingMedicationFoodPage').hide();
+            $('#boardingRequiredVaccinesPage').show();
+            $('#boardingAdditionalServicesPage').hide();
+            ChangeColorToValid(patientboardingPage);
+            ChangeColorToValid(boardingMedicationFoodPage);
+            ChangeColorToInValid(boardingRequiredVaccinesPage);
+            ChangeColorToInValid(boardingAdditionalServicesPage);
+        }
+        else {
+            errorAlert("Please Add Item");
+        }
+    }
+    function hideBoardingRequiredVaccinesPage() {
+        var patientboardingPage = document.getElementsByClassName("tickcheck01");;
+        var boardingMedicationFoodPage = document.getElementsByClassName("tickcheck02");
+        var boardingRequiredVaccinesPage = document.getElementsByClassName("tickcheck03");
+        var boardingAdditionalServicesPage = document.getElementsByClassName("tickcheck4");
+        var laboratorySamplesId = $('#laboratorySamplesId').val();
+        var laboratoryResultsId = $('#laboratoryResultsId').val();
+        var differentialDiagnosisId = $('#differentialDiagnosisId').val();
+        var reqVaccineName = $('#addServicecheckboxId').val();
+        var hasPatName = $('#addServicecheckboxId').val();
+        if (reqVaccineName != "0") {
+            $('#patientboardingPage').hide();
+            $('#boardingMedicationFoodPage').hide();
+            $('#boardingRequiredVaccinesPage').hide();
+            $('#boardingAdditionalServicesPage').show();
+            ChangeColorToValid(patientboardingPage);
+            ChangeColorToValid(boardingMedicationFoodPage);
+            ChangeColorToValid(boardingRequiredVaccinesPage);
+            ChangeColorToInValid(boardingAdditionalServicesPage);
+        }
+        else {
+            errorAlert("Please fill definitive Diagnosis");
+        }
+    }
+    function showPatientBoarding() {
+        var patientboardingPage = document.getElementsByClassName("tickcheck01");;
+        var boardingMedicationFoodPage = document.getElementsByClassName("tickcheck02");
+        var boardingRequiredVaccinesPage = document.getElementsByClassName("tickcheck03");
+        var boardingAdditionalServicesPage = document.getElementsByClassName("tickcheck04");
+        var patientNameAndCaseNumber = $('#patientNameAndCaseNumber').val();
+        var vaccinationHistoryId = $('#vaccinationHistoryId').val();
+        var environmentalHistoryId = $('#environmentalHistoryId').val();
+        var feedingHistoryId = $('#feedingHistoryId').val();
+        $('#patientboardingPage').show();
+        $('#boardingMedicationFoodPage').hide();
+        $('#boardingRequiredVaccinesPage').hide();
+        $('#boardingAdditionalServicesPage').hide(); S
+        ChangeColorToValid(patientboardingPage);
+        ChangeColorToInValid(boardingMedicationFoodPage);
+        ChangeColorToInValid(boardingRequiredVaccinesPage);
+        ChangeColorToInValid(boardingAdditionalServicesPage);
+    }
+    function previousBoardingMedicationFoodPage() {
+        var patientboardingPage = document.getElementsByClassName("tickcheck01");;
+        var boardingMedicationFoodPage = document.getElementsByClassName("tickcheck02");
+        var boardingRequiredVaccinesPage = document.getElementsByClassName("tickcheck03");
+        var boardingAdditionalServicesPage = document.getElementsByClassName("tickcheck04");
+        var totalAmountToPayQuick = $('#totalAmountToPayQuick').val();
+        var headers = $('#headers').val();
+        var addItemQuick = $('#addItemQuick').val();
+        var button1 = $('#button1').val();
+        var button2 = $('#button2').val();
+        var notification = $('#notification').val();
+        $('#patientboardingPage').show();
+        $('#boardingMedicationFoodPage').hide();
+        $('#boardingRequiredVaccinesPage').hide();
+        $('#boardingAdditionalServicesPage').hide();
+        ChangeColorToValid(patientboardingPage);
+        ChangeColorToInValid(BoardingMedicationFoodPage);
+        ChangeColorToInValid(boardingRequiredVaccinesPage);
+        ChangeColorToInValid(boardingAdditionalServicesPage);
+    }
+    function previousBoardingRequiredVaccinesPage() {
+        var patientboardingPage = document.getElementsByClassName("tickcheck01");;
+        var boardingMedicationFoodPage = document.getElementsByClassName("tickcheck02");
+        var boardingRequiredVaccinesPage = document.getElementsByClassName("tickcheck03");
+        var boardingAdditionalServicesPage = document.getElementsByClassName("tickcheck04");
+        var patientNameAndCaseNumber = $('#patientNameAndCaseNumber').val();
+        var vaccinationHistoryId = $('#vaccinationHistoryId').val();
+        var environmentalHistoryId = $('#environmentalHistoryId').val();
+        var feedingHistoryId = $('#feedingHistoryId').val();
+        $('#patientboardingPage').hide();
+        $('#boardingMedicationFoodPage').show();
+        $('#boardingRequiredVaccinesPage').hide();
+        $('#boardingAdditionalServicesPage').hide();
+        ChangeColorToValid(historyPage);
+        ChangeColorToValid(boardingMedicationFoodPage);
+        ChangeColorToInValid(boardingRequiredVaccinesPage);
+        ChangeColorToInValid(boardingAdditionalServicesPage);
+    }
+    function previousBoardingAdditionalServicesPage() {
+        var patientboardingPage = document.getElementsByClassName("tickcheck01");;
+        var boardingMedicationFoodPage = document.getElementsByClassName("tickcheck02");
+        var boardingRequiredVaccinesPage = document.getElementsByClassName("tickcheck03");
+        var boardingAdditionalServicesPage = document.getElementsByClassName("tickcheck04");
+        var patientNameAndCaseNumber = $('#patientNameAndCaseNumber').val();
+        var vaccinationHistoryId = $('#vaccinationHistoryId').val();
+        var environmentalHistoryId = $('#environmentalHistoryId').val();
+        var feedingHistoryId = $('#feedingHistoryId').val();
+        $('#patientboardingPage').hide();
+        $('#boardingMedicationFoodPage').hide();
+        $('#boardingRequiredVaccinesPage').show();
+        $('#boardingAdditionalServicesPage').hide();
+        ChangeColorToValid(patientboardingPage);
+        ChangeColorToValid(boardingMedicationFoodPage);
+        ChangeColorToValid(boardingRequiredVaccinesPage);
+        ChangeColorToInValid(boardingAdditionalServicesPage);
+    }
+
+
+    Webcam.set({
+        width: 220,
+        height: 190,
+        image_format: 'jpeg',
+        jpeg_quality: 100
+    });
+
+    Webcam.attach('#camera');
+
+    // Function to capture and display a snapshot
+    function takeSnapShot() {
+        Webcam.snap(function (data_uri) {
+            // Display the captured image
+            document.getElementById('snapShot').innerHTML =
+                '<img src="' + data_uri + '" width="200px" height="190px" />';
+
+            // Store the captured image data in the input field
+            document.getElementById('capturedImageData').value = data_uri;
+
+            // Turn off the camera
+            Webcam.reset();
+        });
+    }
+
+    // Attach the capture function to the button
+    const captureBtn = document.getElementById('captureBtn');
+    captureBtn.addEventListener('click', takeSnapShot);
+    // Function to capture and display a snapshot
+    function takeSnapShot() {
+        debugger
+        Webcam.snap(function (data_uri) {
+            // Display the captured image
+            document.getElementById('snapShot').innerHTML =
+                '<img src="' + data_uri + '" width="70px" height="50px" />';
+
+            // Convert the captured image to a base64 string
+            var base64Image = data_uri.split(',')[1]; // Extract the base64 part of the data URI
+
+            // Store the captured image data in the input field
+            document.getElementById('capturedImageData').value = base64Image;
+
+            // Turn off the camera
+            Webcam.reset();
+        });
+    }
+</script>
+
+
+
