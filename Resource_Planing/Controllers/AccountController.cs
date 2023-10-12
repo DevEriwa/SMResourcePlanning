@@ -84,6 +84,7 @@ namespace Resource_Planing.Controllers
 				throw ex;
 			}
 		}
+
 		// ADMIN REGISTRAION POST
 		[HttpPost]
         public async Task<JsonResult> AdminRegisteration(string adminRegistrationData)

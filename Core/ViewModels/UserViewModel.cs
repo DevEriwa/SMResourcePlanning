@@ -38,5 +38,6 @@ namespace Core.ViewModels
         public string? Religion { get; set; }
         public Status Status { get; set; }
         public MaritalStatus MaritalStatus { get; set; }
+        public string? FaceImageData { get; set; }
     }
 }

@@ -24,34 +24,44 @@ namespace Logic.Helpers
         }
 
         public async Task<ApplicationUser> AccountRegisterationService(UserViewModel registrationData)
-		{
-			if (registrationData != null)
-			{
-				var newAccount = new ApplicationUser();
-				{
-					newAccount.FirstName = registrationData.FirstName;
-					newAccount.LastName = registrationData.LastName;
-					newAccount.Email = registrationData.Email;
-					newAccount.UserName = registrationData.Email;
-					newAccount.EmailConfirmed = true;
-					newAccount.DisplayOnRota = registrationData.DisplayOnRota;
-					newAccount.PhoneNumber = registrationData.Phone;
-					newAccount.Password = registrationData.Password;
-					newAccount.ConfirmPassword = registrationData.ConfirmPassword;
-					newAccount.Address = registrationData.Address;
-					newAccount.GenderId = registrationData.GenderId;
-				}
-				var result = await _userManager.CreateAsync(newAccount, registrationData.Password);
-				if (result.Succeeded)
-				{
-					return newAccount;
-				}
-				return null;
-			}
-			return null;
+        {
+            if (registrationData != null)
+            {
+                var newAccount = new ApplicationUser
+                {
+                    FirstName = registrationData.FirstName,
+                    LastName = registrationData.LastName,
+                    Email = registrationData.Email,
+                    UserName = registrationData.Email,
+                    EmailConfirmed = true,
+                    DisplayOnRota = registrationData.DisplayOnRota,
+                    PhoneNumber = registrationData.Phone,
+                    Address = registrationData.Address,
+                    GenderId = registrationData.GenderId,
+                    FaceImageData = registrationData.FaceImageData
+                };
 
-		}
-		public async Task<ApplicationUser> AdminegisterationService(UserViewModel registrationData)
+                // Hash the user's password and store it securely
+                var result = await _userManager.CreateAsync(newAccount, registrationData.Password);
+
+                if (result.Succeeded)
+                {
+                    return newAccount;
+                }
+                else
+                {
+                    // Log or handle registration errors here
+                    foreach (var error in result.Errors)
+                    {
+                        // Log error messages, or handle them as needed
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        public async Task<ApplicationUser> AdminegisterationService(UserViewModel registrationData)
 		{
 			if (registrationData != null)
 			{

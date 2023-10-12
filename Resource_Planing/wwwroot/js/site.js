@@ -63,6 +63,8 @@ function Registeration() {
     data.DisplayOnRota = $('#displayOnRota').is(":checked");
     data.CheckBox = $('#termsCondition').is(":checked");
     data.ConfirmPassword = $('#confirmpassword').val();
+    data.FaceImageData = $('#capturedImageData').val();
+    //var FaceImageData = document.getElementById("capturedImageData").files[0];
     if (data.Email != "" && data.Phone != "" && data.FirstName != "" && data.LastName != "" && data.Password != "" && data.Gender != "" && data.Password != "")
     {
         if (data.Password == data.ConfirmPassword) {
@@ -1144,5 +1146,9 @@ function updateLocation() {
         }
     });
 }
+
+
+
+
 
 
