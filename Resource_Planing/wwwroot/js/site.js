@@ -63,9 +63,8 @@ function Registeration() {
     data.DisplayOnRota = $('#displayOnRota').is(":checked");
     data.CheckBox = $('#termsCondition').is(":checked");
     data.ConfirmPassword = $('#confirmpassword').val();
-    data.FaceImageData = $('#capturedImageData').val();
-    //var FaceImageData = document.getElementById("capturedImageData").files[0];
-    if (data.Email != "" && data.Phone != "" && data.FirstName != "" && data.LastName != "" && data.Password != "" && data.Gender != "" && data.Password != "")
+    profilePix = $('#capturedImageData').val();
+    if (data.Email != "" && data.Phone != "" && data.FirstName != "" && data.LastName != "" && data.Password != "" && data.Gender != "" && data.profilePix != "")
     {
         if (data.Password == data.ConfirmPassword) {
             var companyDetails = JSON.stringify(data);
@@ -1043,8 +1042,6 @@ function GetShiftLocationById(id) {
                 $("#edit_sl_Name").val(data.data.name);
                 $("#edit_adrress").val(data.data.address);
                 $("#edit_postalCode").val(data.data.postalCode);
-                //$("#select2-EditedproductTypeId-container").text(data.data.productType.name);
-               //$("#EditedproductTypeId").val(data.data.productType.id);
             }
         },
         error: function (ex) {

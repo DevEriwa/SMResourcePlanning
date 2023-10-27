@@ -28,8 +28,6 @@ namespace Resource_Planing.Controllers
             var shiftLocationList = _userHelper.GetShiftLocationList();
             return View(shiftLocationList);
         }
-
-
         [HttpPost]
         public async Task<JsonResult> CreateShiftLocation(string shiftDetails)
         {
@@ -56,8 +54,6 @@ namespace Resource_Planing.Controllers
                 throw exp;
             }
         }
-
-
 		[HttpPost]
 		public JsonResult EditShiftLocation(string shiftDetails)
 		{
@@ -76,8 +72,6 @@ namespace Resource_Planing.Controllers
 			}
 			return Json(new { isError = false, msg = "Network failure, please try again." });
 		}
-
-
 		[HttpPost]
 		public JsonResult DeleteShiftLocation(string shiftDetails)
 		{
@@ -97,7 +91,6 @@ namespace Resource_Planing.Controllers
 			}
 			return Json(new { isError = true, msg = "Network failure, please try again." });
 		}
-
         public JsonResult GetShiftLocationById(int shiftLocationID)
         {
             if (shiftLocationID != 0)
@@ -111,7 +104,6 @@ namespace Resource_Planing.Controllers
             return Json(new { isError = true, msg = "No Result Found" });
 
         }
-
         [HttpGet]
         public IActionResult AddShiftLocation(int shiftId)
         {
@@ -122,7 +114,6 @@ namespace Resource_Planing.Controllers
             }
             return PartialView();
         }
-
         [HttpGet]
         public JsonResult AddLocationShift(int shiftId, string latitude, string longitude, string radius)
         {
@@ -148,6 +139,11 @@ namespace Resource_Planing.Controllers
             {
                 throw ex;
             }
+        }
+        [HttpGet]
+        public IActionResult ClockInView()
+        {
+            return View();
         }
     }
 }
