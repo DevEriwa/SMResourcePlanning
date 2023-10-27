@@ -13,5 +13,6 @@ namespace Logic.IHelpers
 		Task<List<Country>> GetCountry();
 		Task<List<State>> GetState();
 		List<Shifts> GetShifts();
+        List<LeaveSetup> AllLeaveType(string name);
     }
 }

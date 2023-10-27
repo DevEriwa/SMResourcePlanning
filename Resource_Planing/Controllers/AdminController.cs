@@ -8,11 +8,12 @@ using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Resource_Planing.Models;
 using System.Net;
+using static Core.Enums.Resource_Planing;
 
 namespace Resource_Planing.Controllers
 {
-    public class AdminController : Controller
-    {
+	public class AdminController : Controller
+	{
 		private AppDbContext _context;
 		private IDropdownHelper _dropdownHelper;
 		private IUserHelper _userHelper;
@@ -28,18 +29,18 @@ namespace Resource_Planing.Controllers
 			_webHostEnvironment = webHostEnvironment;
 			_rotaHelper = rotaHelper;
 		}
-		
+
 		public IActionResult Index()
-        {
-            return View();
-        }
+		{
+			return View();
+		}
 
 		public IActionResult Location()
 		{
 			var newLocationList = new List<Location>();
 			var locations = _userHelper.GetLocations();
-            ViewBag.UserInRota = _dropdownHelper.GetAllUsersInRota();
-            if (locations.Any())
+			ViewBag.UserInRota = _dropdownHelper.GetAllUsersInRota();
+			if (locations.Any())
 			{
 				newLocationList = locations;
 			}
@@ -113,8 +114,8 @@ namespace Resource_Planing.Controllers
 			return Json(new { isError = true, msg = "Network failure, please try again." });
 		}
 
-        public IActionResult Department()
-        {
+		public IActionResult Department()
+		{
 			var dept = new List<Department>();
 			var departments = _userHelper.GetListOfAllDepartment();
 			if (departments.Any())
@@ -122,16 +123,16 @@ namespace Resource_Planing.Controllers
 				dept = departments;
 			}
 			return View(departments);
-        }
+		}
 
-        [HttpPost]
-        public JsonResult AddDepartments(string departmentDetails)
-        {
-            if (departmentDetails != null)
-            {
-                var departmentViewModel = JsonConvert.DeserializeObject<DepartmentViewModel>(departmentDetails);
-                if (departmentViewModel != null)
-                {
+		[HttpPost]
+		public JsonResult AddDepartments(string departmentDetails)
+		{
+			if (departmentDetails != null)
+			{
+				var departmentViewModel = JsonConvert.DeserializeObject<DepartmentViewModel>(departmentDetails);
+				if (departmentViewModel != null)
+				{
 					var adddepartment = _userHelper.AddDepartment(departmentViewModel);
 					if (adddepartment)
 					{
@@ -139,33 +140,33 @@ namespace Resource_Planing.Controllers
 					}
 					return Json(new { isError = true, msg = "Unable To Add Department" });
 				}
-                return Json(new { isError = true, msg = "Error Occurred" });
-            }
-            return Json(new { isError = true, msg = "Error Occurred" });
-        }
+				return Json(new { isError = true, msg = "Error Occurred" });
+			}
+			return Json(new { isError = true, msg = "Error Occurred" });
+		}
 
-        [HttpGet]
-        public JsonResult EditDepartment(int id)
-        {
-            if (id > 0)
-            {
+		[HttpGet]
+		public JsonResult EditDepartment(int id)
+		{
+			if (id > 0)
+			{
 				var departmentToBeEdited = _userHelper.GetLocationById(id);
 				if (departmentToBeEdited != null)
 				{
 					return Json(departmentToBeEdited);
 				}
 			}
-            return Json(new { isError = true, msg = "Network failure, please try again." });
-        }
+			return Json(new { isError = true, msg = "Network failure, please try again." });
+		}
 
-        [HttpPost]
-        public JsonResult EditedDepartment(string departmentdetails)
-        {
-            if (departmentdetails != null)
-            {
-                var departmentViewModel = JsonConvert.DeserializeObject<DepartmentViewModel>(departmentdetails);
-                if (departmentViewModel != null)
-                {
+		[HttpPost]
+		public JsonResult EditedDepartment(string departmentdetails)
+		{
+			if (departmentdetails != null)
+			{
+				var departmentViewModel = JsonConvert.DeserializeObject<DepartmentViewModel>(departmentdetails);
+				if (departmentViewModel != null)
+				{
 					var editedDepartment = _userHelper.DepartmentEdited(departmentViewModel);
 					if (editedDepartment)
 					{
@@ -173,24 +174,24 @@ namespace Resource_Planing.Controllers
 					}
 					return Json(new { isError = true, msg = "Unable To Updated Department" });
 				}
-            }
-            return Json(new { isError = true, msg = "Network failure, please try again." });
-        }
+			}
+			return Json(new { isError = true, msg = "Network failure, please try again." });
+		}
 
-        [HttpPost]
-        public JsonResult DeleteDepartment(int id)
-        {
-            if (id != 0)
-            {
-                var departmentToBeDeleted = _userHelper.DeleteDepartment(id);
-                if (departmentToBeDeleted)
-                {
-                    return Json(new { isError = false, msg = "Department  deleted Successfully" });
-                }
-                return Json(new { isError = true, msg = "Unable To delete Department" });
-            }
-            return Json(new { isError = true, msg = "Network failure, please try again." });
-        }
+		[HttpPost]
+		public JsonResult DeleteDepartment(int id)
+		{
+			if (id != 0)
+			{
+				var departmentToBeDeleted = _userHelper.DeleteDepartment(id);
+				if (departmentToBeDeleted)
+				{
+					return Json(new { isError = false, msg = "Department  deleted Successfully" });
+				}
+				return Json(new { isError = true, msg = "Unable To delete Department" });
+			}
+			return Json(new { isError = true, msg = "Network failure, please try again." });
+		}
 
 		public IActionResult Shift()
 		{
@@ -331,25 +332,49 @@ namespace Resource_Planing.Controllers
 		}
 
 
-        [HttpPost]
-        public ActionResult UpdateLocation(int locationId, double latitude, double longitude, double acceptedRadius)
-        {
-            try
-            {
-                var locationUpdate = _rotaHelper.UpdateLocation(locationId, latitude, longitude, acceptedRadius);
+		[HttpPost]
+		public ActionResult UpdateLocation(int locationId, double latitude, double longitude, double acceptedRadius)
+		{
+			try
+			{
+				var locationUpdate = _rotaHelper.UpdateLocation(locationId, latitude, longitude, acceptedRadius);
 				if (locationUpdate)
 				{
-                    var url = "/Admin/Location/";
-                    return Json(new { isError = false, msg = "ClockIn location updated succesfully", url = url });
-                }
-                return Json(new { isError = true, msg = "Unable to update" });
-            }
-            catch (Exception ex)
-            {
-                return Json(new { success = false, errorMessage = ex.Message });
-            }
-           
-        }
-    }
+					var url = "/Admin/Location/";
+					return Json(new { isError = false, msg = "ClockIn location updated succesfully", url = url });
+				}
+				return Json(new { isError = true, msg = "Unable to update" });
+			}
+			catch (Exception ex)
+			{
+				return Json(new { success = false, errorMessage = ex.Message });
+			}
+
+		}
+
+
+		//public IActionResult Leave()
+		//{
+		//          var loggedInUser = _userHelper.FindByUserName(User.Identity.Name);
+		//          if (loggedInUser != null)
+		//          {
+		//              ViewBag.LeaveType = _dropdownHelper.GetLeaveTypeDropDown(loggedInUser.UserName);
+		//              ViewBag.LeaveStatus = _dropdownHelper.GetLeaveStatus();
+		//              var userCompany = _userHelper.GetUserCompany(loggedInUser.UserName);
+		//              var adminCanAccess = _hrHelper.AdminAccessibleFeatures(userCompany.Id, CompanySettings.ShowLeaveModule.ToString());
+		//              if (adminCanAccess)
+		//              {
+		//                  ViewBag.Leave = _dropdownHelper.GetLeaveTypeDropDown(loggedInUser.UserName);
+		//                  return View();
+		//              }
+		//              else
+		//              {
+		//                  return RedirectToAction("CantAccess", "Home");
+		//              }
+		//          }
+		//          return null; 
+		//      }
+		//  }
+	}
 }
 
