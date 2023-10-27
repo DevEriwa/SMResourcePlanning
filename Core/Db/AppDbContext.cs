@@ -7,7 +7,8 @@ namespace Core.Db
 {
     public class AppDbContext : IdentityDbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options)
+            : base(options)
         { }
         public DbSet<ApplicationUser> ApplicationUser { get; set; }
         public DbSet<UserVerification> UserVerifications { get; set; }
@@ -20,6 +21,8 @@ namespace Core.Db
 		public DbSet<StaffClockIn> StaffClockIns { get; set; }
 		public DbSet<State> State { get; set; }
 		public DbSet<ShiftsLocation> ShiftsLocations { get; set; }
+        public DbSet<LeaveApplication> LeaveApplications { get; set; }
+        public DbSet<LeaveSetup> LeaveSetups { get; set; }
     }
 }
 

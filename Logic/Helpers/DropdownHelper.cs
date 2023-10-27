@@ -236,5 +236,46 @@ namespace Logic.Helpers
             }
             return shifts;
         }
+        public class DropdownEnumModel
+        {
+            public int Id { get; set; }
+            public string Name { get; set; }
+        }
+
+        public List<DropdownEnumModel> GetLeaveStatus()
+        {
+            var common = new DropdownEnumModel()
+            {
+                Id = 0,
+                Name = "-- Select --"
+
+            };
+            var enumList = ((LeaveStatus[])Enum.GetValues(typeof(LeaveStatus)))
+            .Select(c => new DropdownEnumModel() { Id = (int)c, Name = c.ToString() })
+            .Where(x => x.Id != (int)LeaveStatus.Absence)
+            .ToList();
+            return enumList;
+        }
+
+        public List<LeaveSetup> AllLeaveType(string name)
+        {
+            var leaves = new List<LeaveSetup>();
+            var getUser = _userManager.Users.Where(x => x.UserName == name)?.FirstOrDefault();
+            var common = new LeaveSetup()
+            {
+                Id = 0,
+                Name = "-- Select --"
+            };
+            if (getUser != null)
+            {
+                var selectedLeave = _context.LeaveSetups.OrderBy(x => x.Name).Where(x => x.Active && !x.Deleted).ToList();
+                if (selectedLeave != null)
+                {
+                    selectedLeave.Insert(0, common);
+                    return selectedLeave;
+                }
+            }
+            return leaves;
+        }
     }
 }
