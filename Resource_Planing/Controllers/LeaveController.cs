@@ -64,19 +64,5 @@ namespace Resource_Planing.Controllers
                 throw ex;
             }
         }
-
-        [HttpPost]
-        public IActionResult RequestLeave()
-        {
-            try
-            {
-                
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-
-        }
     }
 }
