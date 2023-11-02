@@ -1,6 +1,7 @@
 ﻿using Core.Models;
 using Core.ViewModels;
 using static Core.Enums.Resource_Planing;
+using static Logic.Helpers.DropdownHelper;
 
 namespace Logic.IHelpers
 {
@@ -14,5 +15,8 @@ namespace Logic.IHelpers
 		Task<List<State>> GetState();
 		List<Shifts> GetShifts();
         List<LeaveSetup> AllLeaveType(string name);
+		List<DropdownEnumModel> GetLeaveStatus();
+        Task<List<Shifts>> GetStaffShiftDropDown(string userName);
+        List<Shifts> GetStaffShifts();
     }
 }

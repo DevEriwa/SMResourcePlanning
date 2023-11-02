@@ -10,6 +10,7 @@ using System.Diagnostics;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Xml.Linq;
+using static Core.Enums.Resource_Planing;
 
 namespace Logic.Helpers
 {
@@ -392,6 +393,77 @@ namespace Logic.Helpers
                 .FirstOrDefault(sl => sl.Id == shiftId);
 
             return shiftLocation;
+        }
+        public string GetCurrentUserId(string username)
+        {
+            return _userManager.Users.Where(s => s.UserName == username)?.FirstOrDefaultAsync().Result.Id?.ToString();
+        }
+        public List<LeaveApplication> GetAllLeaveStaffAbsense(string currentAdminUsername)
+        {
+            var admin = FindByUserName(currentAdminUsername);
+            return _context.LeaveApplications.Where(x => x.Active && x
+			    .Deleted == false && x.Status == LeaveStatus.Absence)
+				.Include(v=> v.User)
+				.Include(v => v.Leave).ToList();
+        }
+        public List<LeaveApplication> GetStaffLeave(string username)
+        {
+            var listOfLeaves = new List<LeaveApplication>();
+            var currentUserId = GetCurrentUserId(username);
+            if (currentUserId != null)
+            {
+                var leaves = _context.LeaveApplications.Where(x => (x.Active == true) &&
+				(x.Deleted == false) && (x.StaffId == currentUserId) && 
+				(x.DeteCreated != DateTime.MinValue))?
+				.Include(s => s.Leave).ToList();
+                leaves = leaves.OrderByDescending(x => x.DeteCreated).ToList();
+                if (leaves.Any())
+                {
+                    return leaves;
+                }
+            }
+            return listOfLeaves;
+        }
+
+        public LeaveSetup GetAnnualLeave(string username)
+        {
+            var user = _userManager.Users.Where(s => s.UserName == username).FirstOrDefault();
+            return _context.LeaveSetups.Where(x => x.Active == true && x.Deleted == false && x.Name.ToLower().Contains("annual"))?.FirstOrDefault();
+        }
+
+        public ApplicationUser FindAdminByUserName(string username)
+        {
+            return _userManager.Users.Where(s => s.UserName == username)?.Include(x => x.Location)?.Include(x => x.Departments).FirstOrDefault();
+        }
+        public List<LeaveApplication> GetAllLeave(string currentAdminUsername)
+        {
+            var admin = FindAdminByUserName(currentAdminUsername);
+            var leave = _context.LeaveApplications
+                .Where(x => x.Active == true && x.Deleted
+                == false && x.Status != LeaveStatus.Absence
+                && x.StartDate.Year == DateTime.Now.Year)
+                .Include(s => s.Leave).Include(s => s.User)
+                .ToList();
+            leave = leave.OrderByDescending(x => x.DeteCreated).ToList();
+            return leave;
+        }
+
+        public ApplicationUser FindById(string Id)
+        {
+            return _userManager.Users.Where(s => s.Id == Id)?
+           .Include(x => x.Departments)?
+		   .Include(x => x.Location)?
+		   .FirstOrDefault();
+        }
+
+        public LeaveApplication GetLeaveById(int id)
+        {
+            var leave = _context.LeaveApplications.Where(x => x.Id == id && x.StaffId != null && !x.Deleted).Include(s => s.User).FirstOrDefault();
+            if (leave != null)
+            {
+                return (leave);
+            }
+            return null;
         }
     }
 }

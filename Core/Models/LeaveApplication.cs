@@ -16,7 +16,6 @@ namespace Core.Models
         [Display(Name = "Leave")]
         [ForeignKey("LeaveId")]
         public virtual LeaveSetup Leave { get; set; }
-
         public string StaffId { get; set; }
         [Display(Name = "User")]
         [ForeignKey("StaffId")]
@@ -25,5 +24,6 @@ namespace Core.Models
         public DateTime EndDate { get; set; }
         public string? Reason { get; set; }
         public LeaveStatus? Status { get; set; }
+        public DateTime DateApproved { get; set; }
     }
 }

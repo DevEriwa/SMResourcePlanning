@@ -20,5 +20,8 @@ namespace Core.Models
 		public int? LocationId { get; set; }
 		[ForeignKey("LocationId")]
 		public virtual Location? Locations { get; set; }
-	}
+        
+        // the maximum staff allowed in a shift
+        public int MaxStaff { get; set; }
+    }
 }

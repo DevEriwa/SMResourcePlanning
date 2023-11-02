@@ -1,9 +1,14 @@
+using Core.Config;
 using Core.Db;
 using Core.Models;
 using Logic.Helpers;
 using Logic.IHelpers;
+using Logic.Services;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using NETCore.MailKit.Core;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +19,9 @@ builder.Services.AddScoped<IDropdownHelper, DropdownHelper>();
 builder.Services.AddScoped<IAccountHelper, AccountHelper>();
 builder.Services.AddScoped<IRotaHelper, RotaHelper>();
 builder.Services.AddScoped<ILeaveApplicationHelper, LeaveApplicationHelper>();
+builder.Services.AddScoped<IEmailHelper, EmailHelper>();
+builder.Services.AddScoped<IEmailServices, EmailServices>();
+builder.Services.AddSingleton<IEmailConfiguration>(builder.Configuration.GetSection("EmailConfiguration").Get<EmailConfiguration>());
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(
@@ -31,6 +39,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 }).AddEntityFrameworkStores<AppDbContext>();
 
 var app = builder.Build();
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

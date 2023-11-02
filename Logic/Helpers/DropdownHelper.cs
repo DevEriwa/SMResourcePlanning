@@ -224,10 +224,33 @@ namespace Logic.Helpers
                 Id = 0,
                 Name = "-- Select --"
             };
-            var shift = _context.shift.Where(a => a.Id > 0 && a.Active && !a.Deleted).Select(c => new Shifts()
+            var shift = _context.shift.Where(a => a.Id > 0 && a.Active && !a.Deleted)
+			.Select(c => new Shifts()
             {
                 Id = c.Id,
                 Name = c.AbbreviatedName,
+            }).ToList();
+            shift.Insert(0, common);
+            if (shift.Any())
+            {
+                shifts = shift;
+            }
+            return shifts;
+        }
+
+        public List<Shifts> GetStaffShifts()
+        {
+            var shifts = new List<Shifts>();
+            var common = new Shifts()
+            {
+                Id = 0,
+                Name = "-- Select --"
+            };
+            var shift = _context.shift.Where(a => a.Id > 0 && a.Active && !a.Deleted).Include(s => s.Locations)
+            .Select(c => new Shifts()
+            {
+                Id = c.Id,
+                Name = c.Locations.Name,
             }).ToList();
             shift.Insert(0, common);
             if (shift.Any())
@@ -277,5 +300,29 @@ namespace Logic.Helpers
             }
             return leaves;
         }
+
+        public async Task<List<Shifts>> GetStaffShiftDropDown(string userName)
+        {
+            var getUser =  _context.ApplicationUser.FirstOrDefaultAsync(x => x.UserName == userName);
+            if (getUser != null)
+            {
+                var selectedBranches = await _context.shift
+                    .Where(x => !x.Deleted && x.Active)
+                    .OrderBy(x => x.Name)
+                    .ToListAsync();
+                if (selectedBranches != null)
+                {
+                    var common = new Shifts
+                    {
+                        Id = 0,
+                        Name = "-- Select --"
+                    };
+                    selectedBranches.Insert(0, common);
+                    return selectedBranches;
+                }
+            }
+            return null;
+        }
+
     }
 }

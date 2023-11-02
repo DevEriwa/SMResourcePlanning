@@ -30,5 +30,11 @@ namespace Logic.IHelpers
 		bool EditShiftLocation(ShiftLocationViewModel shiftDetails);
 		bool DeleteShiftLocation(ShiftLocationViewModel shiftDetails);
 		ShiftsLocation GetShiftLocation(int shiftId);
+        List<LeaveApplication> GetStaffLeave(string username);
+        LeaveSetup GetAnnualLeave(string username);
+        ApplicationUser FindAdminByUserName(string username);
+        List<LeaveApplication> GetAllLeave(string currentAdminUsername);
+        ApplicationUser FindById(string Id);
+        LeaveApplication GetLeaveById(int id);
     }
 }

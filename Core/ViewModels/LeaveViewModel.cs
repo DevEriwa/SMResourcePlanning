@@ -17,6 +17,7 @@ namespace Core.ViewModels
         public bool HoursDeductedFromTimesheet { get; set; }
         public int UserId { get; set; } // Link to the user who applied for leave
         public string? LeaveType { get; set; }
+        public int ShiftId { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string? Reason { get; set; }

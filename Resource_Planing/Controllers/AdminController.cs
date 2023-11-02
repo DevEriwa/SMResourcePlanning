@@ -2,17 +2,17 @@
 using Core.Models;
 using Core.ViewModels;
 using Logic.IHelpers;
+using Logic.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using NETCore.MailKit.Core;
 using Newtonsoft.Json;
-using Resource_Planing.Models;
-using System.Net;
 using static Core.Enums.Resource_Planing;
 
 namespace Resource_Planing.Controllers
 {
-	public class AdminController : Controller
+    public class AdminController : Controller
 	{
 		private AppDbContext _context;
 		private IDropdownHelper _dropdownHelper;
@@ -20,17 +20,30 @@ namespace Resource_Planing.Controllers
 		private IRotaHelper _rotaHelper;
 		private UserManager<ApplicationUser> _userManager;
 		private readonly IWebHostEnvironment _webHostEnvironment;
-		public AdminController(AppDbContext context, IDropdownHelper dropdownHelper, UserManager<ApplicationUser> userManager, IUserHelper userHelper, IWebHostEnvironment webHostEnvironment, IRotaHelper rotaHelper)
-		{
-			_context = context;
-			_dropdownHelper = dropdownHelper;
-			_userManager = userManager;
-			_userHelper = userHelper;
-			_webHostEnvironment = webHostEnvironment;
-			_rotaHelper = rotaHelper;
-		}
+        private ILeaveApplicationHelper _leaveApplicationHelper;
+        private readonly IEmailServices _emailServices;
+        private readonly IEmailHelper _emailHelper;
+        public AdminController(AppDbContext context,
+            IDropdownHelper dropdownHelper,
+            UserManager<ApplicationUser> userManager,
+            IUserHelper userHelper, IWebHostEnvironment
+            webHostEnvironment, IRotaHelper rotaHelper,
+            ILeaveApplicationHelper leaveApplicationHelper,
+            IEmailHelper emailHelper, 
+			IEmailServices emailServices)
+        {
+            _context = context;
+            _dropdownHelper = dropdownHelper;
+            _userManager = userManager;
+            _userHelper = userHelper;
+            _webHostEnvironment = webHostEnvironment;
+            _rotaHelper = rotaHelper;
+            _leaveApplicationHelper = leaveApplicationHelper;
+            _emailHelper = emailHelper;
+            _emailServices = emailServices;
+        }
 
-		public IActionResult Index()
+        public IActionResult Index()
 		{
 			return View();
 		}
@@ -353,28 +366,168 @@ namespace Resource_Planing.Controllers
 		}
 
 
-		//public IActionResult Leave()
-		//{
-		//          var loggedInUser = _userHelper.FindByUserName(User.Identity.Name);
-		//          if (loggedInUser != null)
-		//          {
-		//              ViewBag.LeaveType = _dropdownHelper.GetLeaveTypeDropDown(loggedInUser.UserName);
-		//              ViewBag.LeaveStatus = _dropdownHelper.GetLeaveStatus();
-		//              var userCompany = _userHelper.GetUserCompany(loggedInUser.UserName);
-		//              var adminCanAccess = _hrHelper.AdminAccessibleFeatures(userCompany.Id, CompanySettings.ShowLeaveModule.ToString());
-		//              if (adminCanAccess)
-		//              {
-		//                  ViewBag.Leave = _dropdownHelper.GetLeaveTypeDropDown(loggedInUser.UserName);
-		//                  return View();
-		//              }
-		//              else
-		//              {
-		//                  return RedirectToAction("CantAccess", "Home");
-		//              }
-		//          }
-		//          return null; 
-		//      }
-		//  }
-	}
+        [HttpGet]
+		public IActionResult Leave()
+		{
+			var loggedInUser = _userHelper.FindByUserName(User.Identity.Name);
+			if (loggedInUser != null)
+			{
+				ViewBag.LeaveType = _dropdownHelper.AllLeaveType(loggedInUser.UserName);
+                ViewBag.LeaveStatus = _dropdownHelper.GetLeaveStatus();
+				if (loggedInUser != null)
+				{
+					ViewBag.Leave = _dropdownHelper.AllLeaveType(loggedInUser.UserName);
+					return View();
+				}
+				else
+				{
+					return RedirectToAction("CantAccess", "Home");
+				}
+			}
+			return null;
+		}
+
+
+
+		[HttpGet]
+        public IActionResult LeaveType()
+        {
+            ViewBag.Shift = _dropdownHelper.GetStaffShifts();
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult CreateLeaveType(string leaveDetails)
+        {
+            {
+                if (leaveDetails != null)
+                {
+                    var leaveViewModel = JsonConvert.DeserializeObject<LeaveViewModel>(leaveDetails);
+                    if (leaveViewModel != null)
+                    {
+                        var addleave = _leaveApplicationHelper.CreateLeave(leaveViewModel);
+                        if (addleave)
+                        {
+                            return Json(new { isError = false, msg = "Leave Added successfully" });
+                        }
+                        return Json(new { isError = true, msg = "Unable To Add Leave" });
+                    }
+                    return Json(new { isError = true, msg = "Error Occurred" });
+                }
+                return Json(new { isError = true, msg = "Error Occurred" });
+            }
+        }
+
+
+        public IActionResult ViewLeaveReason(int leaveId)
+        {
+			var leave = _userHelper.GetLeaveById(leaveId);
+			if (leave != null)
+			{
+				return PartialView(leave);
+			}
+			return null;
+		}
+        [HttpPost]
+        public IActionResult ApproveLeave(int? id)
+        {
+            try
+            {
+                var employeeLeave = _context.LeaveApplications.Where(x => x.Id == id).Include(x => x.User).FirstOrDefault();
+                if (employeeLeave != null)
+                {
+                    employeeLeave.Status = LeaveStatus.Approved;
+                    employeeLeave.DateApproved = DateTime.Now;
+                    _context.LeaveApplications.Update(employeeLeave);
+                    _context.SaveChanges();
+
+                    string receiverAddress = employeeLeave.User.Email;
+                    string subject = "Hr Support Leave Approval";
+                    string messageBody = "Hello " + employeeLeave.User.Name + "<br/> Your Leave Application has been approved to start from " + employeeLeave.StartDate.ToString("MM-dd-yy") + " to "
+                                          + employeeLeave.EndDate.ToString("MM-dd-yy") + "<br/> We hope you come back stronger! <br/> Kind Regards <br/> Hr Team";
+                      _emailServices.SendEmail(receiverAddress, subject, messageBody);
+
+                   // _emailHelper.SendLeaveApprovalEmailToDepartmentStaff(employeeLeave.User, employeeLeave);
+
+                    ModelState.Clear();
+                    return RedirectToAction("Leave");
+                }
+                return RedirectToAction("Leave");
+            }
+            catch (Exception exp)
+            {
+                throw exp;
+            }
+        }
+
+        [HttpPost]
+        public IActionResult DeclineLeave(int? id)
+        {
+            var employeeLeave = _context.LeaveApplications.Where<LeaveApplication>(x => x.Id == id).Include(x => x.User).FirstOrDefault();
+            employeeLeave.Status = LeaveStatus.Declined;
+            _context.LeaveApplications.Update(employeeLeave);
+            _context.SaveChanges();
+            string ADtoAddress = employeeLeave.User.Email;
+            var ADsubject = "Resouce Planning Support Leave Decline";
+            string ADMessages = "Hello " + employeeLeave.User.Name + "<br/> Your Leave Request can not be approved at this moment. " +
+                                "<br/> Kindly meet your <b>Line manager<b/> for more information ";
+            _emailServices.SendEmail(ADtoAddress, ADsubject, ADMessages);
+            ModelState.Clear();
+            return RedirectToAction("Leave");
+        }
+
+
+        [HttpGet]
+        public JsonResult EditLeaveType(int id)
+        {
+            ViewBag.Leavetype = _dropdownHelper.GetStaffShiftDropDown(User.Identity.Name).Result;
+            if (id != 0)
+            {
+                var leaveType = _leaveApplicationHelper.GetLeaveTypeById(id).Result;
+                if (leaveType != null)
+                {
+                    return Json(leaveType);
+                }
+                return Json(new { isError = true, msg = "Error occured" });
+            }
+            return Json(new { isError = true, msg = "Error Occured" });
+        }
+
+        [HttpPost]
+        public JsonResult EditedLeaveType(string leaveTypeDetails)
+        {
+            if (leaveTypeDetails != null)
+            {
+                var leaveTypeViewModel = JsonConvert.DeserializeObject<LeaveTypeViewModel>(leaveTypeDetails);
+                if (leaveTypeViewModel != null)
+                {
+                    var editedLeaveType = _leaveApplicationHelper.EditLeaveType(leaveTypeViewModel);
+                    if (editedLeaveType != null)
+                    {
+                        return Json(new { isError = false, msg = "LeaveType Edited Successfully" });
+                    }
+                    return Json(new { isError = true, msg = "Unable To Edit LeaveType" });
+                }
+                return Json(new { isError = true, msg = "Error occured" });
+            }
+            return Json(new { isError = true, msg = "Error Occured" });
+        }
+
+        [HttpPost]
+        public JsonResult LeaveTypeToBeDeleted(int id)
+        {
+            if (id != 0)
+            {
+                var deleteLeaveType = _leaveApplicationHelper.DeleteLeaveType(id);
+                if (deleteLeaveType != null)
+                {
+                    return Json(new { isError = false, msg = "LeaveType  deleted Successfully" });
+                }
+                return Json(new { isError = true, msg = "Unable To delete LeaveType" });
+            }
+            return Json(new { isError = true, msg = "Error occured" });
+        }
+
+    }
 }
 

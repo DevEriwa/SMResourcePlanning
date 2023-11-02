@@ -22,22 +22,31 @@ namespace Resource_Planing.Controllers
             _dropdownHelper=dropdownHelper;
         }
 
-        [HttpGet]
-        public IActionResult Index()
+        public IActionResult RequestLeave()
         {
-            return View();
+            try
+            {
+                var loggedInUser = _userHelper.FindByUserName(User.Identity.Name);
+                ViewBag.LoggedInUser = loggedInUser.Id;
+                ViewBag.Leave = _dropdownHelper.AllLeaveType(loggedInUser.UserName);
+                return View();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         [HttpPost]
-        public IActionResult CreateLeave(string leaveDetails)
+        public IActionResult StaffRequestLeave(string leaveDetails,string staffId)
         {
             {
                 if (leaveDetails != null)
                 {
-                    var leaveViewModel = JsonConvert.DeserializeObject<LeaveViewModel>(leaveDetails);
+                    var leaveViewModel = JsonConvert.DeserializeObject<RequestLeaveViewModel>(leaveDetails);
                     if (leaveViewModel != null)
                     {
-                        var addleave = _leaveApplicationHelper.CreateLeave(leaveViewModel);
+                        var addleave = _leaveApplicationHelper.StaffRequestLeave(leaveViewModel, staffId);
                         if (addleave)
                         {
                             return Json(new { isError = false, msg = "Leave Added successfully" });
@@ -47,21 +56,6 @@ namespace Resource_Planing.Controllers
                     return Json(new { isError = true, msg = "Error Occurred" });
                 }
                 return Json(new { isError = true, msg = "Error Occurred" });
-            }
-        }
-
-
-        public IActionResult RequestLeave()
-        {
-            try
-            {
-                var loggedInUser = _userHelper.FindByUserName(User.Identity.Name);
-                ViewBag.Leave = _dropdownHelper.AllLeaveType(loggedInUser.UserName);
-                return View();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
             }
         }
     }
