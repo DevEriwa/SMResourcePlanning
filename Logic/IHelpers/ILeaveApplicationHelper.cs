@@ -14,5 +14,7 @@ namespace Logic.IHelpers
         Task<List<LeaveSetup>> GetAllStaffLeaveTypes(string username);
         Task<LeaveSetup> GetLeaveTypeById(int id);
         bool StaffRequestLeave(RequestLeaveViewModel leaveDetails, string staffId);
+        string EditLeaveType(LeaveTypeViewModel leaveTypeViewModel);
+        string DeleteLeaveType(int id);
     }
 }
