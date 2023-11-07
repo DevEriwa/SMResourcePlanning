@@ -3,100 +3,41 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
-<style type="text/css">
-    .circular-timer {
-        width: 100px;
-        height: 100px;
-        border: 5px solid #007bff;
-        border-radius: 50%;
-        text-align: center;
-        margin-left: 40%;
-    }
-
-    .timer-label {
-        font-size: 20px;
-    }
-
-</style>
 
 
-	<!-- Page Wrapper -->
-<div class="page-wrapper">
-    <div class="container" style="margin-left:20%">
-        <div class="card shadow col-md-8">
-            <div class="row no-gutters">
-                <!-- Right Column (Name) -->
-                <div class="col-sm-12">
-                    <div class="card-body">
-                        <h4 class="text-center">Staff ClockIn Section</h4>
+ <div class="col-md-6 offset-md-3 col-12">
+    <div class="card punch-status shadow">
+        <h5 class="card-title p-2 text-center" style="font-size: 30px">Timesheet <small class="text-muted">11 Mar 2019</small></h5>
+        <div class="card-body">
+            <div class="punch-det">
+                <h6>Clock In at</h6>
+                <p>Wed, 11th Mar 2019 10.00 AM</p>
+            </div>
+            <div class="punch-info text-center">
+                <div class="punch-hours">
+                    <span>3.45 hrs</span>
+                </div>
+            </div>
+            <div class="punch-btn-section text-center">
+                <button type="button" class="btn btn-primary punch-btn">Clock Out</button>
+            </div>
+            <div class="statistics">
+                <div class="row">
+                    <div class="col-md-6 col-6 text-center">
+                        <div class="stats-box">
+                            <p>Break</p>
+                            <h6>1.21 hrs</h6>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-6 text-center">
+                        <div class="stats-box">
+                            <p>Overtime</p>
+                            <h6>3 hrs</h6>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="card shadow-lg col-md-8 mt-2">
-            <div class="row no-gutters">
-                <div class="col-6 col-md-4">
-                    <h4 class="p-3">Today's' Shift</h4>
-                </div>
-                <!-- Right Column (Text) -->
-                <div class="col-6 col-md-8">
-                    <div class="card-body">
-                        <p class="card-title" style="margin-left:40%">8:00am</p>
-                        <!-- Add other content here -->
-                    </div>
-                </div>
-            </div>
-            <div class="row no-gutters">
-                <div class="col-6 col-md-4">
-                    <h4 class="p-2"><img class="p-2" src="assets/img/logo.png" style="height: 50px; width: 50px;">Payrate</h4>
-                </div>
-                <!-- Right Column (Text) -->
-                <div class="col-6 col-md-8">
-                    <div class="card-body">
-                        <p class="card-title" style="margin-left:40%">8:00am</p>
-                        <!-- Add other content here -->
-                    </div>
-                </div>
-            </div>
-            <div class="row no-gutters">
-                <div class="col-6 col-md-4">
-                    <h4 class="p-3">Clock In</h4>
-                </div>
-                <!-- Right Column (Text) -->
-                <div class="col-6 col-md-8">
-                    <div class="card-body">
-                        <p class="card-title" style="margin-left:40%">8:00am</p>
-                        <!-- Add other content here -->
-                    </div>
-                </div>
-            </div>
-            <div class="row no-gutters">
-                <div class="col-6 col-md-4">
-                    <h4 class="p-3">Clock Out</h4>
-                </div>
-                <div class="col-6 col-md-8">
-                    <div class="card-body">
-                        <p class="card-title" style="margin-left:40%">8:00pm</p>
-                        <!-- Add other content here -->
-                    </div>
-                </div>
-            </div>
-            <div class="row no-gutters">
-                <div class="col-12 mt-2 text-center">
-                    <button class="btn btn-primary mb-3 w-75">Clock In Now</button>
-                </div>
-            </div>
-            <div class="row no-gutters">
-                <div class="card-body">
-                    <div class="circular-timer">
-                        <div class="timer-label mt-3">Clock In</div>
-                        <i class="fas fa-clock"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-        </div>
-   <!-- /Page Content -->
+    </div>
 </div>
-  <!-- Page Wrapper -->
 
