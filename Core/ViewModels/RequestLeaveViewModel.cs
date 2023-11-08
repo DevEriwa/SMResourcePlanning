@@ -16,6 +16,7 @@ namespace Core.ViewModels
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
         public string? LeaveReason { get; set; }
+        public string? leaveTypeName { get; set; }
         public decimal NumberOfDays { get; set; }
         public string? LeaveTypeName { get; set; }
         public string? Name { get; set; }
@@ -26,7 +27,9 @@ namespace Core.ViewModels
         [Display(Name = "Remaning Leave")]
         public decimal RemainingLeave { get; set; }
         public string? RemainingLeaveDays { get; set; }
+        public string? NumberOfDaysRemaining { get; set; }
         public string? EndDateInString { get; set; }
         public LeaveStatus LeaveStatus { get; set; }
+        public int LeaveId { get; set; }
     }
 }

@@ -428,7 +428,7 @@ namespace Logic.Helpers
         public LeaveSetup GetAnnualLeave(string username)
         {
             var user = _userManager.Users.Where(s => s.UserName == username).FirstOrDefault();
-            return _context.LeaveSetups.Where(x => x.Active == true && x.Deleted == false && x.Name.ToLower().Contains("annual"))?.FirstOrDefault();
+            return _context.LeaveSetups.Where(x => x.Active == true && x.Deleted == false && x.Name.ToLower().Contains("annual"))?.Include(v => v.Shift).FirstOrDefault();
         }
 
         public ApplicationUser FindAdminByUserName(string username)
@@ -450,10 +450,12 @@ namespace Logic.Helpers
 
         public ApplicationUser FindById(string Id)
         {
-            return _userManager.Users.Where(s => s.Id == Id)?
-           .Include(x => x.Departments)?
-		   .Include(x => x.Location)?
-		   .FirstOrDefault();
+            var userInfo = _userManager.Users.Where(s => s.Id == Id).FirstOrDefault();
+			if (userInfo != null)
+			{
+                return userInfo;
+            }
+			return null;
         }
 
         public LeaveApplication GetLeaveById(int id)

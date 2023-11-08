@@ -390,9 +390,9 @@ namespace Resource_Planing.Controllers
 
 
 		[HttpGet]
-        public IActionResult LeaveType()
+        public async Task<IActionResult> LeaveType()
         {
-            ViewBag.Shift = _dropdownHelper.GetStaffShifts();
+            ViewBag.Shift = await _dropdownHelper.GetStaffShifts();
             return View();
         }
 
@@ -405,6 +405,38 @@ namespace Resource_Planing.Controllers
                     var leaveViewModel = JsonConvert.DeserializeObject<LeaveViewModel>(leaveDetails);
                     if (leaveViewModel != null)
                     {
+                        if (leaveViewModel.ShiftId == null)
+                        {
+                            return Json(new { isError = true, msg = "No leave set for this shift" }); ;
+                        };
+
+                        if (leaveViewModel.Name == null && (leaveViewModel.NumberOfDays == 0))
+                        {
+                            return Json(new { isError = true, msg = "Unable To Add Leave" });
+                        }
+
+                        if (leaveViewModel.Name == null && leaveViewModel.NumberOfDays > 0)
+                        {
+                            leaveViewModel.Name = "Annual Leave";
+                        };
+
+                        if (leaveViewModel.Name == null)
+                        {
+                            return Json(new { isError = true, msg = "Unable To Add Leave" });
+                        };
+                        if (leaveViewModel.Name.ToLower() != "annual leave" && leaveViewModel.NumberOfDays > 0)
+                        {
+                            leaveViewModel.NumberOfDays = 0;
+                        }
+                        if (leaveViewModel.NumberOfDays < 0)
+                        {
+                            return Json(new { isError = true, msg = " Number of days cant be less than 1" });
+                        };
+                        var existingLeave = _context.LeaveSetups.Where(s => s.Name == leaveViewModel.Name && s.ShiftId == leaveViewModel.ShiftId && !s.Deleted).FirstOrDefault();
+                        if (existingLeave != null)
+                        {
+                            return Json(new { isError = true, msg = "A leave with similar Name already exist.\n Please, choose a different name" });
+                        }
                         var addleave = _leaveApplicationHelper.CreateLeave(leaveViewModel);
                         if (addleave)
                         {
@@ -429,7 +461,7 @@ namespace Resource_Planing.Controllers
 			return null;
 		}
         [HttpPost]
-        public IActionResult ApproveLeave(int? id)
+        public IActionResult ApproveLeave(int id)
         {
             try
             {

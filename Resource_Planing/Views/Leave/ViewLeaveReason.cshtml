@@ -1,0 +1,26 @@
+﻿
+
+@model Core.Models.LeaveApplication
+
+<div class="document p-0">
+    <div class="modal-content pt-3 border-0">
+        <div class="card border-0 pb-0">
+            <div class="card-body">
+                <div class="modal-header  border-0">
+                    <h3 class="modal-title m-lg-auto m-sm-auto">Leave Reason</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form asp-action="ViewLeaveReason" asp-controller="Leave" method="get">
+                        <div class="form-group">
+                            <textarea rows="4" class="form-control" readonly value="@Model?.Reason" asp-for="Reason"></textarea>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

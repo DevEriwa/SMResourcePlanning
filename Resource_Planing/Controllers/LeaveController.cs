@@ -1,9 +1,11 @@
 ﻿using Core.Db;
+using Core.Models;
 using Core.ViewModels;
 using Logic.Helpers;
 using Logic.IHelpers;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Linq;
 using static Core.Enums.Resource_Planing;
 
 namespace Resource_Planing.Controllers
@@ -24,39 +26,157 @@ namespace Resource_Planing.Controllers
 
         public IActionResult RequestLeave()
         {
-            try
-            {
                 var loggedInUser = _userHelper.FindByUserName(User.Identity.Name);
                 ViewBag.LoggedInUser = loggedInUser.Id;
+
+                var staffLeave = GetRemainingLeave();
+                if (staffLeave != null)
+                {
+                    ViewData["StaffLeave"] = staffLeave;
+                }
                 ViewBag.Leave = _dropdownHelper.AllLeaveType(loggedInUser.UserName);
                 return View();
-            }
-            catch (Exception ex)
+        }
+
+
+        [HttpPost]
+        public IActionResult StaffRequestLeave(string leaveDetails, string staffId)
+        {
+            if (leaveDetails != null)
             {
-                throw ex;
+                var leaveViewModel = JsonConvert.DeserializeObject<RequestLeaveViewModel>(leaveDetails);
+                if (leaveViewModel != null)
+                {
+                    var userName = User.Identity.Name;
+                    ViewData["StaffLeave"] = GetRemainingLeave();
+                    var currentUser = _userHelper.FindByUserName(userName);
+
+                    if (currentUser != null)
+                    {
+                        var annualLeave = _userHelper.GetAnnualLeave(userName);
+
+                        if (annualLeave == null)
+                        {
+                            return Json(new { isError = true, msg = "No Annual Leave created for your branch" });
+                        }
+                        else
+                        {
+                            if (Convert.ToDecimal(leaveViewModel.RemainingLeaveDays) < Convert.ToDecimal(leaveViewModel.NumberOfDaysRemaining))
+                            {
+                                return Json(new { isError = true, msg = "Remaining number of days for this leave has Exceeded!" });
+                            }
+
+                            if (leaveViewModel.LeaveTypeId == annualLeave.Id)
+                            {
+                                leaveViewModel.LeaveTypeName = "Annual Leave";
+                            }
+
+                            var addleave = _leaveApplicationHelper.StaffRequestLeave(leaveViewModel, staffId);
+
+                            if (addleave)
+                            {
+                                return Json(new { isError = false, msg = "Leave Added successfully" });
+                            }
+
+                            return Json(new { isError = true, msg = "Unable To Add Leave" });
+                        }
+                    }
+                }
+
+                return Json(new { isError = true, msg = "Error Occurred" });
             }
+
+            return Json(new { isError = true, msg = "Error Occurred" });
+        }
+
+
+        public decimal GetRemainingLeave()
+        {
+            var staff = _userHelper.FindAdminByUserName(User.Identity.Name);
+            if (staff != null)
+            {
+                var employeeLeave = _context.LeaveApplications
+                    .OrderBy(a => a.StartDate)
+                    .Where(x => x.StaffId == staff.Id
+                        && x.StartDate.Year == DateTime.Now.Year
+                        && (x.Status == LeaveStatus.Approved || x.Status == LeaveStatus.Absence)
+                        && x.Active
+                        && !x.Deleted)
+                    .LastOrDefault();
+                if (employeeLeave != null)
+                {
+                    return employeeLeave.RemainingLeave;
+                }
+            }
+            var CompanyUpdatedLeaveDays = _context.LeaveSetups
+                .Where(x => x.Active && !x.Deleted)
+                .Sum(d => d.NumberOfDays);
+            return CompanyUpdatedLeaveDays;
+        }
+
+
+        [HttpPost]
+        public JsonResult CancelLeave(int id)
+        {
+            if (id != 0)
+            {
+                var employeeLeave = _context.LeaveApplications.Where(x => x.Id == id).FirstOrDefault();
+                if (employeeLeave != null)
+                {
+                    employeeLeave.Status = LeaveStatus.Cancel;
+                    _context.LeaveApplications.Update(employeeLeave);
+                    _context.SaveChanges();
+                    return Json(new { isError = false, msg = "Leave Cancel Successfully." });
+                }
+                return Json(new { isError = true, msg = "Unable To Cancel leave" });
+            }
+            return Json(new { isError = true, msg = "Error occured" });
+
+        }
+
+        [HttpGet]
+        public JsonResult EditStaffLeave(int id)
+        {
+            if (id != 0)
+            {
+                var staffLeave = _leaveApplicationHelper.GetEmployeeLeaveById(id);
+                if (staffLeave != null)
+                {
+                    return Json(staffLeave);
+                }
+                return Json(new { isError = true, msg = "Error occured" });
+            }
+            return Json(new { isError = true, msg = "Error Occured" });
         }
 
         [HttpPost]
-        public IActionResult StaffRequestLeave(string leaveDetails,string staffId)
+        public JsonResult EditStaffLeave(string leaveDetails)
         {
+            if (leaveDetails != null)
             {
-                if (leaveDetails != null)
+                var employeeLeaveViewModel = JsonConvert.DeserializeObject<RequestLeaveViewModel>(leaveDetails);
+                if (employeeLeaveViewModel != null)
                 {
-                    var leaveViewModel = JsonConvert.DeserializeObject<RequestLeaveViewModel>(leaveDetails);
-                    if (leaveViewModel != null)
+                    var employeeLeave = _leaveApplicationHelper.EditEmployeeLeave(employeeLeaveViewModel);
+                    if (employeeLeave != null)
                     {
-                        var addleave = _leaveApplicationHelper.StaffRequestLeave(leaveViewModel, staffId);
-                        if (addleave)
-                        {
-                            return Json(new { isError = false, msg = "Leave Added successfully" });
-                        }
-                        return Json(new { isError = true, msg = "Unable To Add Leave" });
+                        return Json(new { isError = false, msg = "Leave Edited Successfully" });
                     }
-                    return Json(new { isError = true, msg = "Error Occurred" });
+                    return Json(new { isError = true, msg = "Unable To Edit Leavel" });
                 }
-                return Json(new { isError = true, msg = "Error Occurred" });
+                return Json(new { isError = true, msg = "Error occured" });
             }
+            return Json(new { isError = true, msg = "Error Occured" });
+        }
+
+        public IActionResult ViewLeaveReason(int leaveId)
+        {
+            var leave = _userHelper.GetLeaveById(leaveId);
+            if (leave != null)
+            {
+                return PartialView(leave);
+            }
+            return null;
         }
     }
 }
