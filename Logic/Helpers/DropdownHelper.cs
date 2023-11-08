@@ -237,27 +237,62 @@ namespace Logic.Helpers
             }
             return shifts;
         }
-
-        public List<Shifts> GetStaffShifts()
+        public async Task<List<Shifts>> GetStaffShifts()
         {
+            try
+            {
+                Shifts common = new Shifts(); 
+                List<Shifts> shifts = new List<Shifts>();
+
+                var query = _context.shift
+                    .Where(a => a.Id > 0 && a.Active && !a.Deleted)
+                    .Include(s => s.Locations);
+
+                shifts = await query
+                    .Select(c => new Shifts
+                    {
+                        Id = c.Id,
+                        Name = c.Locations.Name,
+                    })
+                    .ToListAsync();
+
+                shifts.Insert(0, common);
+
+                return shifts;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                throw;
+            }
+        }
+
+
+        public async Task<List<Shifts>> GetStaffShiftss(string userName)
+        {
+            var getUser = _context.ApplicationUser.Where(x => x.UserName == userName)?.FirstOrDefault();
             var shifts = new List<Shifts>();
             var common = new Shifts()
             {
                 Id = 0,
                 Name = "-- Select --"
             };
-            var shift = _context.shift.Where(a => a.Id > 0 && a.Active && !a.Deleted).Include(s => s.Locations)
-            .Select(c => new Shifts()
+            if (getUser != null)
             {
-                Id = c.Id,
-                Name = c.Locations.Name,
-            }).ToList();
-            shift.Insert(0, common);
-            if (shift.Any())
-            {
-                shifts = shift;
+                var selectedBranches = await _context.shift
+                .OrderBy(x => x.Locations.Name)
+                .Where(x => x.Locations.UserIds != null && x.Locations.UserIds.Contains(getUser.Id.ToString()) && !x.Deleted && x.Active)
+                .ToListAsync();
+
+                if (selectedBranches != null)
+                {
+                    selectedBranches.Insert(0, common);
+                    return selectedBranches;
+                }
+                return null;
             }
-            return shifts;
+            return null;
+            
         }
         public class DropdownEnumModel
         {

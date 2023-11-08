@@ -11,6 +11,17 @@
     var annualLeaves = tableUpdate.Where(x => x.Leave.Name.ToLower().Contains("annual")).ToList();
     var annualLeave = _userHelper.GetAnnualLeave(User.Identity.Name);
 }
+
+<style>
+    body {
+        counter-reset: Serial; /* / Set the Serial counter to 0 /*/
+    }
+
+    tr td:first-child:before {
+        counter-increment: Serial; /* / Increment the Serial counter /*/
+        content: counter(Serial); /*  / Display the counter /*/
+    }
+</style>
 <div class="page-wrapper">
     <!-- Page Content -->
     <div class="content container-fluid">
@@ -39,6 +50,7 @@
                             <table class="table table-striped custom-table mb-0 datatable">
                                 <thead>
                                     <tr>
+                                        <th>S/N</th>
                                         <th>Leave Type</th>
                                         <th>From</th>
                                         <th>To</th>
@@ -52,6 +64,7 @@
                                     @foreach (var obj in tableUpdate)
                                     {
                                         <tr>
+                                            <td></td>
                                             <td>@obj.Leave.Name</td>
                                             <td>@obj.StartDate.ToString("ddd, MMM dd, yyyy")</td>
                                             <td>@obj.EndDate.ToString("ddd, MMM dd, yyyy")</td>
@@ -64,15 +77,19 @@
                                             </td>
                                             <td class="text-center">
                                                 <div class="action-label">
-                                                    <a class="btn btn-white btn-sm btn-rounded disabled" href="javascript:void(0);">
+                                                    <a class="btn btn-white btn-sm btn-rounded" href="javascript:void(0);">
                                                         <i class="fa fa-dot-circle-o text-purple"></i> @obj.Status
                                                     </a>
                                                 </div>
                                             </td>
                                             <td class="text-right">
-                                                <div class="dropdown dropdown-action">
-                                                    <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
-                                                    <div class="dropdown-menu dropdown-menu-right">
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-default btn-flat">Action</button>
+                                                    <button type="button" class="btn btn-default btn-flat dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                                                        <span class="sr-only">Toggle Dropdown</span>
+                                                    </button>
+                                                    <div class="dropdown-menu" role="menu">
+
                                                         @if (obj.Status == LeaveStatus.Applied)
                                                         {
                                                             <a class="dropdown-item" data-toggle="modal" data-target="#edit_leave" onclick="employeeLeaveToBeEdited('@obj.Id')"><i class="fa fa-pencil m-r-5"></i> Edit</a>
@@ -111,14 +128,19 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
-                        <div class="radio">
-                            <input asp-items="@annualLeave?.Id" type="radio" name="radio" id="CloseLeave">
-                            <label>Annual Leave</label>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="radio">
+                                <input asp-items="@annualLeave?.Id" type="radio" name="radio" value="@annualLeave?.Id" id="ckickRequest">
+                                <label>Annual Leave</label>
+                            </div>
+
                         </div>
-                        <div class="radio ml-3">
-                            <input type="radio" name="radio" id="Btn">
-                            <label>Others</label>
+                        <div class="col-md-6">
+                            <div class="radio ml-3">
+                                <input type="radio" name="radio" id="clickOther">
+                                <label>Others</label>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group" id="dropDown">
@@ -139,8 +161,16 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label>Number of days <span class="text-danger">*</span></label>
+                        <input asp-for="NumberOfDaysRemaining" class="form-control" id="Calc" type="text" disabled required>
+                    </div>
+                    <div class="form-group" id="remain">
+                        <label>Remaining Leaves <span class="text-danger">*</span></label>
+                        <input class="form-control" id="remainingLeaveDays" value="@ViewData["StaffLeave"]" type="text" readonly>
+                    </div>
+                    <div class="form-group">
                         <label for="leaveReason">Leave Reason <span class="text-danger">*</span></label>
-                        <textarea rows="4" class="form-control" id="leaveReason" asp-for="Reason" required></textarea>
+                        <textarea rows="4" class="form-control" id="leaveReason" required></textarea>
                     </div>
                 </div>
                 <div class="modal-footer justify-content-center">
@@ -251,4 +281,10 @@
         </div>
     </div>
 
+</div>
+<div class="modal" id="employeeViewLeaveModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content w-75 m-auto" id="employeeViewLeaveModalBody">
+        </div>
+    </div>
 </div>

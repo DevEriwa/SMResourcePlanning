@@ -101,8 +101,9 @@
                                 <tr>
                                     <th>S/N</th>
                                     <th>Leave Type</th>
-                                    <th>Total Number of Days</th>
-                                    <th>Shift</th>
+                                    <th>Home</th>
+                                    <th>Hours Deduct From Timesheet</th>
+                                    <th>Hours Deduct From Annual Leave</th>
                                     <th class="text-right no-sort">Action</th>
                                 </tr>
                             </thead>
@@ -110,17 +111,22 @@
                                 @foreach (var leave in leaveTypes)
                                 {
                                     <tr>
-
+                                        <td></td>
                                         <td>@leave.Name</td>
                                         <td>@leave.Shift.Locations.Name</td>
                                         <td>@leave.HoursDeductedFromTimesheet</td>
                                         <td>@leave.DeductFromAnnualLeave</td>
 
                                         <td class="text-right">
-                                            <div class="dropdown dropdown-action">
-                                                <a href="#" class="action-icon dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="material-icons">more_vert</i></a>
-                                                <div class="dropdown-menu dropdown-menu-right">
+                                            <div class="btn-group">
+                                                <button type="button" class="btn btn-default btn-flat">Action</button>
+                                                <button type="button" class="btn btn-default btn-flat dropdown-toggle dropdown-icon" data-toggle="dropdown">
+                                                    <span class="sr-only">Toggle Dropdown</span>
+                                                </button>
+                                                <div class="dropdown-menu" role="menu">
+                                                    
                                                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#edit_leave_type" onclick="editLeaveType('@leave.Id')"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+                                                    <div class="dropdown-divider"></div>
                                                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_leaveType" onclick="leaveTypeToBeDeleted('@leave.Id')"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
                                                 </div>
                                             </div>
@@ -159,27 +165,37 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="radio">
-                                <input type="radio" name="radio" value="Annual leave" id="CloseLeave">
+                                <input type="radio" name="radio" value="Annual leave" id="annualId" checked>
                                 <label>Annual Leave </label>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="radio text-right">
-                                <input type="radio" name="radio" id="Btn">
+                                <input type="radio" name="radio" id="othersId">
                                 <label>Others</label>
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="col-form-label">Name <span class="text-danger">*</span></label>
+                    <div class="form-group" id="leaveTypeDropDown">
+                        <label class="col-form-label">Leave Type Name <span class="text-danger">*</span></label>
                         <input class="form-control" type="text" id="leaveName">
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" id="abbrev">
                         <label class="col-form-label">Abbreviation <span class="text-danger">*</span></label>
                         <input class="form-control" type="text" id="leaveabbreviation">
                     </div>
-
-
+                    <div class="form-group" id="dropDowned">
+                        <label>Number of Days <span class="text-danger">*</span></label>
+                        <input id="numberOfDays" class="form-control" type="text">
+                    </div>
+                    <div class="form-group" id="shiftDropDown">
+                        <label>Homes <span class="text-danger">*</span></label>
+                        <select class="select form-control" id="shiftId" asp-items="@(new SelectList(@ViewBag.Shift, "Id", "Name"))">
+                        </select>
+                    </div>
+                    <div class="submit-section text-center">
+                        <button class="btn btn-primary submit-btn" id="submit_btn" onclick="createLeave()">Submit</button>
+                    </div>
                     @*   <div class="row mb-2">
                     <div class="col-md-6">
                     <div class="form-group form-focus text-center">
@@ -208,14 +224,6 @@
                     </div>
                     </div>
                     </div> *@
-                    <div class="form-group" id="">
-                        <label for="leaveType">Homes <span class="text-danger">*</span></label>
-                        <select class="select form-control" id="shiftId" asp-items="@(new SelectList(@ViewBag.Shift, "Id", "Name"))">
-                        </select>
-                    </div>
-                    <div class="submit-section text-center">
-                        <button class="btn btn-primary submit-btn" id="submit_btn" onclick="createLeave()">Submit</button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -244,7 +252,7 @@
                         <input id="edit-NumberOfDays" class="form-control" type="text">
                     </div>
                     <div class="form-group">
-                        <label>Company Branch  <span class="text-danger">*</span></label>
+                        <label>Staff Shift  <span class="text-danger">*</span></label>
                         <select class="select form-control" id="edit-ShiftId" asp-items="@(new SelectList(@ViewBag.Shift, "Id", "Name"))">
                         </select>
                     </div>

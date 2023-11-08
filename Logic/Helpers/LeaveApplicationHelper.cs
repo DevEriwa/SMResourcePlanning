@@ -21,15 +21,21 @@ namespace Logic.Helpers
         private readonly AppDbContext _context;
         private readonly IUserHelper _userHelper;
         private UserManager<ApplicationUser> _userManager;
+        private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
 
         public LeaveApplicationHelper
-        (AppDbContext context, 
+        (AppDbContext context,
         IUserHelper userHelper,
-        UserManager<ApplicationUser> userManager)
+        UserManager<ApplicationUser> userManager,
+        RoleManager<IdentityRole> roleManager,
+        SignInManager<ApplicationUser> signInManager)
         {
             _context = context;
             _userHelper = userHelper;
             _userManager = userManager;
+            _roleManager = roleManager;
+            _signInManager = signInManager;
         }
 
         public bool CreateLeave(LeaveViewModel leaveDetails)
@@ -38,11 +44,13 @@ namespace Logic.Helpers
             {
                 var leaveModel = new LeaveSetup()
                 {
+                    Id = leaveDetails.Id,
                     Name = leaveDetails.Name,
                     Abbreviations = leaveDetails.Abbreviations,
                     DeductFromAnnualLeave = leaveDetails.DeductFromAnnualLeave,
                     HoursDeductedFromTimesheet = leaveDetails.HoursDeductedFromTimesheet,
-                    //shiftId = leaveDetails.ShiftId,
+                    ShiftId = leaveDetails.ShiftId,
+                    NumberOfDays = leaveDetails.NumberOfDays,
                     Active = true,
                     Deleted = false,
                     DeteCreated = DateTime.Now,
@@ -56,54 +64,59 @@ namespace Logic.Helpers
 
         public bool StaffRequestLeave(RequestLeaveViewModel leaveDetails, string staffId)
         {
-            if (string.IsNullOrEmpty(staffId) || leaveDetails == null)
+            if (leaveDetails != null)
             {
-                return false;
+                if (string.IsNullOrEmpty(staffId) || leaveDetails == null)
+                {
+                    return false;
+                }
+                var existingLeaveApplication = _context.LeaveApplications.Include(b=> b.Leave)
+                    .FirstOrDefault(x => x.Leave.Name == leaveDetails.leaveTypeName);
+                if (existingLeaveApplication != null)
+                {
+                    return false;
+                }
+                var leaveModel = new LeaveApplication()
+                {
+                    NumberOfDays = Convert.ToDecimal(leaveDetails.NumberOfDaysRemaining),
+                    RemainingLeave = Convert.ToDecimal(leaveDetails.RemainingLeaveDays),
+                    LeaveId = leaveDetails.LeaveTypeId,
+                    StaffId = staffId,
+                    StartDate = leaveDetails.StartDate,
+                    EndDate = leaveDetails.EndDate,
+                    Reason = leaveDetails.LeaveReason,
+                    Status = LeaveStatus.Applied,
+                    Active = true,
+                    Deleted = false,
+                    DeteCreated = DateTime.Now, // Fixed the typo
+                };
+                _context.LeaveApplications.Add(leaveModel);
+                _context.SaveChanges();
+                return true;
             }
-            var existingLeaveApplication = _context.LeaveApplications
-                .FirstOrDefault(x => x.StaffId == staffId);
-            if (existingLeaveApplication != null)
-            {
-                return false;
-            }
-            var leaveModel = new LeaveApplication()
-            {
-               // shiftId = leaveDetails.ShiftfId,
-                LeaveId = leaveDetails.LeaveTypeId,
-                StaffId = staffId,
-                StartDate = leaveDetails.StartDate,
-                EndDate = leaveDetails.EndDate,
-                Status = LeaveStatus.Applied,
-                Active = true,
-                Deleted = false,
-                DeteCreated = DateTime.Now, // Fixed the typo
-            };
-            _context.LeaveApplications.Add(leaveModel);
-            _context.SaveChanges();
-            return true;
+            return false;
         }
 
         public async Task<List<LeaveSetup>> GetAllStaffLeaveTypes(string username)
         {
-            var leaveType = new List<LeaveSetup>();
             try
             {
-                var currentUser = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == username);
-
+                var currentUser = _userManager.Users.Where(x => x.UserName == username).FirstOrDefault().Id;
                 if (currentUser != null)
                 {
+                    //return await _context.LeaveSetups.Where(x => !x.Deleted && x.Shift.Locations.UserIds == currentUser).ToListAsync();
                     var leaveTypes = await _context.LeaveSetups
-                        .Where(x => !x.Deleted && x.Active)
+                        .Where(x => !x.Deleted && x.Active).Include(d => d.Shift).Include(d => d.Shift.Locations)
                         .ToListAsync();
                     return leaveTypes;
                 }
-                return leaveType;
+               return null;
             }
             catch (Exception ex)
             {
                 throw;
             }
-        }
+         }
 
         public async Task<LeaveSetup> GetLeaveTypeById(int id)
         {
@@ -120,41 +133,43 @@ namespace Logic.Helpers
             return Leave;
         }
 
-        public string EditLeaveType(LeaveTypeViewModel leaveTypeViewModel)
+        public bool EditLeaveType(LeaveTypeViewModel leaveTypeViewModel)
         {
             if (leaveTypeViewModel != null)
             {
                 var leaveTypeEdited = _context.LeaveSetups.Where(x => x.Id == leaveTypeViewModel.Id && !x.Deleted).Include(x => x.Shift).FirstOrDefault();
                 if (leaveTypeEdited != null)
                 {
-
                     //leaveTypeEdited.NumberOfDays = leaveTypeViewModel.NumberOfDays;
                     leaveTypeEdited.Name = leaveTypeViewModel.Name;
                    // leaveTypeEdited.CompanyBranchId = leaveTypeViewModel.CompanyBranchId;
                     _context.LeaveSetups.Update(leaveTypeEdited);
                     _context.SaveChanges();
-                    return "LeaveType Successfully Updated";
+                    return true;
                 }
             }
-            return "LeaveType failed To Update";
+            return false;
         }
 
-        public string DeleteLeaveType(int id)
+        public bool DeleteLeaveType(int id)
         {
             if (id != 0)
             {
-                var leaveTypeToBeDeleted = _context.LeaveSetups.Where(x => x.Id == id && x.Active && !x.Deleted).FirstOrDefault();
+                var leaveTypeToBeDeleted = _context.LeaveSetups
+                    .FirstOrDefault(x => x.Id == id && x.Active && !x.Deleted);
+
                 if (leaveTypeToBeDeleted != null)
                 {
                     leaveTypeToBeDeleted.Active = false;
                     leaveTypeToBeDeleted.Deleted = true;
                     _context.LeaveSetups.Update(leaveTypeToBeDeleted);
                     _context.SaveChanges();
-                    return "LeaveType Successfully Deleted";
+                    return true; // Successfully deleted
                 }
             }
-            return "LeaveType failed To Delete";
+            return false; // Failed to delete
         }
+
         public class LeaveSummary
         {
             public int? TotalLeaveDaysUsed { get; set; }
@@ -162,6 +177,50 @@ namespace Logic.Helpers
             public int? TotalAnnualLeaveDays { get; set; }
         }
 
-
+        public LeaveApplication GetEmployeeLeaveById(int id)
+        {
+            var employeeLeave = new LeaveApplication();
+            if (id > 0)
+            {
+                var staffLeave = _context.LeaveApplications
+                .Where(x => x.Id == id && x.Name != null)
+                .Include(x => x.Leave)
+                .Select(x => new LeaveApplication()
+                {
+                    Id = x.Id,
+                    Name = x.Leave.Name,
+                    NumberOfDays = x.NumberOfDays,
+                    NumberOfDaysRemaining = x.NumberOfDaysRemaining,
+                    RemainingLeave = x.RemainingLeave,
+                    RemainingLeaveDays = x.RemainingLeaveDays,
+                    Reason = x.Reason,
+                    Status = x.Status,
+                }).FirstOrDefault();
+                return staffLeave;
+            }
+            return employeeLeave;
+        }
+        public bool EditEmployeeLeave(RequestLeaveViewModel employeeLeaveViewModel)
+        {
+            if (employeeLeaveViewModel != null)
+            {
+                var staffLeave = _context.LeaveApplications.Where(x => x.Id == employeeLeaveViewModel.Id && !x.Deleted).FirstOrDefault();
+                if (staffLeave != null)
+                {
+                    staffLeave.StartDate = employeeLeaveViewModel.StartDate;
+                    staffLeave.EndDate = employeeLeaveViewModel.EndDate;
+                    staffLeave.NumberOfDays = employeeLeaveViewModel.NumberOfDays;
+                    staffLeave.LeaveId = employeeLeaveViewModel.LeaveId;
+                    staffLeave.RemainingLeaveDays = employeeLeaveViewModel.RemainingLeaveDays;
+                    staffLeave.RemainingLeave = employeeLeaveViewModel.RemainingLeave;
+                    staffLeave.Reason = employeeLeaveViewModel.LeaveReason;
+                    staffLeave.Status = LeaveStatus.Applied;
+                    _context.LeaveApplications.Update(staffLeave);
+                    _context.SaveChanges();
+                    return true;
+                }
+            }
+            return false;
+        }
     }
 }

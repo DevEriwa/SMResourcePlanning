@@ -25,5 +25,18 @@ namespace Core.Models
         public string? Reason { get; set; }
         public LeaveStatus? Status { get; set; }
         public DateTime DateApproved { get; set; }
+
+        [Display(Name = "Remaning Leave")]
+        public decimal RemainingLeave { get; set; }
+
+        [Display(Name = "Number Of Days")]
+        public decimal NumberOfDays { get; set; }
+
+        [NotMapped]
+        public string RemainingLeaveDays { get; set; }
+
+        [NotMapped]
+        public string NumberOfDaysRemaining { get; set; }
+
     }
 }

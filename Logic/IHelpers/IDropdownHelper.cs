@@ -17,6 +17,7 @@ namespace Logic.IHelpers
         List<LeaveSetup> AllLeaveType(string name);
 		List<DropdownEnumModel> GetLeaveStatus();
         Task<List<Shifts>> GetStaffShiftDropDown(string userName);
-        List<Shifts> GetStaffShifts();
+        //List<Shifts> GetStaffShifts();
+        Task<List<Shifts>> GetStaffShifts();
     }
 }

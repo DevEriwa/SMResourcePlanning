@@ -20,67 +20,31 @@
     }
 </style>
 <input class="form-control" type="text">
-<div class="page-wrapper">
-
-    <!-- Page Content -->
-    <div class="content container-fluid">
-
-        <!-- Page Header -->
-        <section class="content-header">
-            <div class="container-fluid">
-                <div class="row mb-2">
-                    <div class="col-sm-6">
-                        <h1>Staff Leaves</h1>
-                    </div>
-                    <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-right">
-                            <a class="breadcrumb-item active btn btn-success" asp-controller="Admin" asp-action="LeaveType"><i class="fa fa-plus"></i> Set  Leave Types</a>
-                        </ol>
-                    </div>
-                </div>
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Staff Leaves</h1>
             </div>
-        </section>
-        <!-- /Page Header -->
-        <!-- Leave Statistics -->
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <a class="breadcrumb-item active btn btn-success" asp-controller="Admin" asp-action="LeaveType"><i class="fa fa-plus"></i> Set  Leave Types</a>
+                </ol>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- Page Content -->
+<section class="content">
+    <div class="content container-fluid">
         @if (tableUpdate.Count() == 0)
         {
             <h2 class="text-center text-primary">No leave applied yet, Check back later</h2>
         }
         else
         {
-
-                #region Dont Delete
-                @*<div class="row">
-            <div class="col-md-3">
-            <div class="stats-info">
-            <h6>Annual Leave</h6>
-            <h4>12</h4>
-            </div>
-            </div>
-            <div class="col-md-3">
-            <div class="stats-info">
-            <h6>Medical Leave</h6>
-            <h4>3</h4>
-            </div>
-            </div>
-            <div class="col-md-3">
-            <div class="stats-info">
-            <h6>Other Leave</h6>
-            <h4>4</h4>
-            </div>
-            </div>
-            <div class="col-md-3">
-            <div class="stats-info">
-            <h6>Remaining Leave</h6>
-            <h4>5</h4>
-            </div>
-            </div>
-            </div>*@
-                <!-- /Leave Statistics -->
-                #endregion
-
             //search/filter
-            <div class="row filter-row">
+            @* <div class="row filter-row">
                 <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
                     <div class="form-group form-focus">
                         <input type="text" class="form-control floating" id="employeeName">
@@ -120,7 +84,7 @@
                 <div class="col-sm-6 col-md-3 col-lg-3 col-xl-2 col-12">
                     <a href="#" class="btn btn-success btn-block" onclick="filterLeaveEmployeeByNameOrDateRange()"> Search </a>
                 </div>
-            </div>
+            </div> *@
             <!-- /Search Filter -->
 
 
@@ -130,6 +94,7 @@
                         <table class="table table-striped custom-table mb-0 datatable">
                             <thead>
                                 <tr>
+                                    <th>S/N</th>
                                     <th>Employee</th>
                                     <th>Leave Type</th>
                                     <th class="text-center">From</th>
@@ -145,18 +110,67 @@
                                 {
                                     var staff = _userHelper.FindById(obj.StaffId);
                                     <tr>
+                                        <td></td>
                                         <td>@staff.Name</td>
-                                        <td>@obj.Name</td>
+                                        <td>@obj.Leave.Name</td>
                                         <td>@obj.StartDate.ToString("ddd, MMM dd, yyyy")</td>
                                         <td>@obj.EndDate.ToString("ddd, MMM dd, yyyy")</td>
                                         <td>@obj.DeteCreated.ToString("ddd, MMM dd, yyyy")</td>
                                         <td class="submit-section">
-                                            <a class="btn btn-primary rounded-pill" data-target="#viewMore_department" data-toggle="modal"
+                                            <a class="btn btn-success rounded-pill" data-target="#viewMore_department" data-toggle="modal"
                                                onclick="viewLeaveReason('@obj.Id')">
                                                 View Reason
                                             </a>
                                         </td>
                                         <td class="text-center">
+                                            <div class="dropdown action-label">
+                                                <button class="btn btn-white btn-sm btn-rounded dropdown-toggle" id="dropdownPicker" data-toggle="dropdown" aria-expanded="false">
+                                                    @if (obj.Status == LeaveStatus.Approved)
+                                                    {
+                                                        <i class="fa fa-dot-circle-o text-success"></i>
+                                                    }
+                                                    else if (obj.Status == LeaveStatus.Declined)
+                                                    {
+                                                        <i class="fa fa-dot-circle-o text-danger"></i>
+                                                    }
+                                                    else
+                                                    {
+                                                        <i class="fa fa-dot-circle-o text-purple"></i>
+                                                    }
+                                                    @obj.Status
+                                                </button>
+                                                <div class="dropdown-menu dropdown-menu-right">
+                                                    @if (obj.Status == LeaveStatus.Cancel)
+                                                    {
+                                                        <form asp-action="ApproveLeave" asp-route-Id="@obj.Id" method="post" disabled>
+                                                            <button class="ff dropdown-item" data-target="#approve_leave" id="fff">
+                                                                <i class="fa fa-dot-circle-o text-success"></i> Approved
+                                                            </button>
+                                                        </form>
+                                                        <form asp-action="DeclineLeave" asp-route-Id="@obj.Id" method="post" disabled>
+                                                            <button class="ff dropdown-item" data-target="#decline_leave">
+                                                                <i class="fa fa-dot-circle-o text-danger"></i> Declined
+                                                            </button>
+                                                        </form>
+                                                    }
+                                                    else
+                                                    {
+                                                        <form asp-action="ApproveLeave" asp-route-Id="@obj.Id" method="post">
+                                                            <button class="ff dropdown-item" data-target="#approve_leave" id="fff">
+                                                                <i class="fa fa-dot-circle-o text-success"></i> Approved
+                                                            </button>
+                                                        </form>
+                                                        <form asp-action="DeclineLeave" asp-route-Id="@obj.Id" method="post">
+                                                            <button class="ff dropdown-item" data-target="#decline_leave">
+                                                                <i class="fa fa-dot-circle-o text-danger"></i> Declined
+                                                            </button>
+                                                        </form>
+                                                    }
+                                                </div>
+                                            </div>
+                                        </td>
+
+                                        @* <td class="text-center">
                                             <div class="dropdown action-label">
                                                 <button class="btn btn-white btn-sm btn-rounded dropdown-toggle" id="dropdownPicker" data-toggle="dropdown" aria-expanded="false">
                                                     <i class="fa fa-dot-circle-o text-purple"></i> @obj.Status
@@ -165,10 +179,10 @@
                                                     @if (obj.Status == LeaveStatus.Cancel)
                                                     {
                                                         <form asp-action="ApproveLeave" asp-route-Id="@obj.Id" method="post" disabled>
-                                                            <button disabled class="ff dropdown-item" data-target="#approve_leave" id="fff"><i class="fa fa-dot-circle-o text-success"></i> Approved</button>
+                                                            <button  class="ff dropdown-item" data-target="#approve_leave" id="fff"><i class="fa fa-dot-circle-o text-success"></i> Approved</button>
                                                         </form>
                                                         <form asp-action="DeclineLeave" asp-route-Id="@obj.Id" method="post" disabled>
-                                                            <button disabled class="ff dropdown-item" data-target="#decline_leave"><i class="fa fa-dot-circle-o text-danger"></i> Declined</button>
+                                                            <button  class="ff dropdown-item" data-target="#decline_leave"><i class="fa fa-dot-circle-o text-danger"></i> Declined</button>
                                                         </form>
                                                     }
                                                     else
@@ -180,8 +194,8 @@
                                                     }
                                                 </div>
                                             </div>
-                                        </td>
-                                       
+                                        </td> *@
+                                        <td class="text-center">@obj.RemainingLeave</td>
                                     </tr>
                                 }
                             </tbody>
@@ -192,82 +206,80 @@
         }
     </div>
     <!-- /Page Content -->
-    <!-- Add Leave Modal -->
-    
-    <!-- /Add Leave Modal -->
-    <!-- Edit Leave Modal -->
-    <div id="edit_leave" class="modal custom-modal fade" role="dialog">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Edit Leave</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form>
+</section>
 
+<!-- Add Leave Modal -->
+<!-- /Add Leave Modal -->
+<!-- Edit Leave Modal -->
+<div id="edit_leave" class="modal custom-modal fade" role="dialog">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Edit Leave</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group">
+                        <label>Leave Type <span class="text-danger">*</span></label>
+                        <select class="select">
+                            <option>Select Leave Type</option>
+                            <option> </option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>From <span class="text-danger">*</span></label>
+                        <div class="cal-icon">
+                            <input class="form-control datetimepicker" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>To <span class="text-danger">*</span></label>
+                        <div class="cal-icon">
+                            <input class="form-control datetimepicker" type="text">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Number of days <span class="text-danger">*</span></label>
+                        <input class="form-control" readonly type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>Remaining Leaves <span class="text-danger">*</span></label>
+                        <input class="form-control" readonly type="text">
+                    </div>
+                    <div class="form-group">
+                        <label>Leave Reason <span class="text-danger">*</span></label>
+                        <textarea rows="4" class="form-control"></textarea>
+                    </div>
+                    <div class="submit-section">
+                        <button class="btn btn-primary submit-btn">Save</button>
+                    </div>
 
-                        <div class="form-group">
-                            <label>Leave Type <span class="text-danger">*</span></label>
-                            <select class="select">
-                                <option>Select Leave Type</option>
-                                <option> </option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label>From <span class="text-danger">*</span></label>
-                            <div class="cal-icon">
-                                <input class="form-control datetimepicker" type="text">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>To <span class="text-danger">*</span></label>
-                            <div class="cal-icon">
-                                <input class="form-control datetimepicker" type="text">
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label>Number of days <span class="text-danger">*</span></label>
-                            <input class="form-control" readonly type="text">
-                        </div>
-                        <div class="form-group">
-                            <label>Remaining Leaves <span class="text-danger">*</span></label>
-                            <input class="form-control" readonly type="text">
-                        </div>
-                        <div class="form-group">
-                            <label>Leave Reason <span class="text-danger">*</span></label>
-                            <textarea rows="4" class="form-control"></textarea>
-                        </div>
-                        <div class="submit-section">
-                            <button class="btn btn-primary submit-btn">Save</button>
-                        </div>
-
-                    </form>
-                </div>
+                </form>
             </div>
         </div>
     </div>
-    <!-- /Edit Leave Modal -->
-    <!-- /Approve Leave Modal -->
-    <!-- Delete Leave Modal -->
-    <div class="modal custom-modal fade" id="delete_approve" role="dialog">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-body">
-                    <div class="form-header">
-                        <h3>Delete Leave</h3>
-                        <p>Are you sure want to Cancel this leave?</p>
-                    </div>
-                    <div class="modal-btn delete-action">
-                        <div class="row">
-                            <div class="col-6">
-                                <a href="javascript:void(0);" class="btn btn-primary continue-btn">Delete</a>
-                            </div>
-                            <div class="col-6">
-                                <button href="javascript:void(0);" data-dismiss="modal" class="btn btn-primary cancel-btn">Cancel</button>
-                            </div>
+</div>
+<!-- /Edit Leave Modal -->
+<!-- /Approve Leave Modal -->
+<!-- Delete Leave Modal -->
+<div class="modal custom-modal fade" id="delete_approve" role="dialog">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="form-header">
+                    <h3>Delete Leave</h3>
+                    <p>Are you sure want to Cancel this leave?</p>
+                </div>
+                <div class="modal-btn delete-action">
+                    <div class="row">
+                        <div class="col-6">
+                            <a href="javascript:void(0);" class="btn btn-primary continue-btn">Delete</a>
+                        </div>
+                        <div class="col-6">
+                            <button href="javascript:void(0);" data-dismiss="modal" class="btn btn-primary cancel-btn">Cancel</button>
                         </div>
                     </div>
                 </div>

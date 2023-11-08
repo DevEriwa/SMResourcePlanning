@@ -17,5 +17,7 @@ namespace Core.Models
         public string? Abbreviations { get; set; }
         public bool DeductFromAnnualLeave { get; set; }
         public bool HoursDeductedFromTimesheet { get; set; }
+        [Display(Name = "Number Of Days")]
+        public int NumberOfDays { get; set; }
     }
 }

@@ -15,10 +15,13 @@
 	<meta name="author" content="BiviHr">
 	<meta name="robots" content="noindex, nofollow">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 	<title>@ViewData["Title"] - Sm_Resource_Planning</title>
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome Icons -->
+    <link href="~/css/font-awesome.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/admin-3.2.0/plugins/fontawesome-free/css/all.min.css">
     <link href="~/js/multi_select/filter_multi_select.css" rel="stylesheet" />
     <link rel="stylesheet" href="../../plugins/select2/css/select2.min.css">
@@ -255,6 +258,47 @@
                                     </a>
                                 </li>
                             </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link">
+                                <i class="nav-icon fas fa-circle"></i>
+                                <p>
+                                    Leave Management
+                                    <i class="right fas fa-angle-left"></i>
+                                </p>
+                            </a>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="/admin/Leave" class="nav-link">
+                                        <i class="far fa-circle nav-icon text-success"></i>
+                                        <p>Leave</p>
+                                    </a>
+                                </li>
+                            </ul>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="/admin/LeaveType" class="nav-link">
+                                        <i class="far fa-circle nav-icon text-success"></i>
+                                        <p>Leave Type</p>
+                                    </a>
+                                </li>
+                            </ul>
+                            <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="/leave/RequestLeave" class="nav-link">
+                                        <i class="far fa-circle nav-icon text-success"></i>
+                                        <p>Request Leave</p>
+                                    </a>
+                                </li>
+                            </ul>
+                            @* <ul class="nav nav-treeview">
+                                <li class="nav-item">
+                                    <a href="/ClockIn/Index" class="nav-link">
+                                        <i class="far fa-circle nav-icon text-success"></i>
+                                        <p>Shift Location</p>
+                                    </a>
+                                </li>
+                            </ul> *@
                         </li>
                     </ul>
                 </nav>
