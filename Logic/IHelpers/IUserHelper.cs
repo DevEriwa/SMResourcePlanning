@@ -1,5 +1,6 @@
 ﻿using Core.Models;
 using Core.ViewModels;
+using System.Drawing;
 
 namespace Logic.IHelpers
 {
@@ -36,5 +37,8 @@ namespace Logic.IHelpers
         List<LeaveApplication> GetAllLeave(string currentAdminUsername);
         ApplicationUser FindById(string Id);
         LeaveApplication GetLeaveById(int id);
+        //bool GetUserReferenceImagePath(Image referenceImage, Image capturedImage);
+        bool CompareImages(Image referenceImage, Image capturedImage);
+
     }
 }

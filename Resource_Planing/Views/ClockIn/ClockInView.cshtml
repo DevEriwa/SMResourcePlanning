@@ -1,7 +1,8 @@
-﻿@* @model List<Core.Models.ShiftsLocation> *@
+﻿@model List<Core.Models.StaffClockIn> 
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var staffId = ViewBag.LoggedInUser;
 }
 
 
@@ -18,9 +19,28 @@
                     <span>3.45 hrs</span>
                 </div>
             </div>
+
             <div class="punch-btn-section text-center">
-                <button type="button" class="btn btn-primary punch-btn">Clock Out</button>
+                <form id="imageForm" action="@Url.Action("FaceClockIn", "ClockIn")" method="post" enctype="multipart/form-data">
+                    <input type="file" name="capturedImage" id="capturedImageInput" style="display: none;" />
+                    <input type="hidden" accept="image/*" name="imageData" id="imageDataInput" />
+                    
+                    <button type="button" class="btn btn-primary punch-btn" id="loadCameraButton" onclick="openCamera()">Clock In</button>
+                </form>
             </div>
+           
+           @* <div class="punch-btn-section text-center">
+                <input type="file" accept="image/*" id="imageInput" style="display: none;" />
+                <button type="button" class="btn btn-primary punch-btn" id="loadCameraButton" onclick="captureImage()">Clock In</button>
+            </div>*@
+
+            <div class="mx-auto text-center">
+                <video id="cameraFeed" width="250" height="260" autoplay></video>
+            </div>
+            <button class="btn btn-secondary p-1 m-2" id="takePicture">Take Picture</button>
+            <canvas class="mx-auto text-center" id="capturedImage" style="display: none;"></canvas>
+
+
             <div class="statistics">
                 <div class="row">
                     <div class="col-md-6 col-6 text-center">
@@ -41,3 +61,152 @@
     </div>
 </div>
 
+
+
+<script>
+
+    
+   
+
+    // Get access to the camera and display the feed in a video element
+    //async function setupCamera() {
+    //    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    //    const cameraFeed = document.getElementById("cameraFeed");
+    //    cameraFeed.srcObject = stream;
+    //}
+
+    // Set up the camera when the button is clicked
+    document.getElementById("loadCameraButton").addEventListener("click", () => {
+        async function setupCamera() {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            const cameraFeed = document.getElementById("cameraFeed");
+            cameraFeed.srcObject = stream;
+
+            cameraFeed.onloadedmetadata = () => {
+                const capturedImage = document.getElementById("capturedImage");
+                capturedImage.width = cameraFeed.videoWidth;
+                capturedImage.height = cameraFeed.videoHeight;
+            };
+        }
+
+        // Call the setupCamera function
+        setupCamera();
+    });
+
+    // Capture a picture from the camera feed
+    document.getElementById("takePicture").addEventListener("click", () => {
+        const cameraFeed = document.getElementById("cameraFeed");
+        const capturedImage = document.getElementById("capturedImage");
+        const context = capturedImage.getContext("2d");
+
+        // Draw the current frame from the camera onto the canvas
+        capturedImage.width = cameraFeed.width;
+        capturedImage.height = cameraFeed.height;
+        context.drawImage(cameraFeed, 0, 0, capturedImage.width, capturedImage.height);
+
+        // Convert the captured image to base64 data URL
+        const imageData = capturedImage.toDataURL("image/jpeg");
+
+        // Display the captured image
+        cameraFeed.style.display = "none";
+        capturedImage.style.display = "block";
+
+        // Stop the camera stream
+        const stream = cameraFeed.srcObject;
+        const tracks = stream.getTracks();
+        tracks.forEach(track => track.stop());
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("FaceClockIn", "ClockIn")",
+            data: { imageData: imageData, staffId: '@staffId' },
+            //data: { imageData: imageData, staffId: '@ViewBag.LoggedInUser' },
+            success: function (result) {
+                if (result === "Access Granted") {
+                    // Handle access granted
+                } else {
+                    // Handle access denied
+                }
+            }
+        });
+    });
+
+    // Set up the camera when the page loads
+    //window.addEventListener("load", setupCamera);
+
+
+    //async function captureImage() {
+    //    // Access the user's camera
+    //    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+    //    const videoElement = document.createElement("video");
+    //    videoElement.srcObject = stream;
+    //    videoElement.play();
+
+    //    // Wait for the camera to start streaming
+    //    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    //    // Create a canvas to capture the image
+    //    const canvas = document.createElement("canvas");
+    //    canvas.width = videoElement.videoWidth;
+    //    canvas.height = videoElement.videoHeight;
+    //    const context = canvas.getContext("2d");
+    //    context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+    //    // Convert the captured image to a data URL (base64)
+    //    const imageDataUrl = canvas.toDataURL("image/jpeg");
+
+    //    // Stop the camera stream
+    //    stream.getTracks().forEach(track => track.stop());
+
+    //    // Send the image data to the server
+    //    $.ajax({
+    //        type: "POST",
+    //        url: "@Url.Action("CompareImages", "YourController")",
+    //        data: { imageData: imageDataUrl },
+    //        success: function (result) {
+    //            if (result === "Access Granted") {
+    //                // Handle access granted
+    //            } else {
+    //                // Handle access denied
+    //            }
+    //        }
+    //    });
+    //}
+
+
+    //async function openCamera() {
+    //    try {
+    //        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+
+    //        const videoElement = document.createElement("video");
+    //        videoElement.srcObject = stream;
+    //        videoElement.play();
+
+    //        // Wait a moment for the camera to start streaming
+    //        await new Promise(resolve => setTimeout(resolve, 1000));
+
+    //        // Create a canvas to capture the image
+    //        const canvas = document.createElement("canvas");
+    //        canvas.width = videoElement.videoWidth;
+    //        canvas.height = videoElement.videoHeight;
+
+    //        const context = canvas.getContext("2d");
+    //        context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+
+    //        // Convert the captured image to a data URL (base64)
+    //        const imageDataUrl = canvas.toDataURL("image/jpeg");
+
+    //        // Stop the camera stream
+    //        stream.getTracks().forEach(track => track.stop());
+
+    //        // You can send the imageDataUrl to the server for further processing
+    //        // or display it on the page, e.g., by appending an image element:
+    //        const capturedImage = document.getElementById("capturedImage");
+    //        capturedImage.src = imageDataUrl;
+    //        capturedImage.style display = "block";
+    //    } catch (error) {
+    //        console.error("Error accessing the camera:", error);
+    //    }
+    //}
+
+</script>

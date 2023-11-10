@@ -112,11 +112,11 @@ namespace Resource_Planing.Controllers
                         }
                     }
                 }
-                return Json(new { isError = true, msg = "Reistration Failed" });
+                return Json(new { isError = true, msg = "Registration Failed" });
             }
             catch (Exception ex)
             {
-                return Json(new { isError = true, msg = "Reistration Failed" + ex.Message });
+                return Json(new { isError = true, msg = "Registration Failed" + ex.Message });
             }
         }
 

@@ -1,23 +1,31 @@
-﻿using Core.Db;
+﻿
+using Core.Db;
 using Core.ViewModels;
+using Grpc.Core;
 using Logic.IHelpers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
+using System.Drawing;
 
 namespace Resource_Planing.Controllers
 {
     public class ClockInController : Controller
     {
         private AppDbContext _context;
+        private readonly IWebHostEnvironment _env;
         private IUserHelper _userHelper;
+        private IAccountHelper _accountHelper;
         private IRotaHelper _rotaHelper;
         private IDropdownHelper _dropdownHelper;
-        public ClockInController(AppDbContext context, IUserHelper userHelper, IRotaHelper rotaHelper, IDropdownHelper dropdownHelper)
+        public ClockInController(AppDbContext context, IUserHelper userHelper, IRotaHelper rotaHelper, IDropdownHelper dropdownHelper, IAccountHelper accountHelper, IWebHostEnvironment env)
         {
             _context = context;
             _userHelper = userHelper;
+            _accountHelper = accountHelper;
             _rotaHelper = rotaHelper;
             _dropdownHelper = dropdownHelper;
+            _env = env;
         }
 
         public async Task<IActionResult> Index()
@@ -143,7 +151,83 @@ namespace Resource_Planing.Controllers
         [HttpGet]
         public IActionResult ClockInView()
         {
+            var loggedInUser = _userHelper.FindByUserName(User.Identity.Name);
+            ViewBag.LoggedInUser = loggedInUser.Id;
             return View();
         }
+
+        //public ActionResult CompareImages(string imageData, string staffId)
+        //{
+        //    var user = _userHelper.FindById(staffId);
+        //    // Load the reference image (the image you registered)
+        //    // var referenceImagePath = Server.MapPath("~/Content/reference.jpg")
+        //    //var referenceImagePath = Path.Combine(_env.ContentRootPath, "wwwroot", "Content", "reference.jpg");
+        //    var referenceImagePath = _context.ApplicationUser.Where(h => h.Id == staffId && h.FaceImageData == imageData).FirstOrDefault();
+        //    if (referenceImagePath == null)
+        //    {
+        //        return Json(new { isError = true, msg = "Image compare failed, make sure there is image saved for comparison" });
+        //    }
+        //    var referenceImage = Image.FromFile(referenceImagePath.FaceImageData);
+           
+        //    // Convert the captured image data to an image
+        //    var imageDataBytes = Convert.FromBase64String(imageData.Split(',')[1]);
+        //    var capturedImage = Image.FromStream(new MemoryStream(imageDataBytes));
+
+        //    // Perform image comparison and decide whether to grant access
+        //    bool accessGranted = _accountHelper.CompareImages(referenceImage, capturedImage);
+
+        //    if (accessGranted)
+        //    {
+        //        return Json(new { isError = false, msg = "Successful" }); 
+        //    }
+        //    else
+        //    {
+        //        return Json(new { isError = true, msg = "Something went wrong, try again" });
+        //    }
+        //}
+
+        public ActionResult FaceClockIn(string imageData, string staffId)
+        {
+            // Find the user by staffId
+            var user = _userHelper.FindById(staffId);
+
+            // Check if the user is found and has a valid reference image path
+            if (user != null && !string.IsNullOrEmpty(user.FaceImageData))
+            {
+                try
+                {
+                    // Load the reference image (the image you registered)
+                    var referenceImage = Image.FromFile(user.FaceImageData);
+
+                    // Convert the captured image data to an image
+                    var imageDataBytes = Convert.FromBase64String(imageData.Split(',')[1]);
+                    var capturedImage = Image.FromStream(new MemoryStream(imageDataBytes));
+
+                    // Perform image comparison and decide whether to grant access
+                    bool accessGranted = _userHelper.CompareImages(referenceImage, capturedImage);
+
+                    if (accessGranted)
+                    {
+                        return Json(new { isError = false, msg = "Successful" });
+                    }
+                    else
+                    {
+                        return Json(new { isError = true, msg = "Something went wrong, try again" });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle exceptions (e.g., if there's an issue loading images)
+                    return Content($"Error: {ex.Message}");
+                }
+            }
+            else
+            {
+                // Handle the case when the user is not found or has no valid reference image
+                return Content("User not found or has no valid reference image");
+            }
+        }
+
+
     }
 } 
