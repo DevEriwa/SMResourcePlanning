@@ -1,4 +1,6 @@
-﻿using Core.Db;
+﻿using AForge.Imaging.Filters;
+using AForge.Imaging;
+using Core.Db;
 using Core.Models;
 using Core.ViewModels;
 using Logic.IHelpers;
@@ -7,10 +9,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using System.Diagnostics;
+using System.Drawing;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 using static Core.Enums.Resource_Planing;
+using Image = System.Drawing.Image;
 
 namespace Logic.Helpers
 {
@@ -467,5 +471,64 @@ namespace Logic.Helpers
             }
             return null;
         }
+        public bool CompareImages(Image referenceImage, Image capturedImage)
+        {
+            // Convert images to grayscale
+            Grayscale filter = new Grayscale(0.2125, 0.7154, 0.0721);
+            Bitmap referenceBitmap = filter.Apply(new Bitmap(referenceImage));
+            Bitmap capturedBitmap = filter.Apply(new Bitmap(capturedImage));
+
+            // Compute the difference between the two images
+            ExhaustiveTemplateMatching tm = new ExhaustiveTemplateMatching(0.9f); // Adjust similarity threshold
+            TemplateMatch[] matches = tm.ProcessImage(referenceBitmap, capturedBitmap);
+
+            // If there are matches, consider the images as similar
+            return matches.Length > 0;
+        }
+
+        //public string GetUserReferenceImagePath(string userId, Image referenceImage, Image capturedImage)
+        //{
+        //    // Convert images to grayscale
+        //    Grayscale filter = new Grayscale(0.2125, 0.7154, 0.0721);
+        //    Bitmap referenceBitmap = filter.Apply(new Bitmap(referenceImage));
+        //    Bitmap capturedBitmap = filter.Apply(new Bitmap(capturedImage));
+
+        //    // Compute the difference between the two images
+        //    ExhaustiveTemplateMatching tm = new ExhaustiveTemplateMatching(0.9f); // Adjust similarity threshold
+        //    TemplateMatch[] matches = tm.ProcessImage(referenceBitmap, capturedBitmap);
+
+        //    // If there are matches, consider the images as similar
+        //    //return matches.Length > 0;
+        //    // public string GetUserReferenceImagePath(string userId)
+
+        //    // Replace this with your actual database query to fetch the user's reference image path
+        //    var user = _context.ApplicationUser.FirstOrDefault(u => u.Id == userId);
+        //    return user?.FaceImageData;
+
+        //}
+
+        //public string GetUserReferenceImageData(string userId, Image referenceImage, Image capturedImage)
+        //{
+        //    // Convert images to grayscale
+        //    Grayscale filter = new Grayscale(0.2125, 0.7154, 0.0721);
+        //    Bitmap referenceBitmap = filter.Apply(new Bitmap(referenceImage));
+        //    Bitmap capturedBitmap = filter.Apply(new Bitmap(capturedImage));
+
+        //    // Compute the difference between the two images
+        //    ExhaustiveTemplateMatching tm = new ExhaustiveTemplateMatching(0.9f); // Adjust similarity threshold
+        //    TemplateMatch[] matches = tm.ProcessImage(referenceBitmap, capturedBitmap);
+
+        //    // If there are matches, consider the images as similar
+        //    if (matches.Length > 0)
+        //    {
+        //        // Replace this with your actual database query to fetch the user's reference image data
+        //        var user = _context.ApplicationUser.FirstOrDefault(u => u.Id == userId);
+        //        return user?.FaceImageData;
+        //    }
+
+        //    // Return null or an indicator that the images are not similar
+        //    return null;
+        //}
+
     }
 }

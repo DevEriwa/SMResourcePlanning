@@ -1,12 +1,16 @@
-﻿using Core.Models;
+﻿using AForge.Imaging;
+using AForge.Imaging.Filters;
+using Core.Models;
 using Core.ViewModels;
 using Logic.IHelpers;
 using Microsoft.AspNetCore.Identity;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Image = System.Drawing.Image;
 
 namespace Logic.Helpers
 {
@@ -142,5 +146,7 @@ namespace Logic.Helpers
         }
 
 
+        
     }
+
 }
