@@ -200,7 +200,7 @@
                                 <div class="col-sm-3"></div>
                                 <div class="col-sm-6 col-md-6 d-flex justify-content-center align-items-center">
                                     <div id="snapShot" class="text-center">
-                                        <img id="captured-image" alt="Captured Face" style="display: none;">
+                                        <img id="captured_image" alt="Captured Face" style="display: none;">
                                     </div>
                                 </div>
                                 <div class="col-sm-3"></div>
@@ -275,47 +275,48 @@
     var profilePix = "";
     $(document).ready(function () {
         debugger
-        const video = document.getElementById('camera');
-        const captureButton = document.getElementById('capture-button');
-        const capturedImage = document.getElementById('captured-image');
-        let stream;
-
-        // Get user's media (camera) when the page loads
-        navigator.mediaDevices.getUserMedia({ video: true })
-            .then(function (mediaStream) {
-                stream = mediaStream;
-                video.srcObject = mediaStream;
-            })
-            .catch(function (error) {
-                console.error('Error accessing the camera:', error);
-            });
-
-        // Capture an image from the camera
-        captureButton.addEventListener('click', function () {
-            debugger
-            const canvas = document.createElement('canvas');
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
-            const context = canvas.getContext('2d');
-            context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-            // Convert the captured image to a data URL
-            const imageDataUrl = canvas.toDataURL('image/png');
-
-            // Display the captured image
-            capturedImage.src = imageDataUrl;
-            capturedImage.style.display = 'block';
-            profilePix = imageDataUrl;
-        });
-
-        // When the user closes the page, stop the camera stream
-        window.addEventListener('beforeunload', function () {
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
-            }
-        });
+        captureUserImage();
     });
+    // $(document).ready(function () {
+    //     debugger
+    //     const video = document.getElementById('camera');
+    //     const captureButton = document.getElementById('capture-button');
+    //     const capturedImage = document.getElementById('captured-image');
+    //     let stream;
+
+    //     // Get user's media (camera) when the page loads
+    //     navigator.mediaDevices.getUserMedia({ video: true })
+    //         .then(function (mediaStream) {
+    //             stream = mediaStream;
+    //             video.srcObject = mediaStream;
+    //         })
+    //         .catch(function (error) {
+    //             console.error('Error accessing the camera:', error);
+    //         });
+
+    //     // Capture an image from the camera
+    //     captureButton.addEventListener('click', function () {
+    //         debugger
+    //         const canvas = document.createElement('canvas');
+    //         canvas.width = video.videoWidth;
+    //         canvas.height = video.videoHeight;
+    //         const context = canvas.getContext('2d');
+    //         context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    //         // Convert the captured image to a data URL
+    //         const imageDataUrl = canvas.toDataURL('image/png');
+
+    //         // Display the captured image
+    //         capturedImage.src = imageDataUrl;
+    //         capturedImage.style.display = 'block';
+    //         profilePix = imageDataUrl;
+    //     });
+
+    //     // When the user closes the page, stop the camera stream
+    //     window.addEventListener('beforeunload', function () {
+    //         if (stream) {
+    //             stream.getTracks().forEach(track => track.stop());
+    //         }
+    //     });
+    // });
 </script>
-
-
-

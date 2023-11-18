@@ -18,5 +18,6 @@ namespace Logic.IHelpers
         bool DeleteLeaveType(int id);
         bool EditEmployeeLeave(RequestLeaveViewModel employeeLeaveViewModel);
         LeaveApplication GetEmployeeLeaveById(int id);
-    }
+		List<RequestLeaveViewModel> GetListOfAllLeaveApplication(string staffId);
+	}
 }

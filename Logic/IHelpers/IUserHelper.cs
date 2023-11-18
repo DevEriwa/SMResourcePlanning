@@ -38,7 +38,8 @@ namespace Logic.IHelpers
         ApplicationUser FindById(string Id);
         LeaveApplication GetLeaveById(int id);
         //bool GetUserReferenceImagePath(Image referenceImage, Image capturedImage);
-        bool CompareImages(Image referenceImage, Image capturedImage);
-
+       // bool CompareImages(Image referenceImage, Image capturedImage);
+		//bool CompareImages(Image referenceImage, Image capturedImage, float similarityThreshold = 0.9F);
+        bool CompareImages(Image capturedImage, Image newCapturedImage, float similarityThreshold);
     }
 }

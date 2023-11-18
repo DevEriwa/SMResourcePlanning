@@ -155,79 +155,83 @@ namespace Resource_Planing.Controllers
             ViewBag.LoggedInUser = loggedInUser.Id;
             return View();
         }
-
-        //public ActionResult CompareImages(string imageData, string staffId)
-        //{
-        //    var user = _userHelper.FindById(staffId);
-        //    // Load the reference image (the image you registered)
-        //    // var referenceImagePath = Server.MapPath("~/Content/reference.jpg")
-        //    //var referenceImagePath = Path.Combine(_env.ContentRootPath, "wwwroot", "Content", "reference.jpg");
-        //    var referenceImagePath = _context.ApplicationUser.Where(h => h.Id == staffId && h.FaceImageData == imageData).FirstOrDefault();
-        //    if (referenceImagePath == null)
-        //    {
-        //        return Json(new { isError = true, msg = "Image compare failed, make sure there is image saved for comparison" });
-        //    }
-        //    var referenceImage = Image.FromFile(referenceImagePath.FaceImageData);
-           
-        //    // Convert the captured image data to an image
-        //    var imageDataBytes = Convert.FromBase64String(imageData.Split(',')[1]);
-        //    var capturedImage = Image.FromStream(new MemoryStream(imageDataBytes));
-
-        //    // Perform image comparison and decide whether to grant access
-        //    bool accessGranted = _accountHelper.CompareImages(referenceImage, capturedImage);
-
-        //    if (accessGranted)
-        //    {
-        //        return Json(new { isError = false, msg = "Successful" }); 
-        //    }
-        //    else
-        //    {
-        //        return Json(new { isError = true, msg = "Something went wrong, try again" });
-        //    }
-        //}
-
-        public ActionResult FaceClockIn(string imageData, string staffId)
+        [HttpPost]
+       
+        [HttpGet] 
+        public IActionResult GetProfilePicture(string userId)
         {
-            // Find the user by staffId
-            var user = _userHelper.FindById(staffId);
-
-            // Check if the user is found and has a valid reference image path
-            if (user != null && !string.IsNullOrEmpty(user.FaceImageData))
+            try
             {
-                try
+                var user = _userHelper.FindById(userId);
+                if (user != null && !string.IsNullOrEmpty(user.FaceImageData))
                 {
-                    // Load the reference image (the image you registered)
-                    var referenceImage = Image.FromFile(user.FaceImageData);
+                    var imagePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "Images", user.FaceImageData);
+                    var imageBytes = System.IO.File.ReadAllBytes(imagePath);
+                    var base64String = Convert.ToBase64String(imageBytes);
+                    var imageDataUrl = $"data:image/png;base64,{base64String}";
 
-                    // Convert the captured image data to an image
-                    var imageDataBytes = Convert.FromBase64String(imageData.Split(',')[1]);
-                    var capturedImage = Image.FromStream(new MemoryStream(imageDataBytes));
-
-                    // Perform image comparison and decide whether to grant access
-                    bool accessGranted = _userHelper.CompareImages(referenceImage, capturedImage);
-
-                    if (accessGranted)
-                    {
-                        return Json(new { isError = false, msg = "Successful" });
-                    }
-                    else
-                    {
-                        return Json(new { isError = true, msg = "Something went wrong, try again" });
-                    }
+                    return Json(new { imageDataUrl });
                 }
-                catch (Exception ex)
-                {
-                    // Handle exceptions (e.g., if there's an issue loading images)
-                    return Content($"Error: {ex.Message}");
-                }
+
+                return Json(new { isError = true, msg = "User not found or has no valid profile picture" });
             }
-            else
+            catch (Exception ex)
             {
-                // Handle the case when the user is not found or has no valid reference image
-                return Content("User not found or has no valid reference image");
+                return Json(new { isError = true, msg = $"Error: {ex.Message}" });
             }
         }
 
+        public IActionResult FaceClockIn(string imageData, string staffId)
+        {
+            try
+            {
+                 var user = _userHelper.FindById(staffId);
+                if (user != null && user.FaceImageData != null)
+                {
+                    var base64Data = user.FaceImageData.Split(',')[1];
+                    var imageDataBytes = Convert.FromBase64String(base64Data);
+                    var referenceImage = Image.FromStream(new MemoryStream(imageDataBytes));
+                    // Convert the captured image data to an image
+                    var newImageDataBytes = Convert.FromBase64String(imageData.Split(',')[1]);
+                    var newCapturedImage = Image.FromStream(new MemoryStream(newImageDataBytes));
+
+                    // Specify the similarity threshold for image comparison
+                    float similarityThreshold = 0.9f;
+                    // Perform image comparison and decide whether to grant access
+                    bool accessGranted = _userHelper.CompareImages(referenceImage, newCapturedImage, similarityThreshold);
+                    if (accessGranted)
+                    {
+                        return Json(new { isError = false, msg = "Access granted" });
+                    }
+                    else
+                    {
+                        return Json(new { isError = true, msg = "Access denied. Face recognition failed." });
+                    }
+                }
+                else
+                {
+                    return Json(new { isError = true, msg = "User not found or has no valid reference image" });
+                }
+            }
+            catch (Exception ex)
+            {
+                return Json(new { isError = true, msg = $"Error: {ex.Message}" });
+            }
+        }
+
+        private bool IsBase64String(string s)
+        {
+            // Check if the string is a valid Base64 string
+            try
+            {
+                Convert.FromBase64String(s);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
     }
 } 

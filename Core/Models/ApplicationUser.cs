@@ -45,5 +45,7 @@ namespace Core.Models
         public DateTime? DateOfBirth { get; set; }
         public string? Religion { get; set; }
         public string? FaceImageData { get; set; }
+        [NotMapped]
+        public string? StaffId { get; set; }
     }
 }

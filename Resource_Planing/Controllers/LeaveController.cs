@@ -28,7 +28,7 @@ namespace Resource_Planing.Controllers
         {
                 var loggedInUser = _userHelper.FindByUserName(User.Identity.Name);
                 ViewBag.LoggedInUser = loggedInUser.Id;
-
+            var dghdgfghjghj = _leaveApplicationHelper.GetListOfAllLeaveApplication(loggedInUser.Id);
                 var staffLeave = GetRemainingLeave();
                 if (staffLeave != null)
                 {
