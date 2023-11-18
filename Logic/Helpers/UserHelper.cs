@@ -486,49 +486,35 @@ namespace Logic.Helpers
             return matches.Length > 0;
         }
 
-        //public string GetUserReferenceImagePath(string userId, Image referenceImage, Image capturedImage)
-        //{
-        //    // Convert images to grayscale
-        //    Grayscale filter = new Grayscale(0.2125, 0.7154, 0.0721);
-        //    Bitmap referenceBitmap = filter.Apply(new Bitmap(referenceImage));
-        //    Bitmap capturedBitmap = filter.Apply(new Bitmap(capturedImage));
+		public bool CompareImages(Image referenceImage, Image capturedImage, float similarityThreshold = 0.9f)
+		{
+			try
+			{
+				// Parameter validation
+				if (referenceImage == null || capturedImage == null)
+				{
+					throw new ArgumentNullException("Both referenceImage and capturedImage must be provided.");
+				}
 
-        //    // Compute the difference between the two images
-        //    ExhaustiveTemplateMatching tm = new ExhaustiveTemplateMatching(0.9f); // Adjust similarity threshold
-        //    TemplateMatch[] matches = tm.ProcessImage(referenceBitmap, capturedBitmap);
+				// Convert images to grayscale
+				Grayscale filter = new Grayscale(0.2125, 0.7154, 0.0721);
+				Bitmap referenceBitmap = filter.Apply(new Bitmap(referenceImage));
+				Bitmap capturedBitmap = filter.Apply(new Bitmap(capturedImage));
 
-        //    // If there are matches, consider the images as similar
-        //    //return matches.Length > 0;
-        //    // public string GetUserReferenceImagePath(string userId)
+				// Compute the difference between the two images
+				ExhaustiveTemplateMatching tm = new ExhaustiveTemplateMatching(similarityThreshold);
+				TemplateMatch[] matches = tm.ProcessImage(referenceBitmap, capturedBitmap);
 
-        //    // Replace this with your actual database query to fetch the user's reference image path
-        //    var user = _context.ApplicationUser.FirstOrDefault(u => u.Id == userId);
-        //    return user?.FaceImageData;
+				// If there are matches, consider the images as similar
+				return matches.Length > 0;
+			}
+			catch (Exception ex)
+			{
+				// Log or handle the exception as needed
+				Console.WriteLine($"Error in image comparison: {ex.Message}");
+				return false;
+			}
+		}
 
-        //}
-
-        //public string GetUserReferenceImageData(string userId, Image referenceImage, Image capturedImage)
-        //{
-        //    // Convert images to grayscale
-        //    Grayscale filter = new Grayscale(0.2125, 0.7154, 0.0721);
-        //    Bitmap referenceBitmap = filter.Apply(new Bitmap(referenceImage));
-        //    Bitmap capturedBitmap = filter.Apply(new Bitmap(capturedImage));
-
-        //    // Compute the difference between the two images
-        //    ExhaustiveTemplateMatching tm = new ExhaustiveTemplateMatching(0.9f); // Adjust similarity threshold
-        //    TemplateMatch[] matches = tm.ProcessImage(referenceBitmap, capturedBitmap);
-
-        //    // If there are matches, consider the images as similar
-        //    if (matches.Length > 0)
-        //    {
-        //        // Replace this with your actual database query to fetch the user's reference image data
-        //        var user = _context.ApplicationUser.FirstOrDefault(u => u.Id == userId);
-        //        return user?.FaceImageData;
-        //    }
-
-        //    // Return null or an indicator that the images are not similar
-        //    return null;
-        //}
-
-    }
+	}
 }

@@ -65,18 +65,9 @@
 
 <script>
 
-    
-   
-
-    // Get access to the camera and display the feed in a video element
-    //async function setupCamera() {
-    //    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    //    const cameraFeed = document.getElementById("cameraFeed");
-    //    cameraFeed.srcObject = stream;
-    //}
-
     // Set up the camera when the button is clicked
     document.getElementById("loadCameraButton").addEventListener("click", () => {
+        debugger
         async function setupCamera() {
             const stream = await navigator.mediaDevices.getUserMedia({ video: true });
             const cameraFeed = document.getElementById("cameraFeed");
@@ -120,93 +111,66 @@
             type: "POST",
             url: "@Url.Action("FaceClockIn", "ClockIn")",
             data: { imageData: imageData, staffId: '@staffId' },
-            //data: { imageData: imageData, staffId: '@ViewBag.LoggedInUser' },
             success: function (result) {
-                if (result === "Access Granted") {
-                    // Handle access granted
+                debugger;
+                $('#submit_btn').html(defaultBtnValue);
+                if (!result.isError) {
+                    successAlert(result.msg);
                 } else {
-                    // Handle access denied
+                    $('#submit_btn').attr("disabled", false);
+                    errorAlert(result.msg);
                 }
+            },
+            error: function (xhr, status, error) {
+                console.error("AJAX Error:", status, error);
+                $('#submit_btn').html(defaultBtnValue);
+                $('#submit_btn').attr("disabled", false);
+                errorAlert("Network failure, please try again");
             }
         });
+        // function performFaceClockIn(imageData, staffId, successCallback, errorCallback) {
+        //     $.ajax({
+        //         type: "POST",
+        //         url: "@Url",
+        //         data: { imageData: imageData, staffId: staffId },
+        //         success: function (result) {
+        //             if (!result.isError) {
+        //                 if (successCallback && typeof successCallback === "function") {
+        //                     successCallback(result.msg);
+        //                 }
+        //             } else {
+        //                 if (errorCallback && typeof errorCallback === "function") {
+        //                     errorCallback(result.msg);
+        //                 }
+        //             }
+        //         },
+        //         error: function (xhr, status, error) {
+        //             console.error("AJAX Error:", status, error);
+        //             if (errorCallback && typeof errorCallback === "function") {
+        //                 errorCallback("Network failure, please try again");
+        //             }
+        //         }
+        //     });
+        // }
+
+        // // Example of calling the function
+        // performFaceClockIn(
+        //     imageData,
+        //     '@staffId',
+        //     function (successMsg) {
+        //         // Success callback
+        //         debugger;
+        //         $('#submit_btn').html(defaultBtnValue);
+        //         successAlert(successMsg);
+        //     },
+        //     function (errorMsg) {
+        //         // Error callback
+        //         $('#submit_btn').html(defaultBtnValue);
+        //         $('#submit_btn').attr("disabled", false);
+        //         errorAlert(errorMsg);
+        //     }
+        // );
+
     });
-
-    // Set up the camera when the page loads
-    //window.addEventListener("load", setupCamera);
-
-
-    //async function captureImage() {
-    //    // Access the user's camera
-    //    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    //    const videoElement = document.createElement("video");
-    //    videoElement.srcObject = stream;
-    //    videoElement.play();
-
-    //    // Wait for the camera to start streaming
-    //    await new Promise(resolve => setTimeout(resolve, 1000));
-
-    //    // Create a canvas to capture the image
-    //    const canvas = document.createElement("canvas");
-    //    canvas.width = videoElement.videoWidth;
-    //    canvas.height = videoElement.videoHeight;
-    //    const context = canvas.getContext("2d");
-    //    context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-
-    //    // Convert the captured image to a data URL (base64)
-    //    const imageDataUrl = canvas.toDataURL("image/jpeg");
-
-    //    // Stop the camera stream
-    //    stream.getTracks().forEach(track => track.stop());
-
-    //    // Send the image data to the server
-    //    $.ajax({
-    //        type: "POST",
-    //        url: "@Url.Action("CompareImages", "YourController")",
-    //        data: { imageData: imageDataUrl },
-    //        success: function (result) {
-    //            if (result === "Access Granted") {
-    //                // Handle access granted
-    //            } else {
-    //                // Handle access denied
-    //            }
-    //        }
-    //    });
-    //}
-
-
-    //async function openCamera() {
-    //    try {
-    //        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-
-    //        const videoElement = document.createElement("video");
-    //        videoElement.srcObject = stream;
-    //        videoElement.play();
-
-    //        // Wait a moment for the camera to start streaming
-    //        await new Promise(resolve => setTimeout(resolve, 1000));
-
-    //        // Create a canvas to capture the image
-    //        const canvas = document.createElement("canvas");
-    //        canvas.width = videoElement.videoWidth;
-    //        canvas.height = videoElement.videoHeight;
-
-    //        const context = canvas.getContext("2d");
-    //        context.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-
-    //        // Convert the captured image to a data URL (base64)
-    //        const imageDataUrl = canvas.toDataURL("image/jpeg");
-
-    //        // Stop the camera stream
-    //        stream.getTracks().forEach(track => track.stop());
-
-    //        // You can send the imageDataUrl to the server for further processing
-    //        // or display it on the page, e.g., by appending an image element:
-    //        const capturedImage = document.getElementById("capturedImage");
-    //        capturedImage.src = imageDataUrl;
-    //        capturedImage.style display = "block";
-    //    } catch (error) {
-    //        console.error("Error accessing the camera:", error);
-    //    }
-    //}
 
 </script>

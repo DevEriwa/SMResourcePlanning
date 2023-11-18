@@ -1,4 +1,5 @@
-﻿function AccountsRegistraion() {
+﻿
+function AccountsRegistraion() {
     debugger
     var name = document.getElementById("name").value;
     var email = document.getElementById("email").value;
@@ -52,6 +53,7 @@
 function Registeration() {
     debugger;
     var data = {};
+    const capturedImage = profilePix; // Use the global variable directly
     data.Email = $('#email').val();
     data.Address = $('#address').val();
     data.Phone = $('#phoneNumber').val();
@@ -59,29 +61,29 @@ function Registeration() {
     data.LastName = $('#lastName').val();
     data.Password = $('#password').val();
     data.Religion = $('#religion').val();
-    data.GenderId = $('#genderId').val(); 
+    data.GenderId = $('#genderId').val();
     data.DisplayOnRota = $('#displayOnRota').is(":checked");
     data.CheckBox = $('#termsCondition').is(":checked");
     data.ConfirmPassword = $('#confirmpassword').val();
-    profilePix = $('#capturedImageData').val();
-    if (data.Email != "" && data.Phone != "" && data.FirstName != "" && data.LastName != "" && data.Password != "" && data.Gender != "" && data.profilePix != "")
-    {
+    data.FaceImageData = profilePix;
+    if (data.Email != "" && data.Phone != "" && data.FirstName != "" && data.LastName != "" && data.Password != "" && data.Gender != "" && capturedImage != "" && data.FaceImageData != "") {
         if (data.Password == data.ConfirmPassword) {
             var companyDetails = JSON.stringify(data);
             $.ajax({
                 type: 'Post',
                 url: '/Account/Registeration', // we are calling json method
                 dataType: 'json',
-                data:
-                {
+                data: {
                     userRegistrationData: companyDetails,
                 },
                 success: function (result) {
+                    debugger
                     if (!result.isError) {
+                        const userId = result.staffId;
+                        saveImageOnServer(capturedImage, userId);
                         var url = '/Account/Login';
                         successAlertWithRedirect(result.msg, url);
-                    }
-                    else {
+                    } else {
                         errorAlert(result.msg);
                     }
                 },
@@ -92,8 +94,55 @@ function Registeration() {
         } else {
             errorAlert("Password and comfirmpassword not match");
         }
-    } 
-    else {
+    } else {
+        errorAlert("Fill the form correctly");
+    }
+}
+
+function Registerationsd() {
+    debugger;
+    var data = {};
+    data.Email = $('#email').val();
+    data.Address = $('#address').val();
+    data.Phone = $('#phoneNumber').val();
+    data.FirstName = $('#firstName').val();
+    data.LastName = $('#lastName').val();
+    data.Password = $('#password').val();
+    data.Religion = $('#religion').val();
+    data.GenderId = $('#genderId').val();
+    data.DisplayOnRota = $('#displayOnRota').is(":checked");
+    data.CheckBox = $('#termsCondition').is(":checked");
+    data.ConfirmPassword = $('#confirmpassword').val();
+
+    // Update the assignment of profilePix using the actual captured image data
+    data.ProfilePix = captureUserImage();
+
+    if (data.Email != "" && data.Phone != "" && data.FirstName != "" && data.LastName != "" && data.Password != "" && data.Gender != "" && data.ProfilePix != "") {
+        if (data.Password == data.ConfirmPassword) {
+            var companyDetails = JSON.stringify(data);
+            $.ajax({
+                type: 'POST',
+                url: '/Account/Register',
+                data: registrationData,
+                success: function (registrationResult) {
+                    if (!registrationResult.isError) {
+                        // Registration successful, obtain staffId
+                        const staffId = registrationResult.staffId;
+
+                        // Save the captured image on the server
+                        saveImageOnServer(capturedImage, staffId);
+                    } else {
+                        errorAlert(result.msg);
+                    }
+                },
+                error: function (ex) {
+                    errorAlert("Network failure, please try again");
+                }
+            });
+        } else {
+            errorAlert("Password and confirm password do not match");
+        }
+    } else {
         errorAlert("Fill the form correctly");
     }
 }
@@ -1144,8 +1193,90 @@ function updateLocation() {
     });
 }
 
+// Function to send the image to the server
+function saveImageOnServer(imageDataUrl, userId) {
+    $.ajax({
+        type: 'POST',
+        url: '/Account/SaveImage',
+        data: {
+            imageData: imageDataUrl,
+            userId: userId
+        },
+        success: function (result) {
+            if (result.isError) {
+                console.error('Error saving image on the server:', result.error);
+            } else {
+                console.log('Image saved on the server:', result.imagePath);
+            }
+        },
+        error: function (ex) {
+            console.error('Error saving image on the server:', ex);
+        }
+    });
+}
 
 
+var profilePix = "";
 
 
+function captureUserImage() {
+    const video = document.getElementById('camera');
+    const capturedImage = document.getElementById('captured_image');
+    let stream;
 
+    // Get user's media (camera) when the page loads
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(function (mediaStream) {
+            stream = mediaStream;
+            video.srcObject = mediaStream;
+        })
+        .catch(function (error) {
+            console.error('Error accessing the camera:', error);
+        });
+
+    // Capture an image from the camera
+    document.getElementById('capture-button').addEventListener('click', function () {
+        debugger
+        const canvas = document.createElement('canvas');
+        canvas.width = video.videoWidth;
+        canvas.height = video.videoHeight;
+        const context = canvas.getContext('2d');
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+        // Convert the captured image to a data URL
+        const imageDataUrl = canvas.toDataURL('image/png');
+
+        // Display the captured image
+        capturedImage.src = imageDataUrl;
+        capturedImage.style.display = 'block';
+        profilePix = imageDataUrl;
+    });
+
+    // When the user closes the page, stop the camera stream
+    window.addEventListener('beforeunload', function () {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+        }
+    });
+
+
+    function getProfilePicture(userId) {
+        $.ajax({
+            type: 'GET',
+            url: '/Account/GetProfilePicture', 
+            data: { userId: userId },
+            success: function (result) {
+                if (!result.isError) {
+                    const profilePictureUrl = result.imageDataUrl;
+                    $('#profilePicture').attr('src', profilePictureUrl);
+                } else {
+                    console.error('Error retrieving profile picture:', result.msg);
+                }
+            },
+            error: function (ex) {
+                console.error('Error retrieving profile picture:', ex);
+            }
+        });
+    }
+
+}

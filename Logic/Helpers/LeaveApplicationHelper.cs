@@ -62,7 +62,37 @@ namespace Logic.Helpers
             return false;
         }
 
-        public bool StaffRequestLeave(RequestLeaveViewModel leaveDetails, string staffId)
+
+		public List<RequestLeaveViewModel> GetListOfAllLeaveApplication(string staffId)
+		{
+			var departments = new List<RequestLeaveViewModel>();
+
+			var departmentToBeEdited = _context.LeaveApplications
+				.Where(x => x.Active && !x.Deleted && x.StaffId == staffId)
+				.Select(x => new RequestLeaveViewModel
+				{
+					StaffId = x.StaffId,
+					NumberOfDays = x.NumberOfDays,
+					RemainingLeave = x.RemainingLeave,
+					LeaveReason = x.Reason,
+					StartDate = x.StartDate,
+					EndDate = x.EndDate,
+					LeaveStatus = (LeaveStatus)x.Status,
+					RemainingLeaveDays = x.User.FaceImageData,
+				})
+				.ToList();
+
+			if (departmentToBeEdited != null)
+			{
+				departments = departmentToBeEdited;
+			}
+
+			return departments;
+		}
+
+
+
+		public bool StaffRequestLeave(RequestLeaveViewModel leaveDetails, string staffId)
         {
             if (leaveDetails != null)
             {
