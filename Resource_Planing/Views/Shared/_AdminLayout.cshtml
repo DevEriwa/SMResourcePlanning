@@ -32,6 +32,7 @@
     <link rel="stylesheet" href="~/admin-3.2.0/plugins/select2/css/select2.min.css">
     <link href="~/blue/assets/css/style.css" rel="stylesheet" />
     <link href="~/blue/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/assets/css/style.css" rel="stylesheet" />
 
     <script>
         function errorAlert(message) {
@@ -117,9 +118,20 @@
 <body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
     <div class="wrapper">
         <!-- Preloader -->
-        <div class="preloader flex-column justify-content-center align-items-center">
-            <img class="animation__wobble" src="~/admin-3.2.0/dist/img/AdminLTELogo.png" alt="HiveMinerogo" height="60" width="60">
+        <div id="loader-wrapper">
+            <div id="loader">
+                <div class="loader-ellips">
+                    <span class="loader-ellips__dot"></span>
+                    <span class="loader-ellips__dot"></span>
+                    <span class="loader-ellips__dot"></span>
+                    <span class="loader-ellips__dot"></span>
+                </div>
+            </div>
         </div>
+
+       @* <div class="preloader flex-column justify-content-center align-items-center">
+            <img class="animation__wobble" src="~/admin-3.2.0/dist/img/AdminLTELogo.png" alt="HiveMinerogo" height="60" width="60">
+        </div>*@
 
         <!-- Navbar -->
         <nav class="main-header navbar navbar-expand navbar-dark">
@@ -374,6 +386,8 @@
     <script src="~/js/sweetalert.min.js"></script>
     <script src="~/js/sweetalert2.all.min.js"></script>
     <script src="~/js/site.js"></script>
+    <script src="~/admin-3.2.0/build/js/layout.js"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
     <script>
         $(function () {

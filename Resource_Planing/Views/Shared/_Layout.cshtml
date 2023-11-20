@@ -17,6 +17,7 @@
     <link href="~/assets/css/font-awesome.min.css" rel="stylesheet" />
     <link href="~/assets/css/sweetalert2.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/Resource_Planing.styles.css" asp-append-version="true" />
+    <link href="~/assets/css/style.css" rel="stylesheet" />
 
     <script>
         function errorAlert(message) {
@@ -88,6 +89,16 @@
     </script>
 </head>
 <body>
+    <div id="loader-wrapper">
+        <div id="loader">
+            <div class="loader-ellips">
+                <span class="loader-ellips__dot"></span>
+                <span class="loader-ellips__dot"></span>
+                <span class="loader-ellips__dot"></span>
+                <span class="loader-ellips__dot"></span>
+            </div>
+        </div>
+    </div>
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
@@ -128,6 +139,7 @@
     <script src="~/assets/js/bootstrap.min.js"></script>
     <script src="~/assets/js/sweetalert2.all.min.js"></script>
     <script src="~/js/site.js?v=@randomStr"></script>
+    <script src="~/js/site.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
