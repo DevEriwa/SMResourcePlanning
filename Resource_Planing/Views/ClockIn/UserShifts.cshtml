@@ -1,0 +1,97 @@
+﻿@model IEnumerable<Core.Models.Shifts>
+@{
+	ViewData["Title"] = "Shift";
+	Layout = "~/Views/Shared/_UserLayout.cshtml";
+	var locationId = ViewBag.locationId;
+    var staffId = ViewBag.LoggedInUser;
+}
+<style>
+	body {
+		counter-reset: Serial; /* / Set the Serial counter to 0 /*/
+	}
+
+	tr td:first-child:before {
+		counter-increment: Serial; /* / Increment the Serial counter /*/
+		content: counter(Serial); /*  / Display the counter /*/
+	}
+</style>
+<!-- Content Header (Page header) -->
+<section class="content-header">
+	<div class="container-fluid">
+		<div class="row mb-2">
+			<div class="col-sm-6">
+				<h1>Shifts</h1>
+			</div>
+		</div>
+	</div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-12">
+				<div class="card">
+					<div class="card-header">
+						<h3 class="card-title">User Shift List</h3>
+					</div>
+					<!-- /.card-header -->
+					<div class="card-body table-responsive">
+						@if (Model.Count() > 0 && Model != null)
+						{
+							<table id="example2" class="table table-bordered table-hover text-nowrap">
+								<thead>
+									<tr>
+										<th>S/N</th>
+										<th>Name</th>
+										<th>Start Time</th>
+										<th>End Time</th>
+										@* <th>Is Fixed</th>
+										<th>Fixed Amount</th> *@
+										<th>Hourly Pay</th>
+										<th>Location Name</th>
+										<th>Unpaid Time</th>
+										<th class="text-right">Action</th>
+									</tr>
+								</thead>
+								<tbody>
+									@foreach (var shift in Model)
+									{
+										<tr>
+											<td></td>
+											<td>@shift.Name</td>
+											<td>@shift.StartTime</td>
+											<td>@shift.EndTime</td>
+											@* <td>@shift.IsFixed</td>
+											<td>@shift.FixedAmount</td> *@
+											<td>@shift.HourlyPay</td>
+											<td>@shift?.Locations?.AbbreviatedName</td>
+											<td>@shift?.UnpaidTime</td>
+											<td class="text-right">
+												<div class="btn-group">
+                                                    <a asp-controller="ClockIn" asp-action="CaptureView" class="btn btn-primary punch-btn" id="loadCameraButton">Clock In</a>
+												</div>
+											</td>
+										</tr>
+									}
+								</tbody>
+							</table>
+						}
+						else
+						{
+							<div class="row p5 m-5">
+								<div class="col-md-12 text-center p-5 m5">
+									<h2>No Record Found</h2>
+								</div>
+							</div>
+						}
+					</div>
+					<!-- /.card-body -->
+				</div>
+				<!-- /.card -->
+			</div>
+			<!-- /.col -->
+		</div>
+	</div>
+</section>
+

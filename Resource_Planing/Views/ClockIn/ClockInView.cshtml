@@ -1,176 +1,106 @@
-﻿@model List<Core.Models.StaffClockIn> 
+﻿@inject Logic.IHelpers.IUserHelper _userHelper;
+@model List<Core.Models.StaffClockIn> 
 @{
     ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
     var staffId = ViewBag.LoggedInUser;
+    var locationId = ViewBag.LocationId;
+    var userInfo = _userHelper.GetUserShiftsInLocations(staffId, locationId);
+    var item = userInfo;
 }
 
+<style type="text/css">
+    .circular-timer {
+        width: 100px;
+        height: 100px;
+        border: 5px solid #007bff;
+        border-radius: 50%;
+        text-align: center;
+        margin-left: 40%;
+    }
 
- <div class="col-md-6 offset-md-3 col-12">
-    <div class="card punch-status shadow">
-        <h5 class="card-title p-2 text-center" style="font-size: 30px">Timesheet <small class="text-muted">11 Mar 2019</small></h5>
-        <div class="card-body">
-            <div class="punch-det">
-                <h6>Clock In at</h6>
-                <p>Wed, 11th Mar 2019 10.00 AM</p>
-            </div>
-            <div class="punch-info text-center">
-                <div class="punch-hours">
-                    <span>3.45 hrs</span>
-                </div>
-            </div>
+    .timer-label {
+        font-size: 20px;
+    }
 
-            <div class="punch-btn-section text-center">
-                <form id="imageForm" action="@Url.Action("FaceClockIn", "ClockIn")" method="post" enctype="multipart/form-data">
-                    <input type="file" name="capturedImage" id="capturedImageInput" style="display: none;" />
-                    <input type="hidden" accept="image/*" name="imageData" id="imageDataInput" />
-                    
-                    <button type="button" class="btn btn-primary punch-btn" id="loadCameraButton" onclick="openCamera()">Clock In</button>
-                </form>
-            </div>
-           
-           @* <div class="punch-btn-section text-center">
-                <input type="file" accept="image/*" id="imageInput" style="display: none;" />
-                <button type="button" class="btn btn-primary punch-btn" id="loadCameraButton" onclick="captureImage()">Clock In</button>
-            </div>*@
-
-            <div class="mx-auto text-center">
-                <video id="cameraFeed" width="250" height="260" autoplay></video>
-            </div>
-            <button class="btn btn-secondary p-1 m-2" id="takePicture">Take Picture</button>
-            <canvas class="mx-auto text-center" id="capturedImage" style="display: none;"></canvas>
-
-
-            <div class="statistics">
-                <div class="row">
-                    <div class="col-md-6 col-6 text-center">
-                        <div class="stats-box">
-                            <p>Break</p>
-                            <h6>1.21 hrs</h6>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-6 text-center">
-                        <div class="stats-box">
-                            <p>Overtime</p>
-                            <h6>3 hrs</h6>
-                        </div>
+</style>
+	<!-- Page Wrapper -->
+<div class="page-wrapper">
+    <div class="container" style="margin-left:20%">
+        <div class="card shadow col-md-8">
+            <div class="row no-gutters">
+                <!-- Right Column (Name) -->
+                <div class="col-sm-12">
+                    <div class="card-body">
+                        <h4 class="text-center">Staff ClockIn Section</h4>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+        <div class="card shadow-lg col-md-8 mt-2">
+            <div class="row no-gutters">
+                <div class="col-6 col-md-4">
+                    <h4 class="p-3">Today's' Shift</h4>
+                </div>
+                <!-- Right Column (Text) -->
+                <div class="col-6 col-md-8">
+                    <div class="card-body">
+                        <p class="card-title" style="margin-left:40%">8:00am</p>
+                        <!-- Add other content here -->
+                    </div>
+                </div>
+            </div>
+            <div class="row no-gutters">
+                <div class="col-6 col-md-4">
+                    <h4 class="p-2"><img class="p-2" src="assets/img/logo.png" style="height: 50px; width: 50px;">Payrate</h4>
+                </div>
+                <!-- Right Column (Text) -->
+                <div class="col-6 col-md-8">
+                    <div class="card-body">
+                        <p class="card-title" style="margin-left:40%">8:00am</p>
+                        <!-- Add other content here -->
+                    </div>
+                </div>
+            </div>
+            <div class="row no-gutters">
+                <div class="col-6 col-md-4">
+                    <h4 class="p-3">Clock In</h4>
+                </div>
+                <!-- Right Column (Text) -->
+                <div class="col-6 col-md-8">
+                    <div class="card-body">
+                        <p class="card-title" style="margin-left:40%">8:00am</p>
+                        <!-- Add other content here -->
+                    </div>
+                </div>
+            </div>
+            <div class="row no-gutters">
+                <div class="col-6 col-md-4">
+                    <h4 class="p-3">Clock Out</h4>
+                </div>
+                <div class="col-6 col-md-8">
+                    <div class="card-body">
+                        <p class="card-title" style="margin-left:40%">8:00pm</p>
+                        <!-- Add other content here -->
+                    </div>
+                </div>
+            </div>
+            <div class="row no-gutters">
+                <div class="col-12 mt-2 text-center">
+                    <button class="btn btn-primary mb-3 w-75">Clock In Now</button>
+                </div>
+            </div>
+            <div class="row no-gutters">
+                <div class="card-body">
+                    <div class="circular-timer">
+                        <div class="timer-label mt-3">Clock In</div>
+                        <i class="fas fa-clock"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+   <!-- /Page Content -->
 </div>
+  <!-- Page Wrapper -->
 
-
-
-<script>
-
-    // Set up the camera when the button is clicked
-    document.getElementById("loadCameraButton").addEventListener("click", () => {
-        debugger
-        async function setupCamera() {
-            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-            const cameraFeed = document.getElementById("cameraFeed");
-            cameraFeed.srcObject = stream;
-
-            cameraFeed.onloadedmetadata = () => {
-                const capturedImage = document.getElementById("capturedImage");
-                capturedImage.width = cameraFeed.videoWidth;
-                capturedImage.height = cameraFeed.videoHeight;
-            };
-        }
-
-        // Call the setupCamera function
-        setupCamera();
-    });
-
-    // Capture a picture from the camera feed
-    document.getElementById("takePicture").addEventListener("click", () => {
-        const cameraFeed = document.getElementById("cameraFeed");
-        const capturedImage = document.getElementById("capturedImage");
-        const context = capturedImage.getContext("2d");
-
-        // Draw the current frame from the camera onto the canvas
-        capturedImage.width = cameraFeed.width;
-        capturedImage.height = cameraFeed.height;
-        context.drawImage(cameraFeed, 0, 0, capturedImage.width, capturedImage.height);
-
-        // Convert the captured image to base64 data URL
-        const imageData = capturedImage.toDataURL("image/jpeg");
-
-        // Display the captured image
-        cameraFeed.style.display = "none";
-        capturedImage.style.display = "block";
-
-        // Stop the camera stream
-        const stream = cameraFeed.srcObject;
-        const tracks = stream.getTracks();
-        tracks.forEach(track => track.stop());
-
-        $.ajax({
-            type: "POST",
-            url: "@Url.Action("FaceClockIn", "ClockIn")",
-            data: { imageData: imageData, staffId: '@staffId' },
-            success: function (result) {
-                debugger;
-                $('#submit_btn').html(defaultBtnValue);
-                if (!result.isError) {
-                    successAlert(result.msg);
-                } else {
-                    $('#submit_btn').attr("disabled", false);
-                    errorAlert(result.msg);
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("AJAX Error:", status, error);
-                $('#submit_btn').html(defaultBtnValue);
-                $('#submit_btn').attr("disabled", false);
-                errorAlert("Network failure, please try again");
-            }
-        });
-        // function performFaceClockIn(imageData, staffId, successCallback, errorCallback) {
-        //     $.ajax({
-        //         type: "POST",
-        //         url: "@Url",
-        //         data: { imageData: imageData, staffId: staffId },
-        //         success: function (result) {
-        //             if (!result.isError) {
-        //                 if (successCallback && typeof successCallback === "function") {
-        //                     successCallback(result.msg);
-        //                 }
-        //             } else {
-        //                 if (errorCallback && typeof errorCallback === "function") {
-        //                     errorCallback(result.msg);
-        //                 }
-        //             }
-        //         },
-        //         error: function (xhr, status, error) {
-        //             console.error("AJAX Error:", status, error);
-        //             if (errorCallback && typeof errorCallback === "function") {
-        //                 errorCallback("Network failure, please try again");
-        //             }
-        //         }
-        //     });
-        // }
-
-        // // Example of calling the function
-        // performFaceClockIn(
-        //     imageData,
-        //     '@staffId',
-        //     function (successMsg) {
-        //         // Success callback
-        //         debugger;
-        //         $('#submit_btn').html(defaultBtnValue);
-        //         successAlert(successMsg);
-        //     },
-        //     function (errorMsg) {
-        //         // Error callback
-        //         $('#submit_btn').html(defaultBtnValue);
-        //         $('#submit_btn').attr("disabled", false);
-        //         errorAlert(errorMsg);
-        //     }
-        // );
-
-    });
-
-</script>

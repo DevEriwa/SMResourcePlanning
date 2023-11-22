@@ -300,10 +300,13 @@ function addShift() {
             },
             success: function (result) {
                 if (!result.isError) {
-                    debugger
-                    var url = window.location.pathname;
-                    if (url.toLocaleLowerCase() == "admin/shift") {
+                    debugger;
+                    var url = window.location.pathname.toLowerCase(); // Ensure lowercase comparison
+                    if (url.includes("admin/shift")) { // Check if the URL contains "admin/shift"
                         successAlertWithRedirect(result.msg, url);
+
+                        // Reload the page only when the URL contains "admin/shift"
+                        window.location.reload();
                     } else {
                         var shiftTbl = $('#shiftTblBody');
                         var newRow = "<tr onclick=\"mapShiftDetails('" + result.data.id + "')\">" +
@@ -317,13 +320,14 @@ function addShift() {
                     }
                     $('#submit_btn').html(defaultBtnValue);
                     $('#submit_btn').attr("disabled", false);
-                }
-                else {
+                } else {
+                    // Handle error case
                     $('#submit_btn').html(defaultBtnValue);
                     $('#submit_btn').attr("disabled", false);
                     errorAlert(result.msg);
                 }
             },
+
             error: function (ex) {
                 $('#submit_btn').html(defaultBtnValue);
                 $('#submit_btn').attr("disabled", false);

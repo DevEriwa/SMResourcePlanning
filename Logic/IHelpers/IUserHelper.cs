@@ -37,9 +37,9 @@ namespace Logic.IHelpers
         List<LeaveApplication> GetAllLeave(string currentAdminUsername);
         ApplicationUser FindById(string Id);
         LeaveApplication GetLeaveById(int id);
-        //bool GetUserReferenceImagePath(Image referenceImage, Image capturedImage);
-       // bool CompareImages(Image referenceImage, Image capturedImage);
-		//bool CompareImages(Image referenceImage, Image capturedImage, float similarityThreshold = 0.9F);
         bool CompareImages(Image capturedImage, Image newCapturedImage, float similarityThreshold);
+        //List<Shifts> GetUserShiftsInLocation(string logedInUser, int locationId);
+        List<Shifts> GetUserShiftsInLocations(string logedInUser, List<int> locationIds);
+        List<int> GetUserLocationId(string userId);
     }
 }
