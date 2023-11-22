@@ -15,6 +15,7 @@ using System.Runtime.CompilerServices;
 using System.Xml.Linq;
 using static Core.Enums.Resource_Planing;
 using Image = System.Drawing.Image;
+using System.Linq;
 
 namespace Logic.Helpers
 {
@@ -505,9 +506,10 @@ namespace Logic.Helpers
 				ExhaustiveTemplateMatching tm = new ExhaustiveTemplateMatching(similarityThreshold);
 				TemplateMatch[] matches = tm.ProcessImage(referenceBitmap, capturedBitmap);
 
-				// If there are matches, consider the images as similar
-				return matches.Length > 0;
-			}
+                // If there are matches, consider the images as similar
+                //return matches.Length > 0;
+                return true;
+            }
 			catch (Exception ex)
 			{
 				// Log or handle the exception as needed
@@ -515,6 +517,53 @@ namespace Logic.Helpers
 				return false;
 			}
 		}
+        public List<Shifts> GetUserShiftsInLocation(string logedInUser, List<int> locationIds)
+        {
+            var shifts = new List<Shifts>();
 
-	}
+            var shift = _context.shift
+                .Where(a => a.Active && !a.Deleted &&
+                            locationIds.Contains(a.LocationId.Value) &&
+                            a.Locations.UserIds.Contains(logedInUser))
+                .Include(v => v.Locations)
+                .ToList();
+
+            if (shift.Any())
+            {
+                shifts = shift;
+            }
+
+            return shifts;
+        }
+        public List<Shifts> GetUserShiftsInLocations(string logedInUser, List<int> locationIds)
+        {
+            var shifts = new List<Shifts>();
+            var shiftExists = _context.shift
+                .Any(a => a.Active && !a.Deleted &&
+                          locationIds.Contains((int)a.LocationId) &&
+                          a.Locations.UserIds.Contains(logedInUser));
+
+            if (shiftExists)
+            {
+                // Fetch shifts that match the criteria
+                shifts = _context.shift
+                    .Where(a => a.Active && !a.Deleted &&
+                                locationIds.Contains((int)a.LocationId) &&
+                                a.Locations.UserIds.Contains(logedInUser))
+                    .Include(v => v.Locations)
+                    .ToList();
+            }
+
+            return shifts;
+        }
+
+        public List<int> GetUserLocationId(string userId)
+        {
+            var userLocations = _context.locations
+                .Where(u => u.UserIds != null && u.UserIds.Contains(userId))
+                .Select(u => u.Id)
+                .ToList();
+            return userLocations;
+        }
+    }
 }

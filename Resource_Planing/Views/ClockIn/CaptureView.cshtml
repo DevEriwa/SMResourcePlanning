@@ -1,0 +1,152 @@
+﻿@model IEnumerable<Core.Models.Shifts>
+@{
+    ViewData["Title"] = "Shift";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
+    var locationId = ViewBag.locationId;
+    var staffId = ViewBag.LoggedInUser;
+    var shifts = ViewBag.ShiftLocations;
+}
+<style>
+    body {
+        counter-reset: Serial; /* / Set the Serial counter to 0 /*/
+    }
+
+    tr td:first-child:before {
+        counter-increment: Serial; /* / Increment the Serial counter /*/
+        content: counter(Serial); /*  / Display the counter /*/
+    }
+</style>
+<!-- Content Header (Page header) -->
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>lockIn Section</h1>
+            </div>
+            @* <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                  <li class="breadcrumb-item active btn btn-primary punch-btn" id="loadCameraButton">Clock In</li>
+                </ol>
+            </div> *@
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<!-- Main content -->
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">User ClockIn Section</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="col-md-6 offset-md-3 col-12">
+                        <div class="card punch-status shadow">
+                            <div class="card-body">
+
+                                <div class="punch-btn-section text-center">
+                                    <form id="imageForm" action="@Url.Action("FaceClockIn", "ClockIn")" method="post" enctype="multipart/form-data">
+                                        <input type="file" name="capturedImage" id="capturedImageInput" style="display: none;" />
+                                        <input type="hidden" accept="image/*" name="imageData" id="imageDataInput" />
+                                    </form>
+                                </div>
+
+                                <div class="d-flex justify-content-center align-items-center flex-column">
+                                    <div class="">
+                                        <video id="cameraFeed" width="600" height="260" autoplay></video>
+                                    </div>
+                                    <div class="d-flex justify-content-center">
+                                        <button type="button" class="btn btn-primary punch-btn" id="loadCameraButton" onclick="showCaptureButton()">Clock In</button>
+                                        <button class="btn btn-secondary p-1 m-2" id="takePicture" style="display: none;">Scan My Identity</button>
+                                    </div>
+                                    <canvas class="mx-auto text-center" id="capturedImage" style="display: none;"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                  
+                </div>
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+    </div>
+</section>
+<script>
+    function showCaptureButton() {
+        // Hide the Clock In button
+        document.getElementById('loadCameraButton').style.display = 'none';
+
+        // Show the Scan My Identity button and captured image canvas
+        document.getElementById('takePicture').style.display = 'inline-block';
+        document.getElementById('capturedImage').style.display = 'block';
+    }
+    // Set up the camera when the button is clicked
+    document.getElementById("loadCameraButton").addEventListener("click", () => {
+        debugger
+        async function setupCamera() {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+            const cameraFeed = document.getElementById("cameraFeed");
+            cameraFeed.srcObject = stream;
+
+            cameraFeed.onloadedmetadata = () => {
+                const capturedImage = document.getElementById("capturedImage");
+                capturedImage.width = cameraFeed.videoWidth;
+                capturedImage.height = cameraFeed.videoHeight;
+            };
+        }
+
+        // Call the setupCamera function
+        setupCamera();
+    });
+
+    // Capture a picture from the camera feed
+    document.getElementById("takePicture").addEventListener("click", () => {
+        const cameraFeed = document.getElementById("cameraFeed");
+        const capturedImage = document.getElementById("capturedImage");
+        const context = capturedImage.getContext("2d");
+
+        // Draw the current frame from the camera onto the canvas
+        capturedImage.width = cameraFeed.width;
+        capturedImage.height = cameraFeed.height;
+        context.drawImage(cameraFeed, 0, 0, capturedImage.width, capturedImage.height);
+
+        // Convert the captured image to base64 data URL
+        const imageData = capturedImage.toDataURL("image/jpeg");
+
+        // Display the captured image
+        cameraFeed.style.display = "none";
+        capturedImage.style.display = "block";
+
+        // Stop the camera stream
+        const stream = cameraFeed.srcObject;
+        const tracks = stream.getTracks();
+        tracks.forEach(track => track.stop());
+
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("FaceClockIn", "ClockIn")",
+            data: { imageData: imageData, staffId: '@staffId' },
+            success: function (result) {
+                if (!result.isError) {
+                    successAlert(result.msg);
+                    // Redirect to the clock-in view page
+                    window.location.href = result.url;
+                } else {
+                    $('#submit_btn').attr("disabled", false);
+                    errorAlert(result.msg);
+                }
+            },
+
+            error: function (xhr, status, error) {
+                console.error("AJAX Error:", status, error);
+                $('#submit_btn').html(defaultBtnValue);
+                $('#submit_btn').attr("disabled", false);
+                errorAlert("Network failure, please try again");
+            }
+        });
+    });
+
+</script>

@@ -1,5 +1,6 @@
 ﻿
 using Core.Db;
+using Core.Models;
 using Core.ViewModels;
 using Grpc.Core;
 using Logic.IHelpers;
@@ -153,9 +154,12 @@ namespace Resource_Planing.Controllers
         {
             var loggedInUser = _userHelper.FindByUserName(User.Identity.Name);
             ViewBag.LoggedInUser = loggedInUser.Id;
+            var locationId = _userHelper.GetUserLocationId(loggedInUser.Id);
+            ViewBag.LocationId = locationId;
+            var shifts = _userHelper.GetUserShiftsInLocations(loggedInUser.Id, locationId);
+            ViewBag.ShiftLocations = shifts;
             return View();
         }
-        [HttpPost]
        
         [HttpGet] 
         public IActionResult GetProfilePicture(string userId)
@@ -181,7 +185,7 @@ namespace Resource_Planing.Controllers
             }
         }
 
-        public IActionResult FaceClockIn(string imageData, string staffId)
+        public JsonResult FaceClockIn(string imageData, string staffId)
         {
             try
             {
@@ -198,10 +202,11 @@ namespace Resource_Planing.Controllers
                     // Specify the similarity threshold for image comparison
                     float similarityThreshold = 0.9f;
                     // Perform image comparison and decide whether to grant access
-                    bool accessGranted = _userHelper.CompareImages(referenceImage, newCapturedImage, similarityThreshold);
+                    var accessGranted = _userHelper.CompareImages(referenceImage, newCapturedImage, similarityThreshold);
                     if (accessGranted)
                     {
-                        return Json(new { isError = false, msg = "Access granted" });
+                       var url = "/ClockIn/ClockInView/" + staffId;
+                        return Json(new { isError = false, msg = "Access granted", url = url });
                     }
                     else
                     {
@@ -233,5 +238,28 @@ namespace Resource_Planing.Controllers
             }
         }
 
+
+        public IActionResult UserShifts()
+        {
+            var loggedInUser = _userHelper.FindByUserName(User.Identity.Name);
+            var locationId = _userHelper.GetUserLocationId(loggedInUser.Id);
+            ViewBag.LoggedInUser = loggedInUser.Id;
+            var rotaShift = new List<Shifts>();
+            var shifts = _userHelper.GetUserShiftsInLocations(loggedInUser.Id, locationId);
+            if (shifts.Any())
+            {
+                rotaShift = shifts;
+            }
+            return View(rotaShift);
+        }
+        public IActionResult CaptureView()
+        {
+            var loggedInUser = _userHelper.FindByUserName(User.Identity.Name);
+            var locationId = _userHelper.GetUserLocationId(loggedInUser.Id);
+            ViewBag.LoggedInUser = loggedInUser.Id;
+            var shifts = _userHelper.GetUserShiftsInLocations(loggedInUser.Id, locationId);
+            ViewBag.ShiftLocations = shifts;
+            return View();
+        }
     }
 } 
