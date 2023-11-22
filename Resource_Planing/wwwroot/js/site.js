@@ -1285,5 +1285,28 @@ function captureUserImage() {
             }
         });
     }
-
 }
+
+$("#leaveEndDate").change(function () {
+    let startDate = $("#leaveStartDate").val();
+    let endDate = $("#leaveEndDate").val();
+    let remainingLeaveDays = parseInt($("#remainingLeaveDays").val()); // Convert to integer
+
+    if (!!startDate && !!endDate && !isNaN(remainingLeaveDays)) {
+        const startDateToTime = new Date(startDate).getTime();
+        const endDateToTime = new Date(endDate).getTime();
+        const timeRange = Math.abs(endDateToTime - startDateToTime);
+        const daysRange = Math.round(timeRange / (1000 * 60 * 60 * 24)) + 1;
+        // Check if requested days are less than or equal to remaining leave days
+        if (daysRange <= remainingLeaveDays) {
+            $("#numberOfDays").val(daysRange);
+            remainingLeaveDays -= daysRange;
+            $("#remainingLeaveDays").val(remainingLeaveDays);
+
+        } else {
+            infoAlert("Requested days exceed remaining leave days.");
+        }
+    } else {
+        infoAlert("Please fill the form properly.");
+    }
+});

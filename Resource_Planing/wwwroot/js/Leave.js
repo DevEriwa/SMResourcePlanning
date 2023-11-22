@@ -107,15 +107,14 @@ function requestLeave() {
 
     var leaveData = {
         staffId: staffIdString,
-        leaveTypeId: $("#leaveTypeId").val(),
-        startDate: $("#startDate").val(),
-        endDate: $("#endDate").val(),
-        leaveReason: $("#leaveReason").val()
+        leaveTypeId: $("#leaveTypeId").val(data.leaveTypeId),
+        startDate: $("#leaveStartDate").val(data.startDate),
+        endDate: $("#leaveEndDate").val(data.endDate),
+        leaveReason: $("#leaveReason").val(data.leaveReason)
     };
     if ($("#ckickRequest").is(":checked")) {
         // Use the attribute selector to capture the value
         leaveData.leaveTypeId = $("input[name='radio']:checked").val();
-
 
         // Make an AJAX call with the updated leaveData
         $.ajax({
@@ -169,10 +168,10 @@ function requestLeave() {
                     errorAlert("Network failure, please try again");
                 }
             });
-        } else {
-            shiftValidtion(''); // This function is not defined in your provided code
-            $('#submit_btn').html(defaultBtnValue);
-            $('#submit_btn').attr("disabled", false);
+        //} else {
+        //    shiftValidtion(''); // This function is not defined in your provided code
+        //    $('#submit_btn').html(defaultBtnValue);
+        //    $('#submit_btn').attr("disabled", false);
         }
     }
 }
@@ -409,3 +408,26 @@ function employeeViewLeaveReason(id) {
     $("#employeeViewLeaveModal").modal();
 };   
 
+$("#leaveEndDate").change(function () {
+    let startDate = $("#leaveStartDate").val();
+    let endDate = $("#leaveEndDate").val();
+    let remainingLeaveDays = parseInt($("#remainingLeaveDays").val()); // Convert to integer
+
+    if (!!startDate && !!endDate && !isNaN(remainingLeaveDays)) {
+        const startDateToTime = new Date(startDate).getTime();
+        const endDateToTime = new Date(endDate).getTime();
+        const timeRange = Math.abs(endDateToTime - startDateToTime);
+        const daysRange = Math.round(timeRange / (1000 * 60 * 60 * 24)) + 1;
+        // Check if requested days are less than or equal to remaining leave days
+        if (daysRange <= remainingLeaveDays) {
+            $("#numberOfDays").val(daysRange);
+            remainingLeaveDays -= daysRange;
+            $("#remainingLeaveDays").val(remainingLeaveDays);
+
+        } else {
+            infoAlert("Requested days exceed remaining leave days.");
+        }
+    } else {
+        infoAlert("Please fill the form properly.");
+    }
+});
