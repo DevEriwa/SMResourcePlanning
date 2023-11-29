@@ -16,6 +16,8 @@ using System.Xml.Linq;
 using static Core.Enums.Resource_Planing;
 using Image = System.Drawing.Image;
 using System.Linq;
+using GeoCoordinatePortable;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace Logic.Helpers
 {
@@ -564,6 +566,80 @@ namespace Logic.Helpers
                 .Select(u => u.Id)
                 .ToList();
             return userLocations;
+        }
+
+		public StaffClockIn GetUserPunchActionForCurrentDay(string userId)
+		{
+			var model = new StaffClockIn();
+			var mypunches = _context.StaffClockIns.Where(x => x.StaffId == userId && x.ClockInDate.Date == DateTime.Now.Date).FirstOrDefault();
+			if(mypunches != null)
+                model = mypunches;
+			return model;
+		}
+
+		public Response PunchInService(PunchingViewModel model)
+		{
+			if(model.LocationId > 0 && model.UserId != null)
+			{
+				var location = GetLocationById(model.LocationId);
+                var sCoord = new GeoCoordinate(model.Latitude, model.Longitude);
+                if (location.Latitude == 0 && location.Longitude == 0)
+                    return new Response { Status = false, Msg = "Sorry, the request can't be processed as you current shift has no coordinate" };
+                var eCoord = new GeoCoordinate(location.Latitude, location.Longitude);
+                var difference = eCoord.GetDistanceTo(sCoord) / 100;
+                if (difference <= location.AcceptedRadius)
+                {
+                    var checkClockIn = _context.StaffClockIns.Where(a => a.StaffId == model.UserId).FirstOrDefault();
+
+                    if (checkClockIn == null)
+                    {
+                        var clockIn = new StaffClockIn()
+                        {
+                            StaffId = model.UserId,
+                            ClockId = Guid.NewGuid(),
+                            DateTimeIn = DateTime.Now,
+                            ClockInLatitude = sCoord.Latitude,
+                            ClockInLongitude = sCoord.Longitude,
+                            ClockInDate = DateTime.Now,
+                        };
+                        _context.StaffClockIns.Add(clockIn);
+                        _context.SaveChanges();
+                        return new Response { Status = true, isError = false, Msg = "Clocked In Successfully" };
+                    }
+                }
+                return new Response { Status = false, Msg = "Sorry, the request can't be processed as you are current outside the accepted location" };
+            }
+            return new Response { Status = false, Msg = "Sorry, the request can't be processed as we couldn't get your current location" };
+        }
+
+        public Response PunchOutService(PunchingViewModel model)
+        {
+            if (model.LocationId > 0 && model.Id != null)
+            {
+                var location = GetLocationById(model.LocationId);
+                var sCoord = new GeoCoordinate(model.Latitude, model.Longitude);
+                if (location.Latitude == 0 && location.Longitude == 0)
+                    return new Response { Status = false, Msg = "Sorry, the request can't be processed as you current shift has no coordinate" };
+                var eCoord = new GeoCoordinate(location.Latitude, location.Longitude);
+                var difference = eCoord.GetDistanceTo(sCoord) / 100;
+                if (difference <= location.AcceptedRadius)
+                {
+                    var checkClockIn = _context.StaffClockIns.Where(a => a.Id == model.Id).FirstOrDefault();
+
+                    if (checkClockIn != null)
+                    {
+                        checkClockIn.DateTimeOut = DateTime.Now;
+                        checkClockIn.ClockOutLatitude = sCoord.Latitude;
+                        checkClockIn.ClockOutLongitude = sCoord.Longitude;
+
+                        _context.StaffClockIns.Update(checkClockIn);
+                        _context.SaveChanges();
+                        return new Response { Status = true, isError = false, Msg = "Clocked Out Successfully" };
+                    }
+                }
+                return new Response { Status = false, Msg = "Sorry, the request can't be processed as you are current outside the accepted location" };
+            }
+            return new Response { Status = false, Msg = "Sorry, the request can't be processed as we couldn't get your current location" };
         }
     }
 }

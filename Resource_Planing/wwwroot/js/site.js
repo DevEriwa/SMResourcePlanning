@@ -1310,3 +1310,73 @@ $("#leaveEndDate").change(function () {
         infoAlert("Please fill the form properly.");
     }
 });
+
+var llData = {};
+$(function () {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            if (latitude !== null && longitude !== null) {
+                llData.Latitude = latitude;
+                llData.Longitude = longitude;
+            } else {
+                alert("Unable to retrieve location information.");
+            }
+        }, function (error) {
+            alert("Geolocation error: " + error.message);
+        });
+    }
+});
+
+function userPunchIn(userId, locationId) {
+    debugger;
+    if (llData.latitude != "" && llData.longitude != "") {
+        llData.UserId = userId;
+        llData.LocationId = locationId;
+        $.ajax({
+            type: 'POST',
+            url: '/Rota/PunchIn',
+            data: {
+                model: llData,
+            },
+            success: function (result) {
+                debugger
+                if (!result.isError) {
+                    successAlertWithRedirect(result.msg, window.location.pathname);
+                } else {
+                    errorAlert(result.msg);
+                }
+            },
+            error: function () {
+                errorAlert("Error occurred during the AJAX request.");
+            }
+        });
+    }
+}
+
+function userPunchOut(id, locationId) {
+    debugger;
+    if (llData.latitude != "" && llData.longitude != "") {
+        llData.Id = id;
+        llData.LocationId = locationId;
+        $.ajax({
+            type: 'POST',
+            url: '/Rota/PunchOut',
+            data: {
+                model: llData,
+            },
+            success: function (result) {
+                debugger
+                if (!result.isError) {
+                    successAlertWithRedirect(result.msg, window.location.pathname);
+                } else {
+                    errorAlert(result.msg);
+                }
+            },
+            error: function () {
+                errorAlert("Error occurred during the AJAX request.");
+            }
+        });
+    }
+}

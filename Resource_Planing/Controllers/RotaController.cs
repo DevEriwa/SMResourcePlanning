@@ -42,5 +42,25 @@ namespace Resource_Planing.Controllers
             }
             return null;
         }
+
+        public JsonResult PunchIn(PunchingViewModel model)
+        {
+            if (model != null)
+            {
+                var data = _userHelper.PunchInService(model);
+                return Json(new { isError = data.isError, msg = data.Msg });
+            }
+            return Json(new { isError = false, msg = "Error occurred while trying to process your request" });
+        }
+
+        public JsonResult PunchOut(PunchingViewModel model)
+        {
+            if (model != null)
+            {
+                var data = _userHelper.PunchOutService(model);
+                return Json(new { isError = data.isError, msg = data.Msg });
+            }
+            return Json(new { isError = false, msg = "Error occurred while trying to process your request" });
+        }
     }
 }

@@ -41,5 +41,8 @@ namespace Logic.IHelpers
         //List<Shifts> GetUserShiftsInLocation(string logedInUser, int locationId);
         List<Shifts> GetUserShiftsInLocations(string logedInUser, List<int> locationIds);
         List<int> GetUserLocationId(string userId);
+        StaffClockIn GetUserPunchActionForCurrentDay(string userId);
+        Response PunchInService(PunchingViewModel model);
+        Response PunchOutService(PunchingViewModel model);
     }
 }

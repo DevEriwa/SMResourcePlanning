@@ -107,6 +107,7 @@ namespace Logic.Helpers
             var dataToUpdate = new RotaObject
             {
                 Date = model.Date,
+				LocationId = model.LocationId,
                 Location = model.Location,
                 StartTime = model.StartTime,
                 EndTime = model.EndTime,
@@ -328,6 +329,57 @@ namespace Logic.Helpers
                 return true;
             }
             return false;
+        }
+
+        public RotaObject GetUserRotaForCurrentDay(string userId)
+        {
+            var model = new RotaObject();
+            var data = _context.StaffRotas.Where(x => x.UserId == userId && x.Year == DateTime.Now.Year.ToString()).FirstOrDefault();
+			var currentDateString = ConvertDateToYYYYMMDD(DateTime.Now);
+            if (data != null)
+            {
+                var schedule = data.RotaObjectGet.Where(x=>x.Date == currentDateString).FirstOrDefault();
+				if (data != null)
+					model = schedule;
+            }
+            return model;
+        }
+
+        public ClockInViewModel GetUserLoginVeiwDataForCurrentDay(string username)
+        {
+			var user = _context.ApplicationUser.Where(x=>x.UserName == username).FirstOrDefault();
+            var model = new ClockInViewModel();
+            model.rotaObject = GetUserRotaForCurrentDay(user.Id);
+            model.PunchToday = _userHelper.GetUserPunchActionForCurrentDay(user.Id);
+			model.Location = model.rotaObject == null ? "No Shift Assigned Today" : model.rotaObject.Location;
+			model.ShiftStart = model.rotaObject == null ? "--:--" : AddAMPM(model.rotaObject.StartTime);
+			model.ShiftEnd = model.rotaObject == null ? "--:--" : AddAMPM(model.rotaObject.EndTime);
+			model.UserId = user.Id;
+
+            if (model.PunchToday.StaffId == null) {
+                model.ClockInTime = "--:--";
+                model.ClockOutTime = "--:--";
+			}
+			else
+			{
+                model.ClockInTime = model.PunchToday.DateTimeIn.ToString("hh:mm tt");
+                model.ClockOutTime = model.PunchToday.DateTimeOut == DateTime.MinValue ? "--:--" : model.PunchToday.DateTimeOut.ToString("hh:mm tt");
+            }
+            return model;
+        }
+
+        public static string AddAMPM(string time24Hour)
+        {
+            if (TimeSpan.TryParse(time24Hour, out TimeSpan time))
+            {
+                string ampm = (time.Hours < 12) ? "AM" : "PM";
+                int hour12 = (time.Hours == 0 || time.Hours == 12) ? 12 : time.Hours % 12;
+                return $"{hour12:D2}:{time.Minutes:D2}{ampm}";
+            }
+            else
+            {
+                return "N/A";
+            }
         }
     }
 }

@@ -1,12 +1,12 @@
 ﻿@inject Logic.IHelpers.IUserHelper _userHelper;
-@model List<Core.Models.StaffClockIn> 
+@model Core.ViewModels.ClockInViewModel
 @{
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_UserLayout.cshtml";
-    var staffId = ViewBag.LoggedInUser;
-    var locationId = ViewBag.LocationId;
-    var userInfo = _userHelper.GetUserShiftsInLocations(staffId, locationId);
-    var item = userInfo;
+    // var staffId = ViewBag.LoggedInUser;
+    // var locationId = ViewBag.LocationId;
+    // var userInfo = _userHelper.GetUserShiftsInLocations(staffId, locationId);
+    // var item = userInfo;
 }
 
 <style type="text/css">
@@ -20,7 +20,7 @@
     }
 
     .timer-label {
-        font-size: 20px;
+        font-size: 13px;
     }
 
 </style>
@@ -39,25 +39,42 @@
         </div>
         <div class="card shadow-lg col-md-8 mt-2">
             <div class="row no-gutters">
+                <div class="col-12 text-center">
+                    <h4 class="p-2">Today's' Assigned Shift Details</h4>
+                </div>
+            </div>
+            <div class="row no-gutters">
                 <div class="col-6 col-md-4">
-                    <h4 class="p-3">Today's' Shift</h4>
+                    <h4 class="px-3 pt-3">Schedule Location</h4>
                 </div>
                 <!-- Right Column (Text) -->
                 <div class="col-6 col-md-8">
-                    <div class="card-body">
-                        <p class="card-title" style="margin-left:40%">8:00am</p>
+                    <div class="card-body pb-0">
+                        <p class="card-title mb-0" style="margin-left:50%">@Model?.Location</p>
                         <!-- Add other content here -->
                     </div>
                 </div>
             </div>
             <div class="row no-gutters">
                 <div class="col-6 col-md-4">
-                    <h4 class="p-2"><img class="p-2" src="assets/img/logo.png" style="height: 50px; width: 50px;">Payrate</h4>
+                    <h4 class="px-3 pt-3">Expected Start Time</h4>
+                </div>
+                <!-- Right Column (Text) -->
+                <div class="col-6 col-md-8">
+                    <div class="card-body pb-0">
+                        <p class="card-title mb-0" style="margin-left:50%">@Model?.ShiftStart </p>
+                        <!-- Add other content here -->
+                    </div>
+                </div>
+            </div>
+            <div class="row no-gutters">
+                <div class="col-6 col-md-4">
+                    <h4 class="p-3">Expected Closing Time</h4>
                 </div>
                 <!-- Right Column (Text) -->
                 <div class="col-6 col-md-8">
                     <div class="card-body">
-                        <p class="card-title" style="margin-left:40%">8:00am</p>
+                        <p class="card-title mb-0" style="margin-left:50%">@Model?.ShiftEnd</p>
                         <!-- Add other content here -->
                     </div>
                 </div>
@@ -69,35 +86,72 @@
                 <!-- Right Column (Text) -->
                 <div class="col-6 col-md-8">
                     <div class="card-body">
-                        <p class="card-title" style="margin-left:40%">8:00am</p>
+                        <p class="card-title mb-0" style="margin-left:50%">@Model?.ClockInTime</p>
                         <!-- Add other content here -->
                     </div>
                 </div>
             </div>
             <div class="row no-gutters">
                 <div class="col-6 col-md-4">
-                    <h4 class="p-3">Clock Out</h4>
+                    <h4 class="px-3">Clock Out</h4>
                 </div>
                 <div class="col-6 col-md-8">
-                    <div class="card-body">
-                        <p class="card-title" style="margin-left:40%">8:00pm</p>
+                    <div class="card-body pt-0">
+                        <p class="card-title" style="margin-left:50%">@Model?.ClockOutTime</p>
                         <!-- Add other content here -->
                     </div>
                 </div>
             </div>
-            <div class="row no-gutters">
-                <div class="col-12 mt-2 text-center">
-                    <button class="btn btn-primary mb-3 w-75">Clock In Now</button>
-                </div>
-            </div>
-            <div class="row no-gutters">
-                <div class="card-body">
-                    <div class="circular-timer">
-                        <div class="timer-label mt-3">Clock In</div>
-                        <i class="fas fa-clock"></i>
+            @if(Model.rotaObject.Location != null)
+            {
+                @if (Model.PunchToday.StaffId == null)
+                {
+                    <div class="row no-gutters">
+                        <div class="card-body">
+                            <div class="circular-timer" onclick="userPunchIn('@Model.UserId', @Model.rotaObject.LocationId)">
+                                <div class="timer-label mt-4">Clock In</div>
+                                <i class="fas fa-clock"></i>
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    @if (Model.PunchToday.DateTimeOut == DateTime.MinValue)
+                    {
+                        <div class="row no-gutters">
+                            <div class="card-body">
+                                <div class="circular-timer">
+                                    <div class="timer-label mt-4" onclick="userPunchOut(@Model.PunchToday.Id, @Model.rotaObject.LocationId)">Clock Out</div>
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="row no-gutters">
+                            <div class="card-body">
+                                <div class="circular-timer">
+                                    <div class="timer-label mt-4">Completed</div>
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            }
+            else
+            {
+                <div class="row no-gutters">
+                    <div class="card-body">
+                        <div class="circular-timer">
+                            <div class="timer-label mt-4">No Shift</div>
+                            <i class="fas fa-clock"></i>
+                        </div>
                     </div>
                 </div>
-            </div>
+            }
         </div>
         </div>
    <!-- /Page Content -->

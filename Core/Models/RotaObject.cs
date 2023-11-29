@@ -11,6 +11,7 @@ namespace Core.Models
 	public class RotaObject
 	{
 		public string? Date { get; set; }
+		public int? LocationId { get; set; }
         public string? Location { get; set; }
         public string? StartTime { get; set; }
         public string? EndTime { get; set; }

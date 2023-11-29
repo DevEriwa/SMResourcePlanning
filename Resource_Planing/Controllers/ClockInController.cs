@@ -123,6 +123,7 @@ namespace Resource_Planing.Controllers
             }
             return PartialView();
         }
+        
         [HttpGet]
         public JsonResult AddLocationShift(int shiftId, string latitude, string longitude, string radius)
         {
@@ -152,15 +153,29 @@ namespace Resource_Planing.Controllers
         [HttpGet]
         public IActionResult ClockInView()
         {
-            var loggedInUser = _userHelper.FindByUserName(User.Identity.Name);
-            ViewBag.LoggedInUser = loggedInUser.Id;
-            var locationId = _userHelper.GetUserLocationId(loggedInUser.Id);
-            ViewBag.LocationId = locationId;
-            var shifts = _userHelper.GetUserShiftsInLocations(loggedInUser.Id, locationId);
-            ViewBag.ShiftLocations = shifts;
-            return View();
+            //var loggedInUser = _userHelper.FindByUserName(User.Identity.Name);
+            //ViewBag.LoggedInUser = loggedInUser.Id;
+            //var locationId = _userHelper.GetUserLocationId(loggedInUser.Id);
+            //ViewBag.LocationId = locationId;
+            //var shifts = _userHelper.GetUserShiftsInLocations(loggedInUser.Id, locationId);
+            //ViewBag.ShiftLocations = shifts;
+
+            var model = _rotaHelper.GetUserLoginVeiwDataForCurrentDay(User.Identity.Name);
+            return View(model);
         }
-       
+
+        public JsonResult ClockOut()
+        {
+            try
+            {
+                return Json(new { isError = false, msg = "Successfully added location coordinate to this branch" });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         [HttpGet] 
         public IActionResult GetProfilePicture(string userId)
         {

@@ -19,5 +19,7 @@ namespace Logic.IHelpers
 		RotaViewModel GenerateNewRota(DateTime sDate, DateTime eDate, int locId);
         Shifts GetShiftById(int id);
 		bool UpdateLocation(int locationId, double latitude, double longitude, double acceptedRadius);
+        RotaObject GetUserRotaForCurrentDay(string userId);
+        ClockInViewModel GetUserLoginVeiwDataForCurrentDay(string username);
     }
 }

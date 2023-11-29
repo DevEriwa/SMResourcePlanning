@@ -111,6 +111,7 @@ $(document).ready(function () {
 });
 
 function mapShiftDetails(id) {
+    debugger
     let data = id;
     $.ajax({
         type: 'GET',
@@ -121,6 +122,7 @@ function mapShiftDetails(id) {
             if (!data.isError) {
                 debugger
                 var tRang = data.startTime + " - " + data.endTime;
+                $('#loc_Id').val(data.locationId);
                 $('#s_TimeId').val(data.startTime);
                 $('#e_TimeId').val(data.endTime);
                 $('#u_TimeId').val(data.unpaidTime);
@@ -138,6 +140,7 @@ function updateRota() {
     debugger;
     var data = {};
     data.Date = $("#datE").val();
+    data.LocationId = $("#loc_Id").val();
     data.UserId = $("#uId").val();
     data.Year = $("#yeaR").val();
     data.StartTime = $('#s_TimeId').val();
