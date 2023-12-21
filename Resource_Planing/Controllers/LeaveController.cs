@@ -25,7 +25,7 @@ namespace Resource_Planing.Controllers
         }
 
         public IActionResult RequestLeave()
-        {
+         {
                 var loggedInUser = _userHelper.FindByUserName(User.Identity.Name);
                 ViewBag.LoggedInUser = loggedInUser.Id;
             var dghdgfghjghj = _leaveApplicationHelper.GetListOfAllLeaveApplication(loggedInUser.Id);
@@ -154,9 +154,25 @@ namespace Resource_Planing.Controllers
 			}
 		}
 
+        public decimal GetRemainingLeave()
+        {
+            var staff = _userHelper.FindByUserName(User.Identity.Name);
+            var employeeLeave = _context.LeaveApplications.OrderBy(a => a.StartDate).Where<LeaveApplication>(x => x.StaffId == staff.Id
+            && x.StartDate.Year == DateTime.Now.Year && (x.Status == LeaveStatus.Approved || x.Status == LeaveStatus.Absence) && x.Active && !x.Deleted).LastOrDefault();
+            if (employeeLeave != null)
+            {
+                return employeeLeave.RemainingLeave;
+            }
+            else
+            {
+                var CompanyUpdatedLeaveDays = _context.LeaveSetups
+                .Where(x => x.Active && !x.Deleted)
+                .Sum(d => d.NumberOfDays);
+                return CompanyUpdatedLeaveDays;
+            }
+        }
 
-
-		public decimal GetRemainingLeave()
+        public decimal GetRemainingLeaves()
         {
             var staff = _userHelper.FindAdminByUserName(User.Identity.Name);
             if (staff != null)

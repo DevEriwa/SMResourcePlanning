@@ -32,7 +32,7 @@ namespace Logic.Services
         {
             EmailAddress fromAddress = new EmailAddress()
             {
-                Name = "Emirate University Support Team",
+                Name = "Resource Planning Support Team",
                 Address = _emailConfiguration.SmtpUsername,
             };
             List<EmailAddress> fromAddressList = new List<EmailAddress>

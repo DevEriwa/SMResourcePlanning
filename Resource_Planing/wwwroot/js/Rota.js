@@ -110,8 +110,10 @@ $(document).ready(function () {
     });
 });
 
+var tzt; // Declare tzt outside the functions
+
 function mapShiftDetails(id) {
-    debugger
+    debugger;
     let data = id;
     $.ajax({
         type: 'GET',
@@ -120,7 +122,7 @@ function mapShiftDetails(id) {
         dataType: 'json',
         success: function (data) {
             if (!data.isError) {
-                debugger
+                debugger;
                 var tRang = data.startTime + " - " + data.endTime;
                 $('#loc_Id').val(data.locationId);
                 $('#s_TimeId').val(data.startTime);
@@ -161,10 +163,13 @@ function updateRota() {
         data.HourlyPay = parseFloat(hPay);
     }
     if (data.Date != "" && data.UserId != "" && data.Year != "") {
-        //let time11 = subtractTime(strtTime, endTime);
-        //let newPlannedhr = addHour(crrPlandHr, time11);
-        document.getElementById(data.Date + "_" + data.UserId).innerHTML = tzt;
-        //document.getElementById(currentPlannedId).innerHTML = newPlannedhr;
+        // Update the content using tzt
+        var element = document.getElementById(data.Date + "_" + data.UserId);
+        if (element) {
+            element.innerHTML = tzt;
+        }
+
+        // AJAX request to update data
         $.ajax({
             type: 'POST',
             url: '/Admin/UpdateRotaData',
@@ -175,9 +180,8 @@ function updateRota() {
     } else {
         errorAlert("Network Fail");
     }
-    $('#allocate_Shift').modal('hide');   
+    $('#allocate_Shift').modal('hide');
 }
-
 function addHour(timeString1, timeString2) {
     let [hours1, minutes1] = timeString1.split(":").map(Number);
     let [hours2, minutes2] = timeString2.split(":").map(Number);
@@ -229,7 +233,7 @@ function GetRotaByDateRange() {
     debugger
     var sDate = $('#start_DateId').val();
     var eDate = $('#end_DateId').val();
-    var locId = $('#locId').val();
+    var locId = $('#locationId').val();
     if (sDate != "" && eDate != "" && locId != "0") {
         $.ajax({
             type: 'GET',
@@ -237,6 +241,7 @@ function GetRotaByDateRange() {
             data: { startDate: sDate, endDate: eDate, locId: locId },
             dataType: 'json',
             success: function (data) {
+                debugger
                 if (!data.isError) {
                     debugger
                     $("#rotaTBLContainer").empty();
@@ -246,5 +251,78 @@ function GetRotaByDateRange() {
         });
     } else {
         errorAlert("Fill the form correctly")
+    }
+}
+
+$('#locationId').on('change', function () {
+    debugger
+    var selectedLocationId = $(this).val();
+    $.ajax({
+        type: 'GET',
+        url: '/Rota/GetUsersInLocation',
+        data: { locId: selectedLocationId },
+        success: function (data) {
+            debugger
+            var userDropdown = $('#userDropdown');
+            userDropdown.empty();
+            // Add default option
+            userDropdown.append($('<option>', {
+                value: '',
+                text: 'Select User'
+            }));
+            $.each(data, function (index, user) {
+                debugger
+                userDropdown.append($('<option>', {
+                    value: user.id,
+                    text: user.name
+                }));
+            });
+        },
+        error: function () {
+            errorAlert("Error occurred during the AJAX request.");
+        }
+    });
+});
+
+
+function sendEmailToUsers() {
+    debugger
+    var defaultBtnValue = $('#submit_btn').html();
+    $('#submit_btn').html("Please wait...");
+    $('#submit_btn').attr("disabled", true);
+    var data = {};
+    var ListOfUserId = $('#userDropdown').val();
+    if (ListOfUserId != "0") {
+        let userDetails = JSON.stringify(data);
+        $.ajax({
+            type: 'Post',
+            url: '/Rota/SendEmailToSelectedUsers',
+            dataType: 'json',
+            data:
+            {
+                userIds: ListOfUserId,
+            },
+            success: function (result) {
+                if (!result.isError) {
+                    var url = '/Roat/Index';
+                    successAlertWithRedirect(result.msg, url);
+                    $('#submit_btn').html(defaultBtnValue);
+                }
+                else {
+                    $('#submit_btn').html(defaultBtnValue);
+                    $('#submit_btn').attr("disabled", false);
+                    errorAlert(result.msg);
+                }
+            },
+            error: function (ex) {
+                $('#submit_btn').html(defaultBtnValue);
+                $('#submit_btn').attr("disabled", false);
+                errorAlert("Network failure, please try again");
+            }
+        });
+    } else {
+        $('#submit_btn').html(defaultBtnValue);
+        $('#submit_btn').attr("disabled", false);
+        errorAlert("Please fill the form Correctly");
     }
 }

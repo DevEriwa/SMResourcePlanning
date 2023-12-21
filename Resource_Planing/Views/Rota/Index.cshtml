@@ -31,7 +31,7 @@
 						<div class="input-group-prepend">
 							<span class="input-group-text"><small>Home</small></span>
 						</div>
-						<select id="locId" asp-items="@(new SelectList(ViewBag.Location  ,"Id", "Name" ))" class="form-control"> </select>
+						<select id="locationId" asp-items="@(new SelectList(ViewBag.Location  ,"Id", "Name" ))" class="form-control"> </select>
 					</div>
 					<div class="input-group input-group-sm col-3">
 						<div class="input-group-prepend">
@@ -46,7 +46,34 @@
 						<input type="date" id="end_DateId" class="form-control">
 					</div>
 					<div class="input-group input-group-sm col-2">
-						<button class="form-control btn btn-success" onclick="GetRotaByDateRange()">Submit</button>
+						<button class="form-control btn btn-success" onclick="GetRotaByDateRange()">View</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div><!-- /.container-fluid -->
+</section>
+<!-- Publish dropdown -->
+<section class="content-header">
+	<div class="container-fluid">
+		<div class="row mb-2">
+			<div class="col-sm-4">
+			</div>
+			<div class="col-sm-8">
+				<div class="row">
+					<div class=" col-2">
+					</div>
+					<div class=" col-2">
+					</div>
+					<div class="input-group input-group-sm col-6">
+						<div class="input-group-prepend">
+							<span class="input-group-text"><small>Users In Loc</small></span>
+						</div>
+						<select id="userDropdown" class="select2" multiple="multiple" data-placeholder="Select User" style="width: 70%;" name="userDropdown">
+						</select>
+					</div>
+					<div class="input-group input-group-sm col-2">
+						<button class="form-control btn btn-success" onclick="sendEmailToUsers()">Publish</button>
 					</div>
 				</div>
 			</div>
@@ -54,6 +81,8 @@
 	</div><!-- /.container-fluid -->
 </section>
 
+
+<!-- Publish dropdown -->
 
 <!-- Main content -->
 <section class="content">
@@ -198,3 +227,7 @@
 	<!-- /Add Shift Modal -->
 </div>
 <!-- /Main Wrapper -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<!-- Your existing script -->
+<script>
+

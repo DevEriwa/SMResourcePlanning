@@ -62,5 +62,30 @@ namespace Resource_Planing.Controllers
             }
             return Json(new { isError = false, msg = "Error occurred while trying to process your request" });
         }
-    }
+
+		public JsonResult GetUsersInLocation(int locId)
+		{
+			if (locId > 0)
+			{
+				var usersInLocation = _rotaHelper.GetUsersInLocation(locId);
+				return Json(usersInLocation);
+			}
+			return null;
+		}
+		[HttpPost]
+		public async Task<IActionResult> SendEmailToSelectedUsers(List<string> userIds)
+		{
+
+			if (userIds == null || userIds.Count == 0)
+			{
+				return Json(new { isError = true, msg = "No user selected" });
+			}
+			var paymentCheck = await _rotaHelper.ProcessUsersInLocationEmail(userIds);
+			if (paymentCheck)
+			{
+				return Json(new { isError = false, msg = "Email notification sent successfully", });
+			}
+			return Json(new { isError = true, msg = $"No user found" });
+		}
+	}
 }

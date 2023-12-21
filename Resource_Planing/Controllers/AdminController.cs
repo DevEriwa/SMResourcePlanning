@@ -332,16 +332,23 @@ namespace Resource_Planing.Controllers
 		//	return null;
 		//}
 
-		public void UpdateRotaData(string rotaData)
+		public JsonResult UpdateRotaData(string rotaData)
 		{
 			if (rotaData != null)
 			{
 				var data = JsonConvert.DeserializeObject<RotaObjectViewModel>(rotaData);
 				if (data.UserId != null)
 				{
-					_rotaHelper.UpdateRota(data);
+					var model = _rotaHelper.UpdateRota(data);
+					if (model != null)
+					{
+						//var url = "/Rota/Index/";
+						return Json(new { isError = false, msg = "Shift updated succesfully"});
+					}
+					return Json(new { isError = true, msg = "Unable to update shift" });
 				}
 			}
+			return Json(new { isError = true, msg = "Network failure, please try again." });
 		}
 
 
@@ -578,6 +585,26 @@ namespace Resource_Planing.Controllers
                 return Json(new { isError = data.isError, msg = data.Msg });
             }
             return Json(new { isError = false, msg = "Error occurred while trying to process your request" });
+        }
+
+        [HttpGet]
+        public JsonResult FetchShifts(string date, string userId, string year)
+        {
+            // Assuming your StaffRota model has a property named RotaObjectString for storing shift data
+            var staffRota = _context.StaffRotas
+                .Where(sr => sr.UserId == userId && sr.Year == year)
+                .FirstOrDefault();
+
+            if (staffRota != null)
+            {
+                var shifts = staffRota.RotaObjectGet
+                    .Where(ro => ro.Date == date)
+                    .ToArray();
+
+                return Json(shifts);
+            }
+
+            return Json(new RotaObject[0]);  // Return an empty array if no shifts found
         }
 
     }
