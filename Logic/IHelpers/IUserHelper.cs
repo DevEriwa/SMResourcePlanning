@@ -44,5 +44,6 @@ namespace Logic.IHelpers
         StaffClockIn GetUserPunchActionForCurrentDay(string userId);
         Response PunchInService(PunchingViewModel model);
         Response PunchOutService(PunchingViewModel model);
+		List<StaffRota> GetListOfUserOnShift();
     }
 }

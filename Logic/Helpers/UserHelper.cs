@@ -641,5 +641,19 @@ namespace Logic.Helpers
             }
             return new Response { Status = false, Msg = "Sorry, the request can't be processed as we couldn't get your current location" };
         }
+       
+        public List<StaffRota> GetListOfUserOnShift()
+        {
+            var listOfShift = new List<StaffRota>();
+            var shift = _context.StaffRotas.Where(x => x.Id != 0 && x.UserId != null)
+				.Include(l => l.User)
+				.ToList();
+            if (shift.Any())
+            {
+                return shift;
+            }
+            return listOfShift;
+        }
+
     }
 }
