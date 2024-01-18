@@ -1,5 +1,5 @@
 ﻿@using static Core.Enums.Resource_Planing
-@model IEnumerable<Core.Models.StaffRota>
+@model IEnumerable<Core.ViewModels.GetAllShiftForAdmin>
 @{
     ViewData["Title"] = "Create Shift";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
@@ -62,8 +62,8 @@
                                 {
                                     <tr>
                                         <td></td>
-                                        <td>@shift.User.FirstName</td>
-                                        <td></td>
+                                        <td>@shift.Name</td>
+                                        <td>@shift.AbbreviatedName @shift.TimeShift</td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
