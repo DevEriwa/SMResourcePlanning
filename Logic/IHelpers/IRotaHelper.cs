@@ -24,5 +24,6 @@ namespace Logic.IHelpers
 		List<ApplicationUser> GetUsersInLocation(int locId);
 		Task<bool> ProcessUsersInLocationEmail(List<string> userIds);
 		string GenerateContent(List<DateTime> data, int locId);
-	}
+        string GenerateContentForUpdatedRota(RotaObjectViewModel data);
+    }
 }

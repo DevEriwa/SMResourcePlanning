@@ -237,7 +237,7 @@ function editleaveTypeToBeSave() {
     })
 }
 
-function editLeaveType(id) {
+function editLeaveTypes(id) {
     debugger;
     $.ajax({
         type: 'Get',
@@ -251,8 +251,8 @@ function editLeaveType(id) {
             if (!result.isError) {
                 $('#leaveTypeId').val(result.id);
                 $('#editLeaveName').val(result.name);
-                $('#numberOfDays').val(result.numberOfDays);
-                $('#companyBranchId').val(result.companyBranchId);
+                $('#edit_NumberOfDays').val(result.numberOfDays);
+                $('#edit_ShiftId').val(result.shiftId);
             }
             else {
                 errorAlert(result.msg)
@@ -263,6 +263,39 @@ function editLeaveType(id) {
         }
     })
 }
+
+function editLeaveType(id, leaveType) {
+        $.ajax({
+            type: 'GET',
+            dataType: 'json',
+            url: '/Admin/EditLeaveType',
+            data: {
+                id: id
+            },
+            success: function (result) {
+                if (!result.isError) {
+                    $('#leaveTypeId').val(result.id);
+                    $('#editLeaveName').val(result.name);
+                    $('#edit_ShiftId').val(result.shiftId);
+
+                    // Check the leave type and adjust the "Number of Days" input
+                    if (leaveType === 'Annual Leave') {
+                        // If Annual Leave, show and enable the 'Number of Days' input
+                        $('#edit_NumberOfDays').prop('disabled', false).show().val(result.numberOfDays);
+                    } else {
+                        // If other leave, hide and disable the 'Number of Days' input
+                        $('#edit_NumberOfDays').prop('disabled', true).hide();
+                    }
+                } else {
+                    errorAlert(result.msg);
+                }
+            },
+            error: function () {
+                errorAlert("Error occurred. Please try again.");
+            }
+        });
+    }
+
 
 function deleteleaveType() {
     var id = $('#deleteleaveTypeId').val();

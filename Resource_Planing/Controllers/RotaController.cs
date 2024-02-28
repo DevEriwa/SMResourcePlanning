@@ -27,10 +27,10 @@ namespace Resource_Planing.Controllers
         {
 			ViewBag.ListOFShifts = _userHelper.GetShifts();
 			ViewBag.Location = _dropdownHelper.GetLocations();
-            return View();
+			return View();
         }
 
-		public JsonResult GetRotaDataByDateRange(DateTime startDate, DateTime endDate, int locId)
+		public JsonResult GetRotaDataByDateRangse(DateTime startDate, DateTime endDate, int locId)
 		{
             if (startDate != DateTime.MinValue && endDate != DateTime.MinValue && locId > 0)
             {
@@ -41,6 +41,18 @@ namespace Resource_Planing.Controllers
                 }
             }
             return null;
+        }
+        public JsonResult GetRotaDataByDateRange(DateTime startDate, DateTime endDate, int locId)
+        {
+            if (startDate != DateTime.MinValue && endDate != DateTime.MinValue && locId > 0)
+            {
+                var model = _rotaHelper.GenerateNewRota(startDate, endDate, locId);
+                if (model != null)
+                {
+                    return Json(new { isError = false, rotaTableContainer = model.RotaTableContainer });
+                }
+            }
+            return Json(new { isError = true, errorMessage = "Failed to generate Rota data" });
         }
 
         public JsonResult PunchIn(PunchingViewModel model)

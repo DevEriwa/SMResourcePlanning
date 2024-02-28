@@ -299,6 +299,7 @@ function addShift() {
                 shiftDetails: shiftDetails,
             },
             success: function (result) {
+                debugger
                 if (!result.isError) {
                     debugger;
                     var url = window.location.pathname.toLowerCase(); // Ensure lowercase comparison
@@ -1354,7 +1355,7 @@ function userPunchIn(userId, locationId) {
         });
     }
 }
-
+ 
 function userPunchOut(id, locationId) {
     debugger;
     if (llData.latitude != "" && llData.longitude != "") {
