@@ -3,6 +3,7 @@ $(document).ready(function () {
     var rowCount = 1; // Initial number of rows
     // Function to generate a new row
     function generateRow(schedule) {
+        debugger
         var row = '<tr><td>{DATERANGE}</td>';
         row = row.replace("{DATERANGE}", schedule.dateRange)
         var rowI = '<td class="text-center">{TRANGE} <span class="badge bg-success">{LOC}</span></td>';
@@ -138,7 +139,65 @@ function mapShiftDetails(id) {
     });
 }
 
+
+$(document).ready(function () {
+    debugger
+    $(".btn-primary").on("click", function () {
+        debugger
+        $('#add_Shift').modal('show');
+    });
+});
+
+
 function updateRota() {
+    debugger
+    var data = {
+        Date: $("#datE").val(),
+        LocationId: $("#loc_Id").val(),
+        UserId: $("#uId").val(),
+        Year: $("#yeaR").val(),
+        StartTime: $('#s_TimeId').val(),
+        EndTime: $('#e_TimeId').val(),
+        UnpaidTime: $('#u_TimeId').val(),
+        Location: $('#loc_Abb').val(),
+        TRange: $('#t_Range').val(),
+        FixedAmount: parseFloat($('#f_Amt').val()) || 0, 
+        HourlyPay: parseFloat($('#h_Pay').val()) || 0 
+    };
+
+    if (data.Date && data.UserId && data.Year) {
+        $.ajax({
+            type: 'POST',
+            url: '/Admin/UpdateRotaData',
+            data: {
+                rotaData: JSON.stringify(data),
+            },
+            success: function (response) {
+                debugger
+                if (response && response.updatedContent) {
+                    var cellId = data.Date + "_" + data.UserId;
+                    console.log("Cell ID:", cellId);
+                    // Update the content of the cell
+                    var element = document.getElementById(cellId);
+                    if (element) {
+                        element.innerHTML = response.updatedContent;
+                    } else {
+                        console.error("Element not found for cell ID:", cellId); 
+                    }
+                } else {
+                    errorAlert("No updated content received");
+                }
+            },
+            error: function () {
+                errorAlert("Failed to update content");
+            }
+        });
+    } else {
+        errorAlert("Please fill in all required fields");
+    }
+}
+
+function updateRotaS() {
     debugger;
     var data = {};
     data.Date = $("#datE").val();

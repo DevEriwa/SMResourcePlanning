@@ -332,7 +332,7 @@ namespace Resource_Planing.Controllers
 		//	return null;
 		//}
 
-		public JsonResult UpdateRotaData(string rotaData)
+		public JsonResult UpdateRotaDatas(string rotaData)
 		{
 			if (rotaData != null)
 			{
@@ -351,8 +351,29 @@ namespace Resource_Planing.Controllers
 			return Json(new { isError = true, msg = "Network failure, please try again." });
 		}
 
+        public JsonResult UpdateRotaData(string rotaData)
+        {
+            if (rotaData != null)
+            {
+                var data = JsonConvert.DeserializeObject<RotaObjectViewModel>(rotaData);
+                if (data.UserId != null)
+                {
+                    var model = _rotaHelper.UpdateRota(data);
+                    if (model != null)
+                    {
+                        // Generate the updated content for the specific cell
+                        var updatedContent = _rotaHelper.GenerateContentForUpdatedRota(data);
 
-		[HttpPost]
+                        // Return JSON response with updated content
+                        return Json(new { isError = false, msg = "Shift updated successfully", updatedContent });
+                    }
+                    return Json(new { isError = true, msg = "Unable to update shift" });
+                }
+            }
+            return Json(new { isError = true, msg = "Network failure, please try again." });
+        }
+
+        [HttpPost]
 		public ActionResult UpdateLocation(int locationId, double latitude, double longitude, double acceptedRadius)
 		{
 			try

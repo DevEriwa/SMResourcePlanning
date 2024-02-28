@@ -338,7 +338,7 @@ namespace Logic.Helpers
 
         public async Task<List<Shifts>> GetStaffShiftDropDown(string userName)
         {
-            var getUser =  _context.ApplicationUser.FirstOrDefaultAsync(x => x.UserName == userName);
+            var getUser = await _context.ApplicationUser.FirstOrDefaultAsync(x => x.UserName == userName);
             if (getUser != null)
             {
                 var selectedBranches = await _context.shift
