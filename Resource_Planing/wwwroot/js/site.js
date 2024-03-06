@@ -217,6 +217,7 @@ function CreateAdminAccount() {
 
 }
 // LOGIN POST ACTION
+
 function login() {
     var defaultBtnValue = $('#submit_btn').html();
     $('#submit_btn').html("Please wait...");
@@ -229,19 +230,20 @@ function login() {
         type: 'Post',
         url: '/Account/Login',
         dataType: 'json',
-        data:
-        {
-            loginData: details 
+        data: {
+            loginData: details
         },
         success: function (result) {
             if (!result.isError) {
                 var n = 1;
                 localStorage.clear();
                 localStorage.setItem("on_load_counter", n);
-                location.href = result.dashboard;
 
-            }
-            else {
+                // Perform the redirection based on the result
+                if (result.redirect) {
+                    window.location.href = result.redirect;
+                }
+            } else {
                 $('#submit_btn').html(defaultBtnValue);
                 $('#submit_btn').attr("disabled", false);
                 errorAlert(result.msg);

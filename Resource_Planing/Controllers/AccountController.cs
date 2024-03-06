@@ -129,29 +129,29 @@ namespace Resource_Planing.Controllers
         {
             return View();
         }
-        [HttpPost]
-        public async Task<JsonResult> Login(string loginData)
-        {
-            var userDetails = JsonConvert.DeserializeObject<UserViewModel>(loginData);
-            var user = await _userHelper.FindByEmailAsync(userDetails.Email);
-            if (user != null)
-            {
-                if (!user.EmailConfirmed)
-                {
-                    return Json(new { isNotVerified = true, msg = "Email Unverifed!!! Please Verify email to continue" });
-                }
-                else if (user.EmailConfirmed)
-                {
-                    var currentUser = _accountHelper.AuthenticateUser(userDetails).Result;
-                    if (currentUser != null)
-                    {
-                        var dashboard = _accountHelper.GetUserDashboardPage(user);
-                        return Json(new { isError = false, msg = "Welcome! " + currentUser.Name, dashboard = dashboard });
-                    }
-                }
-            }
-            return Json(new { isError = true, msg = "Login Failed" });
-        }
+        //[HttpPost]
+        //public async Task<JsonResult> Login(string loginData)
+        //{
+        //    var userDetails = JsonConvert.DeserializeObject<UserViewModel>(loginData);
+        //    var user = await _userHelper.FindByEmailAsync(userDetails.Email);
+        //    if (user != null)
+        //    {
+        //        if (!user.EmailConfirmed)
+        //        {
+        //            return Json(new { isNotVerified = true, msg = "Email Unverifed!!! Please Verify email to continue" });
+        //        }
+        //        else if (user.EmailConfirmed)
+        //        {
+        //            var currentUser = _accountHelper.AuthenticateUser(userDetails).Result;
+        //            if (currentUser != null)
+        //            {
+        //                var dashboard = _accountHelper.GetUserDashboardPage(user);
+        //                return Json(new { isError = false, msg = "Welcome! " + currentUser.Name, dashboard = dashboard });
+        //            }
+        //        }
+        //    }
+        //    return Json(new { isError = true, msg = "Login Failed" });
+        //}
         public async Task<IActionResult> LogOut()
         {
             await _signInManager.SignOutAsync();
@@ -210,5 +210,46 @@ namespace Resource_Planing.Controllers
             }
         }
 
-    }
+		[HttpPost]
+		public async Task<JsonResult> Login(string loginData)
+		{
+			var userDetails = JsonConvert.DeserializeObject<UserViewModel>(loginData);
+			var user = await _userHelper.FindByEmailAsync(userDetails.Email);
+			if (user != null)
+			{
+				if (!user.EmailConfirmed)
+				{
+					return Json(new { isNotVerified = true, msg = "Email Unverified!!! Please Verify email to continue" });
+				}
+				else if (user.EmailConfirmed)
+				{
+					var result = await _signInManager.PasswordSignInAsync(user, userDetails.Password, false, true);
+					if (result.Succeeded)
+					{
+						var goAdmin = await _userManager.IsInRoleAsync(user, "CompanyAdmin");
+						if (goAdmin)
+						{
+							return Json(new { isError = false, redirect = Url.Action("Index", "Admin") });
+						}
+						else if (await _userManager.IsInRoleAsync(user, "SuperAdmin"))
+						{
+							return Json(new { isError = false, redirect = Url.Action("Index", "SuperAdmin") });
+						}
+						else if (await _userManager.IsInRoleAsync(user, "CompanyStaff"))
+						{
+							return Json(new { isError = false, redirect = Url.Action("Index", "User") });
+						}
+						else if (await _userManager.IsInRoleAsync(user, "User"))
+						{
+							return Json(new { isError = false, redirect = Url.Action("Index", "User") });
+						}
+					}
+				}
+			}
+			return Json(new { isError = true, msg = "Login Failed" });
+		}
+
+
+
+	}
 }

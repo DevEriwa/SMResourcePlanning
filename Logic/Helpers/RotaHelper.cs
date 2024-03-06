@@ -1,10 +1,12 @@
 ﻿using Core.Db;
 using Core.Models;
 using Core.ViewModels;
+using Core.ViewModels.Shift;
 using Logic.IHelpers;
 using Logic.Services;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using OpenCvSharp.Features2D;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -599,5 +601,10 @@ namespace Logic.Helpers
 				throw exp;
 			}
 		}
+
+
+		
+
+
 	}
 }
