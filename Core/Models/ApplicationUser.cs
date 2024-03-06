@@ -43,9 +43,14 @@ namespace Core.Models
         [ForeignKey("DepartmentId")]
         public virtual Department Departments { get; set; }
         public DateTime? DateOfBirth { get; set; }
+        public DateTime? DateCreated { get; set; }
         public string? Religion { get; set; }
         public string? FaceImageData { get; set; }
-        [NotMapped]
+		public bool Active { get; set; }
+		public bool Deleted { get; set; }
+		[NotMapped]
         public string? StaffId { get; set; }
+        [NotMapped]
+        public string? Role { get; set; }
     }
 }
