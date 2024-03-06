@@ -48,6 +48,19 @@ namespace Resource_Planing.Controllers
 			return View();
 		}
 
+
+		public IActionResult DashboardIndex()
+		{
+			var user = User.Identity.Name;
+			var listOfItemsForAdmin = _userHelper.GetAdminDashboardData(user);
+			if(listOfItemsForAdmin != null)
+			{
+				return View(listOfItemsForAdmin);
+			}
+			return View();
+		}
+
+
 		public IActionResult Location()
 		{
 			var newLocationList = new List<Location>();
@@ -208,15 +221,27 @@ namespace Resource_Planing.Controllers
 
 		public IActionResult Shift()
 		{
-			var rotaShift = new List<Shifts>();
 			ViewBag.Location = _dropdownHelper.GetLocations();
 			var shifts = _userHelper.GetShifts();
 			if (shifts.Any())
 			{
-				rotaShift = shifts;
+				return View(shifts);
 			}
-			return View(rotaShift);
+			return View();
 		}
+
+
+		public IActionResult ShiftCraeted()
+		{
+			ViewBag.Location = _dropdownHelper.GetLocations();
+			var shifts = _userHelper.GetShiftList();
+			if (shifts != null)
+			{
+				return View(shifts);
+			}
+			return View();
+		}
+
 
 		[HttpPost]
 		public JsonResult AddShift(string shiftDetails)
@@ -627,7 +652,14 @@ namespace Resource_Planing.Controllers
 
             return Json(new RotaObject[0]);  // Return an empty array if no shifts found
         }
-
+		[HttpGet]
+		public IActionResult CreateShift()
+		{
+            var name = User.Identity.Name;
+            ViewBag.Location = _dropdownHelper.GetLocations();
+            var listOfCreateShift = _userHelper.GetListOfUserOnShift(name);
+			return View(listOfCreateShift);
+		}
     }
 }
 

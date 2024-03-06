@@ -92,28 +92,51 @@ namespace Logic.Helpers
 
 		}
 
+        //public string GetUserDashboardPage(ApplicationUser userr)
+        //{
+        //    var userRole = _userManager.GetRolesAsync(userr).Result;
 
-        public string GetUserDashboardPage(ApplicationUser userr)
-        {
-            var userRole = _userManager.GetRolesAsync(userr).Result;
+        //        if (userRole.Contains("SuperAdmin"))
+        //        {
+        //            return "/SuperAdmin/Dashboard";
 
-                if (userRole.Contains("SuperAdmin"))
-                {
-                    return "/SuperAdmin/Dashboard";
+        //        }
+        //        else if (userRole.Contains ("CompanyAdmin"))
+        //        {
+        //            return "/Admin/Index";
+        //        }
+        //        else
+        //        {
+        //            return "/User/Index";
+        //        }
+        //         return null;
+        //}
 
-                }
-                else if (userRole.Contains ("CompanyAdmin"))
-                {
-                    return "/Admin/Index";
-                }
-                else
-                {
-                    return "/User/Index";
-                }
-                 return null;
-        }
+		public string GetUserDashboardPage(ApplicationUser user)
+		{
+			var userRole = _userManager.GetRolesAsync(user).Result;
 
-        public string GetUserLayout(string username)
+			if (userRole.Contains("SuperAdmin"))
+			{
+				return "/SuperAdmin/Index";
+			}
+			else if (userRole.Contains("CompanyAdmin"))
+			{
+				return "/Admin/Index";
+			}
+			else if (userRole.Contains("CompanyStaff"))
+			{
+				return "/Staff/Index";
+			}
+			else if (userRole.Contains("User"))
+			{
+				return "/User/Index";
+			}
+
+			return null;
+		}
+
+		public string GetUserLayout(string username)
         {
             var accountType = _userHelper.FindByUserNameAsync(username).Result;
             var userRole = _userManager.GetRolesAsync(accountType).Result.FirstOrDefault();
@@ -144,9 +167,5 @@ namespace Logic.Helpers
             }
             return null;
         }
-
-
-        
     }
-
 }

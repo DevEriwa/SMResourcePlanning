@@ -1,0 +1,394 @@
+﻿@inject Logic.IHelpers.IUserHelper _userHelper;
+@{
+	//var fullName = _userHelper.FindByUserName(User.Identity.Name);
+
+	var staff = _userHelper.FindByUserName(User.Identity.Name);
+	var randomStr = DateTime.Now.ToString().ToLower().Replace(":", "").Replace("pm", "").Replace("am", "");
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0">
+	<meta name="description" content="BiviHr">
+	<meta name="keywords" content="admin, estimates, bootstrap, business, corporate, creative, management, minimal, modern, accounts, invoice, html5, responsive, CRM, Projects">
+	<meta name="author" content="BiviHr">
+	<meta name="robots" content="noindex, nofollow">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+	<title>@ViewData["Title"] - Sm_Resource_Planning</title>
+    <!-- Google Font: Source Sans Pro -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- Font Awesome Icons -->
+    <link href="~/css/font-awesome.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/admin-3.2.0/plugins/fontawesome-free/css/all.min.css">
+    <link href="~/js/multi_select/filter_multi_select.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../../plugins/select2/css/select2.min.css">
+    <!-- overlayScrollbars -->
+    <link rel="stylesheet" href="~/admin-3.2.0/plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="~/admin-3.2.0/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="~/admin-3.2.0/plugins/select2/css/select2.min.css">
+    <link href="~/blue/assets/css/style.css" rel="stylesheet" />
+    <link href="~/blue/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/assets/css/style.css" rel="stylesheet" />
+
+
+
+
+    <link href="~/blue/assets/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/blue/assets/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/blue/assets/css/line-awesome.min.css" rel="stylesheet" />
+    <link href="~/blue/assets/plugins/morris/morris.css" rel="stylesheet" />
+    <link href="~/blue/assets/css/style.css" rel="stylesheet" />
+
+
+
+    <script>
+        function errorAlert(message) {
+            Swal.fire({
+                icon: 'error',
+                text: message,
+                timer: 30000,
+            })
+        }
+
+        function infoAlert(message) {
+            Swal.fire({
+                icon: 'info',
+                text: message,
+            })
+        }
+
+        function infoAlertWithStyles(message) {
+            Swal.fire({
+                title: 'Notification',
+                icon: 'info',
+                text: message,
+            })
+        }
+
+        function successAlert(message) {
+            Swal.fire({
+                icon: 'success',
+                text: message,
+                timer: 30000,
+            })
+        }
+
+        function newErrorAlert(message, url) {
+            Swal.fire({
+                icon: 'error',
+                text: message,
+            }).then((isConfirm) => {
+                if (isConfirm) {
+                    location.reload(url);
+                }
+            })
+        }
+
+        function newSuccessAlert(message, url) {
+            Swal.fire({
+                icon: 'success',
+                text: message,
+            }).then((isConfirm) => {
+                if (isConfirm) {
+                    location.reload(url);
+                }
+            })
+
+        }
+        function successAlertWithRedirect(message, url) {
+            swal.fire({
+                title: "Success",
+                text: message,
+                icon: "info",
+                timer: 300000,
+                overlay: "background - color: rgba(43, 165, 137, 0.45)",
+            }).then(function () {
+
+                location.href = url;
+            })
+        }
+
+        function checkSuccessAlert(message, url) {
+            Swal.fire({
+                icon: 'success',
+                text: message,
+                confirmButtonColor: '#F37B42',
+            }).then((isConfirm) => {
+                if (isConfirm) {
+                    location.href = url;
+                }
+            })
+        }
+    </script>
+</head>
+
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed layout-footer-fixed">
+    <div class="main-wrapper">
+
+        <!-- Header -->
+        <div class="header">
+
+            <!-- Logo -->
+            <div class="header-left">
+                <a href="index.html" class="logo">
+                    <img src="~/blue/assets/img/logo2.png" width="40" height="40" alt="" />
+                </a>
+            </div>
+            <!-- /Logo -->
+
+            <a id="toggle_btn" href="javascript:void(0);">
+                <span class="bar-icon">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </span>
+            </a>
+
+			<!-- Header Title -->
+			<div class="page-title-box">
+				<h3>Dreamguy's Technologies</h3>
+			</div>
+			<!-- /Header Title -->
+
+			<a id="mobile_btn" class="mobile_btn" href="#sidebar"><i class="fa fa-bars"></i></a>
+
+			<!-- Header Menu -->
+			<ul class="nav user-menu">
+
+				<li class="nav-item dropdown has-arrow main-drop">
+					<a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+						<span class="user-img">
+							<img src="assets/img/profiles/avatar-21.jpg" alt="">
+							<span class="status online"></span>
+						</span>
+						<span>Admin</span>
+					</a>
+					<div class="dropdown-menu">
+						<a class="dropdown-item" href="profile.html">My Profile</a>
+						<a class="dropdown-item" href="settings.html">Settings</a>
+						<a class="dropdown-item" href="login.html">Logout</a>
+					</div>
+				</li>
+			</ul>
+			<!-- /Header Menu -->
+			<!-- Mobile Menu -->
+			<div class="dropdown mobile-user-menu">
+				<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
+				<div class="dropdown-menu dropdown-menu-right">
+					<a class="dropdown-item" href="profile.html">My Profile</a>
+					<a class="dropdown-item" href="settings.html">Settings</a>
+					<a class="dropdown-item" href="login.html">Logout</a>
+				</div>
+			</div>
+			<!-- /Mobile Menu -->
+
+		</div>
+		<!-- /Header -->
+		<!-- Sidebar -->
+		<div class="sidebar" id="sidebar">
+			<div class="sidebar-inner slimscroll">
+				<div id="sidebar-menu" class="sidebar-menu">
+					<ul>
+						<li class="menu-title">
+							<span>Main</span>
+						</li>
+						<li class="submenu">
+							<a href="#"><i class="la la-dashboard"></i> <span> Dashboard</span> <span class="menu-arrow"></span></a>
+							<ul style="display: none;">
+								<li><a class="active" href="index.html">Admin Dashboard</a></li>
+								<li><a href="employee-dashboard.html">Employee Dashboard</a></li>
+							</ul>	
+						</li>
+						<li class="submenu">
+							<a href="#"><i class="la la-cube"></i> <span> Apps</span> <span class="menu-arrow"></span></a>
+							<ul style="display: none;">
+								<li><a href="chat.html">Chat</a></li>
+								<li class="submenu">
+									<a href="#"><span> Calls</span> <span class="menu-arrow"></span></a>
+									<ul style="display: none;">
+										<li><a href="voice-call.html">Voice Call</a></li>
+										<li><a href="video-call.html">Video Call</a></li>
+										<li><a href="outgoing-call.html">Outgoing Call</a></li>
+										<li><a href="incoming-call.html">Incoming Call</a></li>
+									</ul>
+								</li>
+								<li><a href="events.html">Calendar</a></li>
+								<li><a href="contacts.html">Contacts</a></li>
+								<li><a href="inbox.html">Email</a></li>
+								<li><a href="file-manager.html">File Manager</a></li>
+							</ul>
+						</li>				
+										
+						
+
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!-- /Sidebar -->
+
+
+
+
+        <div class="content-wrapper">
+            @RenderBody()
+        </div>
+
+
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+        <!-- Main Footer -->
+        <footer class="main-footer">
+            <strong>Copyright &copy; 2022-2023 <a href="#">Resource Planning</a>.</strong>
+            All rights reserved.
+            <div class="float-right d-none d-sm-inline-block">
+                @*<b>Version</b> 3.2.0*@
+            </div>
+        </footer>
+        <section id="sideBar">
+            @Html.Partial("_GeneralModal")
+        </section>
+    </div>
+    <!-- REQUIRED SCRIPTS -->
+    <script src="~/blue/assets/js/jquery-3.5.1.min.js"></script>
+
+	<!-- Bootstrap Core JS -->
+	<script src="~/blue/assets/js/popper.min.js"></script>
+	<script src="~/blue/assets/js/bootstrap.min.js"></script>
+
+	<!-- Slimscroll JS -->
+	<script src="~/blue/assets/js/jquery.slimscroll.min.js"></script>
+
+	<!-- Chart JS -->
+	<script src="~/blue/assets/plugins/morris/morris.min.js"></script>
+	<script src="~/blue/assets/plugins/raphael/raphael.min.js"></script>
+	<script src="~/blue/assets/js/chart.js"></script>
+
+	<!-- Custom JS -->
+	<script src="~/blue/assets/js/app.js"></script>
+
+
+    <!-- jQuery -->
+    <script src="~/admin-3.2.0/plugins/jquery/jquery.min.js"></script>
+    <!-- Bootstrap -->
+    <script src="~/admin-3.2.0/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <!-- overlayScrollbars -->
+    <script src="~/admin-3.2.0/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
+    <script src="~/admin-3.2.0/dist/js/adminlte.js"></script>
+
+    <!-- PAGE PLUGINS -->
+    <!-- jQuery Mapael -->
+    <script src="~/admin-3.2.0/plugins/jquery-mousewheel/jquery.mousewheel.js"></script>
+    <script src="~/admin-3.2.0/plugins/raphael/raphael.min.js"></script>
+    <script src="~/admin-3.2.0/plugins/jquery-mapael/jquery.mapael.min.js"></script>
+    <script src="~/admin-3.2.0/plugins/jquery-mapael/maps/usa_states.min.js"></script>
+    <script src="~/js/rota.js"></script>
+    <script src="~/js/Leave.js"></script>
+    <!-- ChartJS -->
+    <script src="~/admin-3.2.0/plugins/chart.js/Chart.min.js"></script>
+    <script src="~/admin-3.2.0/plugins/select2/js/select2.full.js"></script>
+    <script src="~/js/multi_select/multi_select.js"></script>
+
+    <!-- AdminLTE for demo purposes -->
+    <script src="~/admin-3.2.0/dist/js/demo.js"></script>
+    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+    <script src="~/admin-3.2.0/dist/js/pages/dashboard2.js"></script>
+    <script src="~/js/sweetalert.min.js"></script>
+    <script src="~/js/sweetalert2.all.min.js"></script>
+    <script src="~/js/site.js"></script>
+    <script src="~/admin-3.2.0/build/js/layout.js"></script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+    <script>
+        $(function () {
+            //Initialize Select2 Elements
+            $('.select2').select2()
+
+            //Initialize Select2 Elements
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            })
+
+            //Datemask dd/mm/yyyy
+            $('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+            //Datemask2 mm/dd/yyyy
+            $('#datemask2').inputmask('mm/dd/yyyy', { 'placeholder': 'mm/dd/yyyy' })
+            //Money Euro
+            $('[data-mask]').inputmask()
+
+            //Date picker
+            $('#reservationdate').datetimepicker({
+                format: 'L'
+            });
+
+            //Date and time picker
+            $('#reservationdatetime').datetimepicker({ icons: { time: 'far fa-clock' } });
+
+            //Date range picker
+            $('#reservation').daterangepicker()
+            //Date range picker with time picker
+            $('#reservationtime').daterangepicker({
+                timePicker: true,
+                timePickerIncrement: 30,
+                locale: {
+                    format: 'MM/DD/YYYY hh:mm A'
+                }
+            })
+            //Date range as a button
+            $('#daterange-btn').daterangepicker(
+                {
+                    ranges: {
+                        'Today': [moment(), moment()],
+                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                        'This Month': [moment().startOf('month'), moment().endOf('month')],
+                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                    },
+                    startDate: moment().subtract(29, 'days'),
+                    endDate: moment()
+                },
+                function (start, end) {
+                    $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
+                }
+            )
+
+            //Timepicker
+            $('#timepicker').datetimepicker({
+                format: 'LT'
+            })
+
+            //Bootstrap Duallistbox
+            $('.duallistbox').bootstrapDualListbox()
+
+            //Colorpicker
+            $('.my-colorpicker1').colorpicker()
+            //color picker with addon
+            $('.my-colorpicker2').colorpicker()
+
+            $('.my-colorpicker2').on('colorpickerChange', function (event) {
+                $('.my-colorpicker2 .fa-square').css('color', event.color.toString());
+            })
+
+            $("input[data-bootstrap-switch]").each(function () {
+                $(this).bootstrapSwitch('state', $(this).prop('checked'));
+            })
+
+        })
+          // BS-Stepper Init
+    </script>
+</body>
+</html>
+
+
+
+
+

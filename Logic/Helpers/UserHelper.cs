@@ -18,6 +18,10 @@ using Image = System.Drawing.Image;
 using System.Linq;
 using GeoCoordinatePortable;
 using Org.BouncyCastle.Asn1.Ocsp;
+using Core.Config;
+using Microsoft.AspNetCore.Http;
+using NETCore.MailKit.Core;
+using Core.ViewModels.Shift;
 
 namespace Logic.Helpers
 {
@@ -26,11 +30,12 @@ namespace Logic.Helpers
 		//private readonly SignInManager<ApplicationUser> _signInManager;
 		private readonly UserManager<ApplicationUser> _userManager;
 		private readonly AppDbContext _context;
-
-		public UserHelper(AppDbContext context, UserManager<ApplicationUser> userManager)
+		private IHttpContextAccessor _httpContext;
+		public UserHelper(AppDbContext context, UserManager<ApplicationUser> userManager, IHttpContextAccessor httpContextAccessor)
 		{
 			_context = context;
 			_userManager = userManager;
+			_httpContext = httpContextAccessor;
 		}
 
 		public async Task<ApplicationUser> FindByUserNameAsync(string userName)
@@ -640,6 +645,334 @@ namespace Logic.Helpers
                 return new Response { Status = false, Msg = "Sorry, the request can't be processed as you are current outside the accepted location" };
             }
             return new Response { Status = false, Msg = "Sorry, the request can't be processed as we couldn't get your current location" };
+        }
+		public ApplicationUser GetOneUser()
+		{
+			try
+			{
+				return _userManager.Users.Where(u => u.Active && !u.Deleted).FirstOrDefault();
+			}
+			catch (Exception exp)
+			{
+				throw exp;
+			}
+		}
+
+		public List<UserViewModel> GetUser(string userName)
+		{
+			var userViews = new List<UserViewModel>();
+
+			var user = _context.ApplicationUser.Where(x => !x.Deleted && x.Email == userName && x.Active && !x.Deleted)
+			.Select(s => new UserViewModel
+			{
+				Id = s.Id,
+				GenderId = s.GenderId,
+				DateCreated = s.DateCreated,
+				Address = s.Address,
+				DateOfBirth = s.DateOfBirth,
+				ProfilePicture = s.ProfilePicture,
+				Email = s.Email,
+				FirstName = s.FirstName,
+				LastName = s.LastName,
+				Phone = s.Phone,
+
+			}).OrderByDescending(s => s.DateCreated).ToList();
+			if (user.Count > 0)
+			{
+				return user;
+			}
+			return userViews;
+		}
+		public List<LeaveSetup> GetLeave()
+		{
+			var leaveSetup = new List<LeaveSetup>();
+			var leaveSetupToBeEdited = _context.LeaveSetups.Where(x => x.Active && !x.Deleted).ToList();
+			if (leaveSetupToBeEdited != null)
+			{
+				leaveSetup = leaveSetupToBeEdited;
+			}
+			return leaveSetup;
+		}
+		public AdminDashboardViewModel GetAdminDashboardData(string userName)
+		{
+			var users = new List<UserViewModel>();
+			var userCount = GetUser(userName).Count();
+			var shiftCount = GetShifts().Count();
+			var departmentCount = GetListOfAllDepartment().Count();
+			var leaveCount = GetLeave().Count();
+			var userModel = _context.ApplicationUser.Where(x => x.Email == userName && !x.Deleted).ToList();
+			if (userModel.Any())
+			{
+				users = userModel.OrderByDescending(d => d.DateCreated)
+				 .Select(v => new UserViewModel
+				 {
+					 Id = v.Id,
+					 Address = v.Address,
+					 DateCreated = v.DateCreated,
+					 DateOfBirth = v.DateOfBirth,
+					 DepartmentId = v.DepartmentId,
+					 Email = v.Email,
+					 FirstName = v.FirstName,
+					 LastName = v.LastName,
+					 ProfilePicture = v.ProfilePicture,
+					 GenderId = v.GenderId,
+					 Phone = v.Phone,
+
+				 }).ToList();
+			}
+			var allAdminCount = new AdminDashboardViewModel()
+			{
+				ShiftCount = shiftCount,
+				LeaveCount = leaveCount,
+				DepartmentCount = departmentCount,
+				UserCount = userCount,
+				Users = users,
+			};
+			return allAdminCount;
+		}
+		public AllShiftViewModel GetShiftList()
+		{
+			try
+			{
+				var allDetail = new AllShiftViewModel();
+				allDetail.ShiftTime = new List<ShiftTime>();
+				allDetail.ShiftNames = new List<ShiftName>();
+				allDetail.AssignedShifts = new List<AssignedShift>();
+
+
+				var shiftsTime = new List<Shifts>();
+				shiftsTime = _context.shift.Where(x => !x.Deleted && x.LocationId != null).Include(c => c.Locations).ToList();
+				var model = shiftsTime.Select(model => MapToShiftTimeViewModel(model)).ToList();
+				allDetail.ShiftTime.AddRange(model);
+
+				var shiftsName = new List<Shifts>();
+				shiftsName = _context.shift.Where(x => !x.Deleted && x.LocationId != null).Include(c => c.Locations).ToList();
+				var model1 = shiftsTime.Select(model => MapToShiftNameViewModel(model)).ToList();
+				allDetail.ShiftNames.AddRange(model1);
+
+				var assignedShifts = new List<Shifts>();
+				assignedShifts = _context.shift.Where(x => !x.Deleted && x.LocationId != null).Include(c => c.Locations).ToList();
+				var model2 = shiftsTime.Select(model => MapToAssignedViewModel(model)).ToList();
+				allDetail.AssignedShifts.AddRange(model2);
+
+				return allDetail;
+			}
+			catch (Exception exp)
+			{
+				throw exp;
+			}
+		}
+		private ShiftTime MapToShiftTimeViewModel(Shifts shift)
+		{
+			return new ShiftTime()
+			{
+				Id = shift.Id,
+				AbbreviatedName = shift.AbbreviatedName,
+				Deleted = shift.Deleted,
+				FixedAmount = shift.FixedAmount,
+				Active = shift.Active,
+				DeteCreated = shift.DeteCreated,
+				EndTime = shift.EndTime,
+				StartTime = shift.StartTime,
+				UnpaidTime = shift.UnpaidTime,
+				Name = shift.Name,
+				LocationId = shift.LocationId,
+			};
+		}
+		private ShiftName MapToShiftNameViewModel(Shifts shift)
+		{
+			return new ShiftName()
+			{
+				Id = shift.Id,
+				AbbreviatedName = shift.AbbreviatedName,
+				Deleted = shift.Deleted,
+				FixedAmount = shift.FixedAmount,
+				Active = shift.Active,
+				DeteCreated = shift.DeteCreated,
+				EndTime = shift.EndTime,
+				StartTime = shift.StartTime,
+				UnpaidTime = shift.UnpaidTime,
+				Name = shift.Name,
+				LocationId = shift.LocationId,
+			};
+		}
+		private AssignedShift MapToAssignedViewModel(Shifts shift)
+		{
+			return new AssignedShift()
+			{
+				Id = shift.Id,
+				AbbreviatedName = shift.AbbreviatedName,
+				Deleted = shift.Deleted,
+				FixedAmount = shift.FixedAmount,
+				Active = shift.Active,
+				DeteCreated = shift.DeteCreated,
+				EndTime = shift.EndTime,
+				StartTime = shift.StartTime,
+				UnpaidTime = shift.UnpaidTime,
+				Name = shift.Name,
+				LocationId = shift.LocationId,
+			};
+		}
+
+
+	}
+
+        //public List<GetAllShiftForAdmin> GetListOfUserOnShift(string loggedInUsername)
+        //{
+        //    try
+        //    {
+        //        var allShiftForAdmin = new List<GetAllShiftForAdmin>();
+        //        var allShif = new GetAllShiftForAdmin();
+        //        var myShift = _context.shift.Where(a => a.Id != 0 && a.AbbreviatedName != null && !a.Deleted).Include(l => l.Locations).ToList();
+        //        if (myShift != null && myShift.Count() > 0)
+        //        {
+        //            foreach (var shifts in myShift.FirstOrDefault().Locations.UserIds)
+        //            {
+        //                var newTable = new GetAllShiftForAdmin()
+        //                {
+        //                };
+        //                allShiftForAdmin.Add(newTable);
+        //            }
+        //            return allShiftForAdmin;
+        //        }
+        //        return allShiftForAdmin;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
+
+        //public List<GetAllShiftForAdmin> GetListOfUserOnShift(string loggedInUsername)
+        //{
+        //    try
+        //    {
+        //        var allShiftForAdmin = new List<GetAllShiftForAdmin>();
+
+        //        var myShifts = _context.shift
+        //            .Where(a => a.Id != 0 && a.AbbreviatedName != null && !a.Deleted)
+        //            .Include(l => l.Locations)
+        //            .ToList();
+
+        //        foreach (var shift in myShifts)
+        //        {
+        //            var (numberOfUsers, timeShift) = shift.GetUserDataAndTimeShift();
+        //            foreach (var userId in shift.Locations?.UserIds.Split(',') ?? Array.Empty<string>())
+        //            {
+        //                // Ensure userId is not null or empty
+        //                if (!string.IsNullOrEmpty(userId))
+        //                {
+        //                    var user = _context.ApplicationUser.FirstOrDefault(u => u.Id.ToString() == userId);
+        //                    if (user != null)
+        //                    {
+        //                        var newTable = new GetAllShiftForAdmin
+        //                        {
+        //                            AbbreviatedName = shift.AbbreviatedName,
+        //                            NumberOfUsers = numberOfUsers,
+        //                            TimeShift = timeShift,
+        //                            Name = $"{user.FirstName} {user.LastName}",
+        //                            EndTime = shift.EndTime,
+        //                            StartTime = shift.StartTime,
+        //                            // Add other properties as needed
+        //                        };
+        //                        allShiftForAdmin.Add(newTable);
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        return allShiftForAdmin;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
+        //public List<GetAllShiftForAdmin> GetListOfUserOnShift(string loggedInUsername)
+        //{
+        //    try
+        //    {
+        //        var allShiftForAdmin = new List<GetAllShiftForAdmin>();
+
+        //        var myShifts = _context.shift
+        //            .Where(a => a.Id != 0 && a.AbbreviatedName != null && !a.Deleted)
+        //            .Include(l => l.Locations)
+        //            .ToList();
+
+        //        foreach (var shift in myShifts)
+        //        {
+        //            var (numberOfUsers, timeShift) = shift.GetUserDataAndTimeShift();
+        //            var userIds = shift.Locations?.UserIds.Split(',') ?? Array.Empty<string>();
+
+        //            // Convert user IDs to strings outside the LINQ query
+        //            var stringUserIds = userIds.Where(userId => !string.IsNullOrEmpty(userId)).Select(userId => userId.ToString()).ToList();
+
+        //            foreach (var userId in stringUserIds)
+        //            {
+        //                var user = _context.ApplicationUser.FirstOrDefault(u => u.Id == userId);
+        //                if (user != null)
+        //                {
+        //                    var newTable = new GetAllShiftForAdmin
+        //                    {
+        //                        AbbreviatedName = shift.AbbreviatedName,
+        //                        NumberOfUsers = numberOfUsers,
+        //                        TimeShift = timeShift,
+        //                        Name = $"{user.FirstName} {user.LastName}",
+        //                        EndTime = shift.EndTime,
+        //                        StartTime = shift.StartTime,
+        //                        // Add other properties as needed
+        //                    };
+        //                    allShiftForAdmin.Add(newTable);
+        //                }
+        //            }
+        //        }
+        //        return allShiftForAdmin;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
+
+        public List<GetAllShiftForAdmin> GetListOfUserOnShift(string loggedInUsername)
+        {
+            try
+            {
+                var allShiftForAdmin = new List<GetAllShiftForAdmin>();
+                var myShifts = _context.shift
+                    .Where(a => a.Id != 0 && a.AbbreviatedName != null && !a.Deleted)
+                    .Include(l => l.Locations)
+                    .ToList();
+                foreach (var shift in myShifts)
+                {
+                    var (numberOfUsers, timeShift) = shift.GetUserDataAndTimeShift();
+                    var userIds = JsonConvert.DeserializeObject<List<string>>(shift.Locations?.UserIds ?? "[]");
+                    foreach (var userId in userIds)
+                    {
+                        if (!string.IsNullOrEmpty(userId))
+                        {
+                            var user = _context.ApplicationUser.FirstOrDefault(u => u.Id == userId);
+                            if (user != null)
+                            {
+                                var newTable = new GetAllShiftForAdmin
+                                {
+                                    AbbreviatedName = shift.AbbreviatedName,
+                                    NumberOfUsers = numberOfUsers,
+                                    TimeShift = timeShift,
+                                    Name = $"{user.FirstName} {user.LastName}",
+                                    EndTime = shift.EndTime,
+                                    StartTime = shift.StartTime,
+                                };
+                                allShiftForAdmin.Add(newTable);
+                            }
+                        }
+                    }
+                }
+                return allShiftForAdmin;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
     }
 }
