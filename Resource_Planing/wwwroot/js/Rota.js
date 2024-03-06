@@ -184,6 +184,9 @@ function updateRota() {
                     } else {
                         console.error("Element not found for cell ID:", cellId); 
                     }
+                    $('#s_TimeId').val('');
+                    $('#e_TimeId').val('');
+                    $('#u_TimeId').val('');
                 } else {
                     errorAlert("No updated content received");
                 }
@@ -277,8 +280,6 @@ function subtractTime(timeString1, timeString2) {
     let differenceString = `${hours}:${minutes.toString().padStart(2, "0")}`;
     return differenceString;  
 }
-
-
 function errorCheck(x, y) {
     debugger
     var differenceString = subtractTime(x, y)
