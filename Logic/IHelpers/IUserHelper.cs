@@ -44,6 +44,8 @@ namespace Logic.IHelpers
         StaffClockIn GetUserPunchActionForCurrentDay(string userId);
         Response PunchInService(PunchingViewModel model);
         Response PunchOutService(PunchingViewModel model);
+        List<GetAllShiftForAdmin> GetListOfUserOnShift(string loggedInUsername);
+
 		List<UserViewModel> GetUser(string userName);
 		List<LeaveSetup> GetLeave();
 		AdminDashboardViewModel GetAdminDashboardData(string userName);

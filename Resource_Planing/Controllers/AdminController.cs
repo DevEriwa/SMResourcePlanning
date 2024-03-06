@@ -652,7 +652,14 @@ namespace Resource_Planing.Controllers
 
             return Json(new RotaObject[0]);  // Return an empty array if no shifts found
         }
-
+		[HttpGet]
+		public IActionResult CreateShift()
+		{
+            var name = User.Identity.Name;
+            ViewBag.Location = _dropdownHelper.GetLocations();
+            var listOfCreateShift = _userHelper.GetListOfUserOnShift(name);
+			return View(listOfCreateShift);
+		}
     }
 }
 
