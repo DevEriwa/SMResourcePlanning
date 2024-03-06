@@ -102,8 +102,8 @@
                                     <th>S/N</th>
                                     <th>Leave Type</th>
                                     <th>Home</th>
-                                    <th>Hours Deduct From Timesheet</th>
-                                    <th>Hours Deduct From Annual Leave</th>
+                                    <th>Deduct From Timesheet</th>
+                                    <th>Deduct From Annual Leave</th>
                                     <th class="text-right no-sort">Action</th>
                                 </tr>
                             </thead>
@@ -114,8 +114,23 @@
                                         <td></td>
                                         <td>@leave.Name</td>
                                         <td>@leave.Shift.Locations.Name</td>
-                                        <td>@leave.HoursDeductedFromTimesheet</td>
-                                        <td>@leave.DeductFromAnnualLeave</td>
+                                        <td>
+                                            
+                                            <div class="toggle-switch" id="timesheetToggle">
+                                                <label class="switch">
+                                                    <input type="checkbox" id="showPendingBalance">
+                                                    <span class="slider round"></span>
+                                                </label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="toggle-switch" id="annualLeaveToggle">
+                                                <label class="switch">
+                                                    <input type="checkbox" id="deductleave">
+                                                    <span class="slider round"></span>
+                                                </label>
+                                            </div>
+                                        </td>
 
                                         <td class="text-right">
                                             <div class="btn-group">
@@ -124,8 +139,8 @@
                                                     <span class="sr-only">Toggle Dropdown</span>
                                                 </button>
                                                 <div class="dropdown-menu" role="menu">
-                                                    
-                                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#edit_leave_type" onclick="editLeaveType('@leave.Id')"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+
+                                                    <a class="dropdown-item" href="#" data-toggle="modal" data-target="#edit_leave_type" onclick="editLeaveType('@leave.Id', '@leave.Name')"><i class="fa fa-pencil m-r-5"></i> Edit</a>
                                                     <div class="dropdown-divider"></div>
                                                     <a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_leaveType" onclick="leaveTypeToBeDeleted('@leave.Id')"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
                                                 </div>
@@ -196,33 +211,33 @@
                     <div class="submit-section text-center">
                         <button class="btn btn-primary submit-btn" id="submit_btn" onclick="createLeave()">Submit</button>
                     </div>
-                    @*   <div class="row mb-2">
-                    <div class="col-md-6">
-                    <div class="form-group form-focus text-center">
-                    <div class="toggle-switch" id="annualLeaveToggle">
-                    <h4>Deduct From Annual Leave</h4>
-                    <label class="switch">
-                    <input type="checkbox" id="deductleave">
-                    <span class="slider round"></span>
-                    </label>
-                    </div>
-                    </div>
-                    <div class="d-flex justify-content-between mb-3">
-                    <div id="infomationPrice"></div>
-                    </div>
-                    </div>
+                   @*  <div class="row mb-2">
+                        <div class="col-md-6">
+                            <div class="form-group form-focus text-center">
+                              <div class="toggle-switch" id="annualLeaveToggle">
+                                 <h4>Deduct From Annual Leave</h4>
+                                  <label class="switch">
+                                    <input type="checkbox" id="deductleave">
+                                    <span class="slider round"></span>
+                                  </label>
+                               </div>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3">
+                                <div id="infomationPrice"></div>
+                            </div>
+                        </div>
 
-                    <div class="col-md-6">
-                    <div class="form-group text-center">
-                    <h4>Hours Deduct From Timesheet</h4>
-                    <div class="toggle-switch" id="timesheetToggle">
-                    <label class="switch">
-                    <input type="checkbox" id="showPendingBalance">
-                    <span class="slider round"></span>
-                    </label>
-                    </div>
-                    </div>
-                    </div>
+                        <div class="col-md-6">
+                            <div class="form-group text-center">
+                                <h4>Hours Deduct From Timesheet</h4>
+                                <div class="toggle-switch" id="timesheetToggle">
+                                    <label class="switch">
+                                        <input type="checkbox" id="showPendingBalance">
+                                        <span class="slider round"></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                     </div> *@
                 </div>
             </div>
@@ -247,13 +262,13 @@
                         <input id="editLeaveName" class="form-control  LeaveName" type="text" required>
                     </div>
 
-                    <div class="form-group">
+                    <div class="form-group" id="edit_NumberOfDays">
                         <label>Number of Days <span class="text-danger">*</span></label>
-                        <input id="edit-NumberOfDays" class="form-control" type="text">
+                        <input id="edit_NumberOfDays" class="form-control" type="text">
                     </div>
                     <div class="form-group">
-                        <label>Staff Shift  <span class="text-danger">*</span></label>
-                        <select class="select form-control" id="edit-ShiftId" asp-items="@(new SelectList(@ViewBag.Shift, "Id", "Name"))">
+                        <label>Homes <span class="text-danger">*</span></label>
+                        <select class="select form-control" id="edit_ShiftId" asp-items="@(new SelectList(@ViewBag.Shift, "Id", "Name"))">
                         </select>
                     </div>
                     <div class="submit-section">

@@ -1,10 +1,12 @@
 ﻿using Core.Db;
 using Core.Models;
 using Core.ViewModels;
+using Core.ViewModels.Shift;
 using Logic.IHelpers;
 using Logic.Services;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using OpenCvSharp.Features2D;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -105,11 +107,10 @@ namespace Logic.Helpers
 
             if (rotaToUpdate == null)
             {
-                return false; // Handle the case where no rota is found
+                return false; 
             }
 
             var newData = rotaToUpdate.RotaObjectGet?.Where(d => d.Date != "").ToList() ?? new List<RotaObject>();
-
             var dataToUpdate = new RotaObject
             {
                 Date = model.Date,
@@ -124,8 +125,7 @@ namespace Logic.Helpers
             };
 
             newData.Add(dataToUpdate);
-            newData.Sort((a, b) => a.Date.CompareTo(b.Date)); // Sort the list by date
-
+            newData.Sort((a, b) => a.Date.CompareTo(b.Date)); 
             rotaToUpdate.RotaObjectString = JsonConvert.SerializeObject(newData);
             _context.Update(rotaToUpdate);
             _context.SaveChanges();
@@ -134,25 +134,20 @@ namespace Logic.Helpers
 
 		public bool UpdateRotas(RotaObjectViewModel model)
 		{
-			// Check if there is an existing entry for the user and year
 			var existingRota = _context.StaffRotas
-				.Include(x => x.User)
-				.FirstOrDefault(x => x.Year == model.Year && x.UserId == model.UserId);
-
-			// If there is no existing entry, create a new one
+			.Include(x => x.User)
+			.FirstOrDefault(x => x.Year == model.Year && x.UserId == model.UserId);
 			if (existingRota == null)
 			{
 				existingRota = new StaffRota
 				{
 					Year = model.Year,
 					UserId = model.UserId,
-					RotaObjectString = "[]", // Initialize with an empty array if there is no existing entry
-					RotaObject = Array.Empty<RotaObject>(), // Initialize with an empty array if there is no existing entry
+					RotaObjectString = "[]", 
+					RotaObject = Array.Empty<RotaObject>(),
 				};
 				_context.StaffRotas.Add(existingRota);
 			}
-
-			// Create a new RotaObject for the current shift
 			var newShift = new RotaObject
 			{
 				Date = model.Date,
@@ -165,14 +160,10 @@ namespace Logic.Helpers
 				TRange = model.TRange,
 				UnpaidTime = model.UnpaidTime,
 			};
-
-			// Add the new shift to the existing list
 			var newData = existingRota.RotaObjectGet?.Where(d => d.Date != "").ToList() ?? new List<RotaObject>();
 			newData.Add(newShift);
-
 			existingRota.RotaObjectString = JsonConvert.SerializeObject(newData);
 			_context.SaveChanges();
-
 			return true;
 		}
 
@@ -257,7 +248,25 @@ namespace Logic.Helpers
 			return model;
 		}
 
-		public List<DateTime> GetDateRangeList(DateTime sDate, DateTime eDate)
+        public string GenerateContentForUpdatedRota(RotaObjectViewModel data)
+        {
+            if (!string.IsNullOrEmpty(data.StartTime))
+            {
+                // If existing data is present, return existing data along with the plus sign
+                return data.StartTime + " - " + data.EndTime +
+                       "<span class=\"badge bg-success\"> " + data.Location + "</span><br/>" +
+                       "<span><i class=\"fa fa-plus-circle\" onclick=\"popModal('" + data.Date + "','" + data.UserId + "','" + data.Year + "')\"></i></span>";
+            }
+            else
+            {
+                // If no existing data is present, return only the plus sign
+                return "<span><i class=\"fa fa-plus-circle\" onclick=\"popModal('" + data.Date + "','" + data.UserId + "','" + data.Year + "')\"></i></span>";
+            }
+        }
+
+
+
+        public List<DateTime> GetDateRangeList(DateTime sDate, DateTime eDate)
 		{
 			var dList = new List<DateTime>();
 			TimeSpan duration = eDate - sDate;
@@ -339,10 +348,80 @@ namespace Logic.Helpers
         }
 
 
-
-
-
         public string GenerateContent(List<DateTime> data, int locId)
+        {
+            var usersInRota = GetUsersInRota(locId);
+            if (usersInRota.Count == 0)
+            {
+                return null;
+            }
+
+            var dateIds = GetDateIdsForAGivenPeriod(data);
+            var year = data.FirstOrDefault().Year;
+
+            var thead = "<thead><tr><th class=\"p-1 text-center\">Users</th>";
+            foreach (DateTime date in data)
+            {
+                var th = "<th class=\"p-1 text-center\">" + date.Day + "</th>";
+                thead += th;
+            }
+            thead += "</tr></thead>";
+
+            var tbody = "<tbody>";
+            foreach (var user in usersInRota)
+            {
+                var userTD = "<td class='p-1 text-center'>" + user.FirstName + " " + user.LastName + "</td>";
+
+                // Get current user rota for the selected period
+                var userRota = _context.StaffRotas
+                    .Where(x => x.UserId == user.Id && x.Year == year.ToString())
+                    .FirstOrDefault();
+
+                if (userRota == null)
+                {
+                    CreateNewRotaObjectForUser(_userHelper.FindByIdAsync(user.Id).Result, year);
+                    userRota = _context.StaffRotas
+                        .Where(x => x.UserId == user.Id && x.Year == year.ToString())
+                        .FirstOrDefault();
+                }
+
+                var newTD = "";
+                if (userRota != null)
+                {
+                    foreach (var date in data)
+                    {
+                        var dateFormats = new string[] { "yyyy-MM-dd", "dd/MM/yyyy HH:mm:ss" };
+                        var shiftsForDate = userRota.RotaObjectGet
+                            .Where(x => TryParseDate(x.Date, dateFormats, out DateTime parsedDate) && parsedDate == date && x.Location != null);
+
+                        var td = "<td class=\"text-center p-1\" id='" + date + "_" + user.Id + "'>";
+
+                        // Display existing data if available
+                        foreach (var shift in shiftsForDate)
+                        {
+                            td += shift.TRange +
+                                  "<span class=\"badge bg-success\">" + shift?.Location + "</span><br/>";
+                        }
+
+                        // Display a plus sign for adding shifts if no shifts exist for the date
+                        td += "<span><i class=\"fa fa-plus-circle\" onclick=\"popModal('" + date + "','" + user.Id + "','" + year + "')\"></i></span>";
+
+                        td += "</td>";
+
+                        newTD += td;
+                    }
+                }
+
+                var nonloopTD = "<input type=\"text\" id='" + user.Id + "' hidden value='" + user.Id + "' />";
+                tbody += "<tr>" + userTD + newTD + nonloopTD + "</tr>";
+            }
+            tbody += "</tbody>";
+
+            return thead + tbody;
+        }
+
+
+        public string GenerateContents(List<DateTime> data, int locId)
         {
             var usersInRota = GetUsersInRota(locId);
             if (usersInRota.Count == 0)
@@ -599,5 +678,10 @@ namespace Logic.Helpers
 				throw exp;
 			}
 		}
+
+
+		
+
+
 	}
 }
