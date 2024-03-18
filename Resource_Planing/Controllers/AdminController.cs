@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NETCore.MailKit.Core;
 using Newtonsoft.Json;
+using OpenCvSharp.Features2D;
 using static Core.Enums.Resource_Planing;
 
 namespace Resource_Planing.Controllers
@@ -224,18 +225,6 @@ namespace Resource_Planing.Controllers
 			ViewBag.Location = _dropdownHelper.GetLocations();
 			var shifts = _userHelper.GetShifts();
 			if (shifts.Any())
-			{
-				return View(shifts);
-			}
-			return View();
-		}
-
-
-		public IActionResult ShiftCraeted()
-		{
-			ViewBag.Location = _dropdownHelper.GetLocations();
-			var shifts = _userHelper.GetShiftList();
-			if (shifts != null)
 			{
 				return View(shifts);
 			}
@@ -650,16 +639,40 @@ namespace Resource_Planing.Controllers
                 return Json(shifts);
             }
 
-            return Json(new RotaObject[0]);  // Return an empty array if no shifts found
+            return Json(new RotaObject[0]);  
         }
 		[HttpGet]
 		public IActionResult CreateShift()
+        {
+            List<DateTime> weekDates = GetWeekDates(); 
+            string shiftTableHtml = _rotaHelper.GenerateAdminContent(weekDates); 
+            var viewModel = new GetAllShiftForAdmin
+            {
+                ShiftTableHtml = shiftTableHtml
+            };
+            return View(viewModel);
+        }
+        private List<DateTime> GetWeekDates()
+        {
+            List<DateTime> weekDates = new List<DateTime>();
+            DateTime startDate = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek);
+            for (int i = 0; i < 14; i++)
+            {
+                weekDates.Add(startDate.AddDays(i));
+            }
+            return weekDates;
+        }
+
+        public IActionResult ShiftCraeted()
 		{
-            var name = User.Identity.Name;
-            ViewBag.Location = _dropdownHelper.GetLocations();
-            var listOfCreateShift = _userHelper.GetListOfUserOnShift(name);
-			return View(listOfCreateShift);
+			ViewBag.Location = _dropdownHelper.GetLocations();
+			var shifts = _userHelper.GetShiftList();
+			if (shifts != null)
+			{
+				return View(shifts);
+			}
+			return View();
 		}
-    }
+	}
 }
 

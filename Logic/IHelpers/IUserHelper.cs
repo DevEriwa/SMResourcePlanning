@@ -44,13 +44,13 @@ namespace Logic.IHelpers
         StaffClockIn GetUserPunchActionForCurrentDay(string userId);
         Response PunchInService(PunchingViewModel model);
         Response PunchOutService(PunchingViewModel model);
-        List<GetAllShiftForAdmin> GetListOfUserOnShift(string loggedInUsername);
-
+        //List<GetAllShiftForAdmin> GetListOfUserOnShift(string userName);
 		List<UserViewModel> GetUser(string userName);
 		List<LeaveSetup> GetLeave();
 		AdminDashboardViewModel GetAdminDashboardData(string userName);
 		ApplicationUser GetOneUser();
 		AllShiftViewModel GetShiftList();
-
-	}
+        IEnumerable<StaffRota> GetAllStaffRotasWithShifts();
+        IEnumerable<RotaObject> GetShiftsForUserInWeek(string userId, DateTime startDate, DateTime endDate);
+    }
 }

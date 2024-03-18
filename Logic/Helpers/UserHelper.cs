@@ -22,6 +22,7 @@ using Core.Config;
 using Microsoft.AspNetCore.Http;
 using NETCore.MailKit.Core;
 using Core.ViewModels.Shift;
+using OpenCvSharp.Features2D;
 
 namespace Logic.Helpers
 {
@@ -813,166 +814,43 @@ namespace Logic.Helpers
 				LocationId = shift.LocationId,
 			};
 		}
-
-
-	}
-
-        //public List<GetAllShiftForAdmin> GetListOfUserOnShift(string loggedInUsername)
-        //{
-        //    try
-        //    {
-        //        var allShiftForAdmin = new List<GetAllShiftForAdmin>();
-        //        var allShif = new GetAllShiftForAdmin();
-        //        var myShift = _context.shift.Where(a => a.Id != 0 && a.AbbreviatedName != null && !a.Deleted).Include(l => l.Locations).ToList();
-        //        if (myShift != null && myShift.Count() > 0)
-        //        {
-        //            foreach (var shifts in myShift.FirstOrDefault().Locations.UserIds)
-        //            {
-        //                var newTable = new GetAllShiftForAdmin()
-        //                {
-        //                };
-        //                allShiftForAdmin.Add(newTable);
-        //            }
-        //            return allShiftForAdmin;
-        //        }
-        //        return allShiftForAdmin;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //}
-
-        //public List<GetAllShiftForAdmin> GetListOfUserOnShift(string loggedInUsername)
-        //{
-        //    try
-        //    {
-        //        var allShiftForAdmin = new List<GetAllShiftForAdmin>();
-
-        //        var myShifts = _context.shift
-        //            .Where(a => a.Id != 0 && a.AbbreviatedName != null && !a.Deleted)
-        //            .Include(l => l.Locations)
-        //            .ToList();
-
-        //        foreach (var shift in myShifts)
-        //        {
-        //            var (numberOfUsers, timeShift) = shift.GetUserDataAndTimeShift();
-        //            foreach (var userId in shift.Locations?.UserIds.Split(',') ?? Array.Empty<string>())
-        //            {
-        //                // Ensure userId is not null or empty
-        //                if (!string.IsNullOrEmpty(userId))
-        //                {
-        //                    var user = _context.ApplicationUser.FirstOrDefault(u => u.Id.ToString() == userId);
-        //                    if (user != null)
-        //                    {
-        //                        var newTable = new GetAllShiftForAdmin
-        //                        {
-        //                            AbbreviatedName = shift.AbbreviatedName,
-        //                            NumberOfUsers = numberOfUsers,
-        //                            TimeShift = timeShift,
-        //                            Name = $"{user.FirstName} {user.LastName}",
-        //                            EndTime = shift.EndTime,
-        //                            StartTime = shift.StartTime,
-        //                            // Add other properties as needed
-        //                        };
-        //                        allShiftForAdmin.Add(newTable);
-        //                    }
-        //                }
-        //            }
-        //        }
-        //        return allShiftForAdmin;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //}
-        //public List<GetAllShiftForAdmin> GetListOfUserOnShift(string loggedInUsername)
-        //{
-        //    try
-        //    {
-        //        var allShiftForAdmin = new List<GetAllShiftForAdmin>();
-
-        //        var myShifts = _context.shift
-        //            .Where(a => a.Id != 0 && a.AbbreviatedName != null && !a.Deleted)
-        //            .Include(l => l.Locations)
-        //            .ToList();
-
-        //        foreach (var shift in myShifts)
-        //        {
-        //            var (numberOfUsers, timeShift) = shift.GetUserDataAndTimeShift();
-        //            var userIds = shift.Locations?.UserIds.Split(',') ?? Array.Empty<string>();
-
-        //            // Convert user IDs to strings outside the LINQ query
-        //            var stringUserIds = userIds.Where(userId => !string.IsNullOrEmpty(userId)).Select(userId => userId.ToString()).ToList();
-
-        //            foreach (var userId in stringUserIds)
-        //            {
-        //                var user = _context.ApplicationUser.FirstOrDefault(u => u.Id == userId);
-        //                if (user != null)
-        //                {
-        //                    var newTable = new GetAllShiftForAdmin
-        //                    {
-        //                        AbbreviatedName = shift.AbbreviatedName,
-        //                        NumberOfUsers = numberOfUsers,
-        //                        TimeShift = timeShift,
-        //                        Name = $"{user.FirstName} {user.LastName}",
-        //                        EndTime = shift.EndTime,
-        //                        StartTime = shift.StartTime,
-        //                        // Add other properties as needed
-        //                    };
-        //                    allShiftForAdmin.Add(newTable);
-        //                }
-        //            }
-        //        }
-        //        return allShiftForAdmin;
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //}
-
-        public List<GetAllShiftForAdmin> GetListOfUserOnShift(string loggedInUsername)
+		
+        public IEnumerable<StaffRota> GetAllStaffRotasWithShifts()
         {
-            try
-            {
-                var allShiftForAdmin = new List<GetAllShiftForAdmin>();
-                var myShifts = _context.shift
-                    .Where(a => a.Id != 0 && a.AbbreviatedName != null && !a.Deleted)
-                    .Include(l => l.Locations)
-                    .ToList();
-                foreach (var shift in myShifts)
-                {
-                    var (numberOfUsers, timeShift) = shift.GetUserDataAndTimeShift();
-                    var userIds = JsonConvert.DeserializeObject<List<string>>(shift.Locations?.UserIds ?? "[]");
-                    foreach (var userId in userIds)
-                    {
-                        if (!string.IsNullOrEmpty(userId))
-                        {
-                            var user = _context.ApplicationUser.FirstOrDefault(u => u.Id == userId);
-                            if (user != null)
-                            {
-                                var newTable = new GetAllShiftForAdmin
-                                {
-                                    AbbreviatedName = shift.AbbreviatedName,
-                                    NumberOfUsers = numberOfUsers,
-                                    TimeShift = timeShift,
-                                    Name = $"{user.FirstName} {user.LastName}",
-                                    EndTime = shift.EndTime,
-                                    StartTime = shift.StartTime,
-                                };
-                                allShiftForAdmin.Add(newTable);
-                            }
-                        }
-                    }
-                }
-                return allShiftForAdmin;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            // Retrieve all StaffRota records including related ApplicationUser
+            var userInfo =  _context.StaffRotas
+                .Include(sr => sr.User)
+            .ToList();
+			return userInfo;
         }
+
+        public IEnumerable<RotaObject> GetShiftsForUserInWeek(string userId, DateTime startDate, DateTime endDate)
+        {
+            // Filter staff rotas for the specified user
+            var userStaffRotas = _context.StaffRotas
+                .Where(sr => sr.UserId == userId)
+                .ToList();
+
+            var shifts = new List<RotaObject>();
+
+            foreach (var staffRota in userStaffRotas)
+            {
+                var rotaObjects = JsonConvert.DeserializeObject<List<RotaObject>>(staffRota.RotaObjectString);
+
+                if (rotaObjects != null)
+                {
+                    // Filter rota objects for the specified date range
+                    var userShifts = rotaObjects
+                        .Where(ro => DateTime.TryParse(ro.Date, out DateTime rotaDate) &&
+                                     rotaDate >= startDate && rotaDate <= endDate)
+                        .ToList();
+
+                    shifts.AddRange(userShifts);
+                }
+            }
+
+            return shifts;
+        }
+
     }
 }

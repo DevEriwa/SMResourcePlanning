@@ -2,7 +2,7 @@
 @{
 	ViewData["Title"] = "Shift Created";
 	Layout = "~/Views/Shared/_AdminLayout.cshtml";
-	var locationId = ViewBag.locationId;
+	var locationId = ViewBag.Location;
 }
 <style>
 	body {
@@ -103,9 +103,13 @@
 																			<span class="sr-only">Toggle Dropdown</span>
 																		</button>
 																		<div class="dropdown-menu" role="menu">
-																			<a class="dropdown-item" href="#" data-toggle="modal" data-target="#edit_shift" onclick="GetShiftByID('@shift.Id')"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+																			<a class="dropdown-item" href="#" data-toggle="modal" data-target="#edit_shift" onclick="GetShiftByID('@shift.Id')">
+																				<i class="fa fa-pencil m-r-5"></i> Edit
+																			</a>
 																			<div class="dropdown-divider"></div>
-																			<a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_Shift" onclick="GetShiftByID('@shift.Id')"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
+																			<a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_Shift" onclick="GetShiftByID('@shift.Id')">
+																				<i class="fa fa-trash-o m-r-5"></i> Delete
+																			</a>
 																		</div>
 																	</div>
 																</td>
@@ -173,9 +177,13 @@
 																			<span class="sr-only">Toggle Dropdown</span>
 																		</button>
 																		<div class="dropdown-menu" role="menu">
-																			<a class="dropdown-item" href="#" data-toggle="modal" data-target="#edit_shift" onclick="GetShiftByID('@shift.Id')"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+																			<a class="dropdown-item" href="#" data-toggle="modal" data-target="#edit_shift" onclick="GetShiftByID('@shift.Id')">
+																				<i class="fa fa-pencil m-r-5"></i> Edit
+																			</a>
 																			<div class="dropdown-divider"></div>
-																			<a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_Shift" onclick="GetShiftByID('@shift.Id')"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
+																			<a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_Shift" onclick="GetShiftByID('@shift.Id')">
+																				<i class="fa fa-trash-o m-r-5"></i> Delete
+																			</a>
 																		</div>
 																	</div>
 																</td>
@@ -221,7 +229,6 @@
 																<td></td>
 																<td>@shift.Name</td>
 																<td>@shift.StartTime</td>
-																<td>@shift.Time</td>
 																<td class="text-right">
 																	<div class="btn-group">
 																		<button type="button" class="btn btn-default btn-flat">Action</button>
@@ -229,9 +236,13 @@
 																			<span class="sr-only">Toggle Dropdown</span>
 																		</button>
 																		<div class="dropdown-menu" role="menu">
-																			<a class="dropdown-item" href="#" data-toggle="modal" data-target="#edit_shift" onclick="GetShiftByID('@shift.Id')"><i class="fa fa-pencil m-r-5"></i> Edit</a>
+																			<a class="dropdown-item" href="#" data-toggle="modal" data-target="#edit_shift" onclick="GetShiftByID('@shift.Id')">
+																				<i class="fa fa-pencil m-r-5"></i> Edit
+																			</a>
 																			<div class="dropdown-divider"></div>
-																			<a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_Shift" onclick="GetShiftByID('@shift.Id')"><i class="fa fa-trash-o m-r-5"></i> Delete</a>
+																			<a class="dropdown-item" href="#" data-toggle="modal" data-target="#delete_Shift" onclick="GetShiftByID('@shift.Id')">
+																				<i class="fa fa-trash-o m-r-5"></i> Delete
+																			</a>
 																		</div>
 																	</div>
 																</td>

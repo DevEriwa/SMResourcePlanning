@@ -1,87 +1,50 @@
-﻿@using static Core.Enums.Resource_Planing
-@model IEnumerable<Core.ViewModels.GetAllShiftForAdmin>
+﻿
+
+ @using static Core.Enums.Resource_Planing
+@model Core.ViewModels.GetAllShiftForAdmin
+
 @{
-    ViewData["Title"] = "Create Shift";
+    ViewData["Title"] = "Assigned Shifts";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    var locationId = ViewBag.locationId;
 }
-
-<style>
-
-    body {
-        counter-reset: Serial; /* / Set the Serial counter to 0 /*/
-    }
-
-    tr td:first-child:before {
-        counter-increment: Serial; /* / Increment the Serial counter /*/
-        content: counter(Serial); /*  / Display the counter /*/
-    }
-</style>
-
 
 <section class="content-header">
     <div class="container-fluid">
         <div class="row mb-2">
             <div class="col-sm-6">
-                <h1>Assigned Shift </h1>
+                <h1>Assigned Shifts</h1>
             </div>
-           
         </div>
     </div>
 </section>
+
 <section class="content">
     <div class="content container-fluid">
-        @if (Model.Count() == 0)
-        {
-            <h2 class="text-center text-primary">No shift applied yet, Check back later</h2>
-        }
-        else
-        {
-            
-            <div class="row">
-                <div class="col-md-12">
-                    <div class="table-responsive">
-                        <table class="table table-striped custom-table mb-0 datatable">
-                            <thead>
-                                <tr>
-                                    <th>S/N</th>
-                                    <th>Employee</th>
-                                    <th>Sun</th>
-                                    <th>Mon</th>
-                                    <th>Tue</th>
-                                    <th>Wed</th>
-                                    <th>Thurs</th>
-                                    <th>Fri</th>
-                                    <th>Sat</th>
-                                    <th class="text-center">Planned hrs</th>
-                                    <th class="text-center">Actual hrs</th>
-                                </tr>
-                            </thead>
-                            <tbody id="leave">
-                                @foreach (var shift in Model)
+        <div class="row">
+            <div class="col-md-12">
+                <div class="table-responsive">
+                    <table class="table table-striped custom-table mb-0 datatable">
+                       @*  <thead>
+                            <tr>
+                                <th>S/N</th>
+                                <th>Employee</th>
+                                <th>Shift</th>
+                                <th>Location</th>
+                                @for (int i = 0; i < 7; i++)
                                 {
-                                    <tr>
-                                        <td></td>
-                                        <td>@shift.Name</td>
-                                        <td>@shift.AbbreviatedName @shift.TimeShift</td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                       
-                                    </tr>
+                                    <th>@DateTime.Now.AddDays(i).ToString("dddd")</th>
                                 }
-                            </tbody>
-                        </table>
-                    </div>
+                                <th>Total Planned Hours</th>
+                            </tr>
+                        </thead> *@
+                        <tbody id="leave">
+                            @Html.Raw(Model.ShiftTableHtml)
+                        </tbody>
+                    </table>
                 </div>
             </div>
-        }
+        </div>
     </div>
-    <!-- /Page Content -->
 </section>
+
 

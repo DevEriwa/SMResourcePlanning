@@ -31,41 +31,6 @@ namespace Core.ViewModels
         public virtual Location? Locations { get; set; }
         public int NumberOfUsers { get; set; }
         public string TimeShift { get; set; }
-        // Method to get the number of users in the shift
-        public int GetNumberOfUsersInShift()
-        {
-            if (Locations != null && !string.IsNullOrEmpty(Locations.UserIds))
-            {
-                // Assuming UserIds is a comma-separated string
-                string[] userIdsArray = Locations.UserIds.Split(',');
-
-                // Filter out empty strings and count the number of user IDs
-                return userIdsArray.Count(userId => !string.IsNullOrEmpty(userId));
-            }
-
-            // If Locations or UserIds is null or empty, return 0
-            return 0;
-        }
-
-        // Method to get the number of users and the time shift
-        public (int NumberOfUsers, string TimeShift) GetUserDataAndTimeShift()
-        {
-            if (Locations != null && !string.IsNullOrEmpty(Locations.UserIds))
-            {
-                // Assuming UserIds is a comma-separated string
-                string[] userIdsArray = Locations.UserIds.Split(',');
-
-                // Filter out empty strings and count the number of user IDs
-                int numberOfUsers = userIdsArray.Count(userId => !string.IsNullOrEmpty(userId));
-
-                // Construct the time shift
-                string timeShift = $"{StartTime} - {EndTime}";
-
-                return (numberOfUsers, timeShift);
-            }
-
-            // If Locations or UserIds is null or empty, return default values
-            return (0, "N/A");
-        }
+        public string ShiftTableHtml { get; set; }
     }
 }

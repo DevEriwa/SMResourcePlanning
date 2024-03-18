@@ -23,6 +23,6 @@ namespace Core.ViewModels.Shift
 		public double? FixedAmount { get; set; }
 		public double? HourlyPay { get; set; }
 		public int? LocationId { get; set; }
-        public Location Location { get; set; }SS
+       // public Location Location { get; set; }
     }
 }

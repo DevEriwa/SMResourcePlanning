@@ -166,54 +166,6 @@ namespace Logic.Helpers
 			_context.SaveChanges();
 			return true;
 		}
-
-
-		//public StaffRota GetWeeklyStaffRota(string userId,DateTime date, int weekCount)
-		//{
-		//	var result = new StaffRota();
-		//	if(userId != null)
-		//	{
-		//		if(date == DateTime.MinValue)
-		//		{
-		//			date = DateTime.Now;
-		//		}
-		//		if(weekCount > 0)
-		//		{
-		//			date = date.AddDays((weekCount * 7));
-		//		}
-
-		//		var dateIds = GetRotaDateForGivenWeek(date);
-		//		var rota = _context.StaffRotas.Where(x => x.UserId == userId && x.Year == date.Year.ToString()).FirstOrDefault();
-		//		if(rota == null)
-		//		{
-		//                  CreateNewRotaObjectForUser(_userHelper.FindByIdAsync(userId).Result, date.Year);
-		//                  rota = _context.StaffRotas.Where(x => x.UserId == userId && x.Year == date.Year.ToString()).FirstOrDefault();
-		//              }
-		//              if (rota != null)
-		//		{
-		//			var rotamodel = new List<RotaObject>();
-
-		//			var ggg = rota.RotaObjectGet.Where(x => dateIds.Contains(x.Date));
-		//			TimeSpan sumTimeSpan = new TimeSpan();
-
-		//			foreach (var item in ggg)
-		//			{
-		//				if(item.ShiftId >  0 && item.ShiftId != null)
-		//				{
-		//					item.shift = GetShiftById(item.ShiftId.Value);
-		//					sumTimeSpan = sumTimeSpan +  AddTime(TimeSpan.Parse(item.shift.StartTime), TimeSpan.Parse(item.shift.EndTime));
-		//				}
-		//				rotamodel.Add(item);
-		//			}
-		//			rota.DateRange = dateIds[0] + " - " + dateIds[6];
-		//			rota.TotalPlannedHour = CoverTimeSpantoStringTime(sumTimeSpan);
-		//                  result = rota;
-		//			result.RotaObject = rotamodel.ToArray();
-		//		}
-		//	}
-		//	return result;
-		//}
-
 		public Shifts GetShiftById(int id)
 		{
 			if(id > 0)
@@ -347,7 +299,6 @@ namespace Logic.Helpers
             return thead + row + "</tbody>";
         }
 
-
         public string GenerateContent(List<DateTime> data, int locId)
         {
             var usersInRota = GetUsersInRota(locId);
@@ -419,90 +370,6 @@ namespace Logic.Helpers
 
             return thead + tbody;
         }
-
-
-        public string GenerateContents(List<DateTime> data, int locId)
-        {
-            var usersInRota = GetUsersInRota(locId);
-            if (usersInRota.Count == 0)
-            {
-                return null;
-            }
-
-            var dateIds = GetDateIdsForAGivenPeriod(data);
-            var year = data.FirstOrDefault().Year;
-
-            var thead = "<thead><tr><th class=\"p-1 text-center\">Users</th>";
-            foreach (DateTime date in data)
-            {
-                var th = "<th class=\"p-1 text-center\">" + date.Day + "</th>";
-                thead += th;
-            }
-            thead += "</tr></thead>";
-
-            var tbody = "<tbody><tr><td  class=\"p-1\"></td>";
-            foreach (DateTime date in data)
-            {
-                var td = "<td class=\"p-1 text-center\">" + date.ToString("ddd") + "</td>";
-                tbody += td;
-            }
-            tbody += "</tr>";
-
-            thead += tbody;
-            var row = "";
-
-            foreach (var user in usersInRota)
-            {
-                var userTD = "<td  class='p-1 text-center'>" + user.FirstName + " " + user.LastName + "</td>";
-
-                // Get current user rota for the selected period
-                var userRota = _context.StaffRotas
-                    .Where(x => x.UserId == user.Id && x.Year == year.ToString())
-                    .FirstOrDefault();
-
-                if (userRota == null)
-                {
-                    CreateNewRotaObjectForUser(_userHelper.FindByIdAsync(user.Id).Result, year);
-                    userRota = _context.StaffRotas
-                        .Where(x => x.UserId == user.Id && x.Year == year.ToString())
-                        .FirstOrDefault();
-                }
-
-                var newTD = "";
-                if (userRota != null)
-                {
-                    foreach (var date in data)
-                    {
-                        var dateFormats = new string[] { "yyyy-MM-dd", "dd/MM/yyyy HH:mm:ss" };
-                        var shiftsForDate = userRota.RotaObjectGet
-                            .Where(x => TryParseDate(x.Date, dateFormats, out DateTime parsedDate) && parsedDate == date && x.Location != null);
-
-                        var td = "<td class=\"text-center p-1\" id='" + date + "_" + user.Id + "'>";
-
-                        if (shiftsForDate.Any())
-                        {
-                            // Display existing data
-                            foreach (var shift in shiftsForDate)
-                            {
-                                td += shift.TRange +
-                                      "<span class=\"badge bg-success\">" + shift?.Location + "</span><br/>";
-                            }
-                        }
-
-                        // Display a plus sign
-                        td += "<span><i class=\"fa fa-plus-circle\" onclick=\"popModal('" + date + "','" + user.Id + "','" + year + "')\"></i></span>";
-                        td += "</td>";
-
-                        newTD += td;
-                    }
-                }
-
-                var nonloopTD = "<input type=\"text\" id='" + user.Id + "' hidden value='" + user.Id + "' />";
-                newTD += nonloopTD;
-                row += "<tr>" + userTD + newTD + "</tr>";
-            }
-            return thead + row + "</tbody>";
-        }
         private bool TryParseDate(string dateString, string[] dateFormats, out DateTime parsedDate)
 		{
 			foreach (var format in dateFormats)
@@ -561,6 +428,30 @@ namespace Logic.Helpers
 			}
 			return list;
 		}
+        public List<string> GetDaysOfWeekForAGivenPeriodh(List<DateTime> data)
+        {
+            var list = new List<string>();
+            foreach (DateTime date in data)
+            {
+                string dayOfWeek = date.DayOfWeek.ToString(); 
+                list.Add(dayOfWeek);
+            }
+            return list;
+        }
+
+        public List<string> GetDaysOfWeekForAGivenPeriod(List<DateTime> data)
+        {
+            var list = new List<string>();
+            foreach (DateTime date in data)
+            {
+                string dayOfWeek = date.DayOfWeek.ToString();
+                // Convert the day names to start from Sunday (DayOfWeek.Sunday has value 0)
+                int dayIndex = (int)date.DayOfWeek;
+                string adjustedDayOfWeek = Enum.GetName(typeof(DayOfWeek), dayIndex);
+                list.Add(adjustedDayOfWeek);
+            }
+            return list;
+        }
 
         public bool UpdateLocation(int locationId, double latitude, double longitude, double acceptedRadius)
         {
@@ -678,10 +569,227 @@ namespace Logic.Helpers
 				throw exp;
 			}
 		}
+        public string GenerateAdminContent(List<DateTime> data)
+        {
+            var usersLocationsInRota = GetAllUsersLocationsInRota();
+            if (usersLocationsInRota.Count == 0)
+            {
+                return null;
+            }
+            var dateIds = GetDaysOfWeekForAGivenPeriod(data);
+            var year = data.FirstOrDefault().Year;
+            var thead = "<thead><tr><th class=\"p-1 text-center\">Employee</th>";
+
+            // Populate table header for each date
+            foreach (DateTime date in data)
+            {
+                var th = $"<th class=\"p-1 text-center\">{date.DayOfWeek} ({date.Day})</th>";
+                thead += th;
+            }
+
+            // Populate table headers for Planned hrs and Actual hrs
+            thead += "<th class=\"text-center\">Planned hrs</th><th class=\"text-center\">Actual hrs</th>";
+            thead += "</tr></thead>";
+
+            var tbody = "<tbody>";
+            foreach (var userLocationsPair in usersLocationsInRota)
+            {
+                var user = userLocationsPair.Key;
+                var locations = userLocationsPair.Value;
+
+                var userTD = "<td class='p-1 text-center'>" + user.FirstName + " " + user.LastName + "</td>";
+
+                // Assuming you still need to check year-wise rota for each user
+                var userRota = _context.StaffRotas.FirstOrDefault(x => x.UserId == user.Id && x.Year == year.ToString());
+
+                if (userRota == null)
+                {
+                    CreateNewRotaObjectForUser(_userHelper.FindByIdAsync(user.Id).Result, year);
+                    userRota = _context.StaffRotas.FirstOrDefault(x => x.UserId == user.Id && x.Year == year.ToString());
+                }
+
+                var newTD = "";
+                if (userRota != null)
+                {
+                    foreach (var date in data)
+                    {
+                        var dateFormats = new string[] { "yyyy-MM-dd", "dd/MM/yyyy HH:mm:ss" };
+                        var shiftsForDate = userRota.RotaObjectGet.Where(x => TryParseDate(x.Date, dateFormats, out DateTime parsedDate) && parsedDate == date && x.Location != null);
+
+                        var td = "<td class=\"text-center p-1\" id='" + date + "_" + user.Id + "'>";
+
+                        // Display existing data if available
+                        foreach (var shift in shiftsForDate)
+                        {
+                            td += shift.TRange + "<span class=\"badge bg-success\">" + shift?.Location + "</span><br/>";
+                        }
+                        td += "</td>";
+                        newTD += td;
+                    }
+                }
+                newTD += "<td class=\"text-center p-1\">" + GetPlannedHoursForUser(user.Id) + "</td>";
+                newTD += "<td class=\"text-center p-1\">" + GetActualHoursForUser(user.Id) + "</td>";
+                var nonloopTD = "<input type=\"text\" id='" + user.Id + "' hidden value='" + user.Id + "' />";
+                tbody += "<tr>" + userTD + newTD + nonloopTD + "</tr>";
+            }
+            tbody += "</tbody>";
+            return thead + tbody;
+        }
+
+        private string GetPlannedHoursForUser(string userId)
+        {
+			double totalHourlyPay = GetHourlyPayForUserInAllLocations(userId);
+			return totalHourlyPay.ToString("0.00");
+		}
+		private double GetHourlyPayForUserInAllLocations(string userId)
+		{
+			double totalHourlyPay = 0.0;
+			var userLocations = _context.locations
+	        .Where(l => !string.IsNullOrEmpty(l.UserIds))
+	        .ToList()
+	        .Where(l =>
+	        {
+		        try
+		        {
+			        var userIds = JsonConvert.DeserializeObject<List<string>>(l.UserIds);
+			        return userIds.Contains(userId);
+		        }
+		        catch (JsonReaderException ex)
+		        {
+			        // Log the error and capture the problematic JSON string
+			        Console.WriteLine($"Error deserializing UserIds for Location ID {l.Id}: {ex.Message}");
+			        Console.WriteLine($"Problematic JSON string: {l.UserIds}");
+			        return false;
+		        }
+	        })
+	        .ToList();
 
 
-		
+			// Iterate over each location
+			foreach (var location in userLocations)
+			{
+				// Retrieve shifts in the current location
+				var shiftsInLocation = _context.shift
+					.Where(s => s.LocationId == location.Id)
+					.ToList();
 
+				// Check if the user is associated with this location
+				if (location.UserIds != null && JsonConvert.DeserializeObject<List<string>>(location.UserIds).Contains(userId))
+				{
+					// Accumulate hourly pay for shifts in this location
+					totalHourlyPay += shiftsInLocation.Sum(s => s.HourlyPay ?? 0.0);
+				}
+			}
 
-	}
+			return totalHourlyPay;
+		}
+		private string GetActualHoursForUser(string userId)
+        {
+            // Add your logic to retrieve actual hours for the user from the database or elsewhere
+            // For demonstration, returning a placeholder string
+            return "ActualHrsFor" + userId;
+        }
+
+        public string GenerateAdminContentes(List<DateTime> data)
+        {
+            var usersLocationsInRota = GetAllUsersLocationsInRota();
+
+            if (usersLocationsInRota.Count == 0)
+            {
+                return null;
+            }
+
+            var dateIds = GetDaysOfWeekForAGivenPeriod(data);
+            var year = data.FirstOrDefault().Year;
+
+            var thead = "<thead><tr><th class=\"p-1 text-center\">Employee</th>";
+            foreach (DateTime date in data)
+            {
+                var th = $"<th class=\"p-1 text-center\">{date.DayOfWeek} ({date.Day})</th>";
+                thead += th;
+            }
+            // Add the Planned hrs and Actual hrs table headers
+            thead += "<th class=\"text-center\">Planned hrs</th><th class=\"text-center\">Actual hrs</th>";
+            thead += "</tr></thead>";
+
+            var tbody = "<tbody>";
+            foreach (var userLocationsPair in usersLocationsInRota)
+            {
+                var user = userLocationsPair.Key;
+                var locations = userLocationsPair.Value;
+
+                var userTD = "<td class='p-1 text-center'>" + user.FirstName + " " + user.LastName + "</td>";
+
+                // Assuming you still need to check year-wise rota for each user
+                var userRota = _context.StaffRotas.FirstOrDefault(x => x.UserId == user.Id && x.Year == year.ToString());
+
+                if (userRota == null)
+                {
+                    CreateNewRotaObjectForUser(_userHelper.FindByIdAsync(user.Id).Result, year);
+                    userRota = _context.StaffRotas.FirstOrDefault(x => x.UserId == user.Id && x.Year == year.ToString());
+                }
+
+                var newTD = "";
+                if (userRota != null)
+                {
+                    foreach (var date in data)
+                    {
+                        var dateFormats = new string[] { "yyyy-MM-dd", "dd/MM/yyyy HH:mm:ss" };
+                        var shiftsForDate = userRota.RotaObjectGet.Where(x => TryParseDate(x.Date, dateFormats, out DateTime parsedDate) && parsedDate == date && x.Location != null);
+
+                        var td = "<td class=\"text-center p-1\" id='" + date + "_" + user.Id + "'>";
+
+                        // Display existing data if available
+                        foreach (var shift in shiftsForDate)
+                        {
+                            td += shift.TRange + "<span class=\"badge bg-success\">" + shift?.Location + "</span><br/>";
+                        }
+
+                        // Display a plus sign for adding shifts if no shifts exist for the date
+                        //td += "<span><i class=\"fa fa-plus-circle\" onclick=\"popModal('" + date + "','" + user.Id + "','" + year + "')\"></i></span>";
+
+                        td += "</td>";
+
+                        newTD += td;
+                    }
+                }
+
+                var nonloopTD = "<input type=\"text\" id='" + user.Id + "' hidden value='" + user.Id + "' />";
+                tbody += "<tr>" + userTD + newTD + nonloopTD + "</tr>";
+            }
+            tbody += "</tbody>";
+
+            return thead + tbody;
+        }
+        public Dictionary<ApplicationUser, List<Location>> GetAllUsersLocationsInRota()
+        {
+            var usersLocations = new Dictionary<ApplicationUser, List<Location>>();
+            var users = _context.ApplicationUser.ToList();
+
+            foreach (var user in users)
+            {
+                var locations = _context.locations
+                 .Where(l => !string.IsNullOrEmpty(l.UserIds))
+                 .ToList() // Materialize the data
+                 .Where(l =>
+                 {
+                     try
+                     {
+                         var userIds = JsonConvert.DeserializeObject<List<string>>(l.UserIds);
+                         return userIds.Contains(user.Id);
+                     }
+                     catch (JsonReaderException ex)
+                     {
+                         return false;
+                     }
+                 })
+                 .ToList();
+
+                // Add the user and their associated locations to the dictionary
+                usersLocations[user] = locations;
+            }
+            return usersLocations;
+        }
+
+    }
 }
