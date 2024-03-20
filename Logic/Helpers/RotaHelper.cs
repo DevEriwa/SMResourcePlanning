@@ -217,7 +217,6 @@ namespace Logic.Helpers
         }
 
 
-
         public List<DateTime> GetDateRangeList(DateTime sDate, DateTime eDate)
 		{
 			var dList = new List<DateTime>();
@@ -628,7 +627,7 @@ namespace Logic.Helpers
                     }
                 }
                 newTD += "<td class=\"text-center p-1\">" + GetPlannedHoursForUser(user.Id) + "</td>";
-                newTD += "<td class=\"text-center p-1\">" + GetActualHoursForUser(user.Id) + "</td>";
+                newTD += "<td class=\"text-center p-1\">" + GetPlannedHoursForUser(user.Id) + "</td>";
                 var nonloopTD = "<input type=\"text\" id='" + user.Id + "' hidden value='" + user.Id + "' />";
                 tbody += "<tr>" + userTD + newTD + nonloopTD + "</tr>";
             }
