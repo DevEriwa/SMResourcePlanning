@@ -682,13 +682,6 @@ namespace Logic.Helpers
 
 			return totalHourlyPay;
 		}
-		private string GetActualHoursForUser(string userId)
-        {
-            // Add your logic to retrieve actual hours for the user from the database or elsewhere
-            // For demonstration, returning a placeholder string
-            return "ActualHrsFor" + userId;
-        }
-
         public string GenerateAdminContentes(List<DateTime> data)
         {
             var usersLocationsInRota = GetAllUsersLocationsInRota();

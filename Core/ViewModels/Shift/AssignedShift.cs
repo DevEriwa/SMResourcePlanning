@@ -24,5 +24,6 @@ namespace Core.ViewModels.Shift
 		public double? HourlyPay { get; set; }
 		public int? LocationId { get; set; }
 		public Location Location { get; set; }
-	}
+        public string ShiftTableHtml { get; set; }
+    }
 }

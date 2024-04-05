@@ -1,4 +1,5 @@
 ﻿using Core.Models;
+using Core.ViewModels.Shift;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -32,5 +33,8 @@ namespace Core.ViewModels
         public int NumberOfUsers { get; set; }
         public string TimeShift { get; set; }
         public string ShiftTableHtml { get; set; }
+        public virtual AssignedShift AssignedShifts { get; set; }
+        public virtual List<ShiftTime>? ShiftTime { get; set; }
+        public virtual List<ShiftName>? ShiftNames { get; set; }
     }
 }

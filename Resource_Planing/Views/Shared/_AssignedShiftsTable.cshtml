@@ -1,0 +1,16 @@
+﻿@model Core.ViewModels.Shift.AssignedShift
+
+@if (Model != null)
+{
+    <div class="table-responsive">
+        <table class="table table-striped custom-table mb-0" id="dataTableBankStatutory">
+            <tbody>
+                @Html.Raw(Model.ShiftTableHtml)
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <p>No data available</p>
+}

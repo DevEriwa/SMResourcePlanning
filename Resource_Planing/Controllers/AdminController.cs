@@ -1,10 +1,12 @@
 ﻿using Core.Db;
 using Core.Models;
 using Core.ViewModels;
+using Core.ViewModels.Shift;
 using Logic.IHelpers;
 using Logic.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using NETCore.MailKit.Core;
 using Newtonsoft.Json;
@@ -64,8 +66,8 @@ namespace Resource_Planing.Controllers
 
 		public IActionResult Location()
 		{
-			var newLocationList = new List<Location>();
-			var locations = _userHelper.GetLocations();
+			var newLocationList = new List<Core.Models.Location>();
+            var locations = _userHelper.GetLocations();
 			ViewBag.UserInRota = _dropdownHelper.GetAllUsersInRota();
 			if (locations.Any())
 			{
@@ -642,16 +644,16 @@ namespace Resource_Planing.Controllers
             return Json(new RotaObject[0]);  
         }
 		[HttpGet]
-		public IActionResult CreateShift()
-        {
-            List<DateTime> weekDates = GetWeekDates(); 
-            string shiftTableHtml = _rotaHelper.GenerateAdminContent(weekDates); 
-            var viewModel = new GetAllShiftForAdmin
-            {
-                ShiftTableHtml = shiftTableHtml
-            };
-            return View(viewModel);
-        }
+		//public IActionResult CreateShifts()
+  //      {
+  //          List<DateTime> weekDates = GetWeekDates(); 
+  //          string shiftTableHtml = _rotaHelper.GenerateAdminContent(weekDates); 
+  //          var viewModel = new GetAllShiftForAdmin
+  //          {
+  //              ShiftTableHtml = shiftTableHtml
+  //          };
+  //          return View(viewModel);
+  //      }
         private List<DateTime> GetWeekDates()
         {
             List<DateTime> weekDates = new List<DateTime>();
@@ -673,6 +675,22 @@ namespace Resource_Planing.Controllers
 			}
 			return View();
 		}
-	}
+
+        public IActionResult CreateShift()
+        {
+            var viewModel = new GetAllShiftForAdmin();
+            PopulateViewModel(viewModel);
+            return View(viewModel);
+        }
+
+        private void PopulateViewModel(GetAllShiftForAdmin viewModel)
+        {
+            List<DateTime> weekDates = GetWeekDates();
+            string shiftTableHtml = _rotaHelper.GenerateAdminContent(weekDates);
+
+            viewModel.ShiftTableHtml = shiftTableHtml;
+        }
+
+    }
 }
 
